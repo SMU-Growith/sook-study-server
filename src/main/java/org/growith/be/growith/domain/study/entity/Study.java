@@ -6,6 +6,9 @@ import lombok.*;
 import org.growith.be.growith.domain.study.entity.enums.ContactType;
 import org.growith.be.growith.domain.study.entity.enums.StudyStatus;
 import org.growith.be.growith.global.common.BaseEntity;
+import org.growith.be.growith.domain.user.entity.User;
+
+import java.util.List;
 
 @Getter
 @Builder
@@ -36,4 +39,13 @@ public class Study extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "study_field_id")
     private StudyField studyField;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    private String format;
+
+    @OneToMany(mappedBy = "study", fetch = FetchType.LAZY)
+    private List<StudyStyle> studyStyles;
 }

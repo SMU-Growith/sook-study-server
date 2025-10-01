@@ -1,0 +1,118 @@
+package org.growith.be.growith.domain.study.service;
+
+import lombok.RequiredArgsConstructor;
+import org.growith.be.growith.domain.study.dto.StudyCardDto;
+import org.growith.be.growith.domain.study.dto.StudyDtlDto;
+import org.growith.be.growith.domain.study.entity.*;
+import org.growith.be.growith.domain.study.entity.enums.ContactType;
+import org.growith.be.growith.domain.study.entity.enums.StudyStatus;
+import org.growith.be.growith.domain.user.entity.User;
+import org.growith.be.growith.domain.user.repository.UserRepository;
+import org.growith.be.growith.domain.study.repository.StudyFieldRepository;
+import org.growith.be.growith.domain.study.repository.StyleRepository;
+import org.growith.be.growith.domain.study.repository.RuleRepository;
+import org.growith.be.growith.domain.study.repository.StudyStyleRepository;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Map;
+
+@Slf4j
+@Service
+@RequiredArgsConstructor
+public class StudyService {
+    private final StudyRepository studyRepository;
+    private final UserRepository userRepository;
+    private final StudyFieldRepository studyFieldRepository;
+    private final StyleRepository styleRepository;
+    private final RuleRepository ruleRepository;
+
+    private final StudyStyleRepository studyStyleRepository;
+
+    public List<StudyCardDto> getPopularStudies(int page, int size) {
+        LocalDateTime oneMonthAgo = LocalDateTime.now().minusMonths(1);
+        return studyRepository.findPopularStudies(oneMonthAgo, PageRequest.of(page, size));
+    }
+
+    public List<StudyCardDto> getNewStudies(int page, int size) {
+        LocalDateTime oneMonthAgo = LocalDateTime.now().minusMonths(1);
+        return studyRepository.findNewStudies(oneMonthAgo, PageRequest.of(page, size));
+    }
+
+    @Transactional
+    public void createStudy(StudyDtlDto dto) {
+        // 작성자 조회
+        User user = userRepository.findByUserId(dto.getAuthorId())
+                .orElseThrow(() -> new IllegalArgumentException("사용자 없음"));
+
+        // 분야 조회
+        StudyField field = studyFieldRepository.findByName(dto.getFieldName())
+                .orElseThrow(() -> new IllegalArgumentException("분야 없음"));
+
+        // Study 생성
+        Study study = Study.builder()
+                .title(dto.getTitle())
+                .description(dto.getDescription())
+                .studyStatus(StudyStatus.RECRUITING)
+                .contactType(ContactType.valueOf(dto.getContactType()))
+                .user(user)
+                .studyField(field)
+                .format(dto.getFormat())
+                .build();
+        studyRepository.save(study);
+
+        // 스타일 저장
+        if (dto.getStyleNames() != null) {
+            List<Style> styles = styleRepository.findByStyleNameIn(dto.getStyleNames());
+            for (Style style : styles) {
+                StudyStyle studyStyle = StudyStyle.builder()
+                        .study(study)
+                        .style(style)
+                        .build();
+                studyStyleRepository.save(studyStyle);
+            }
+        }
+
+        // 규칙 저장
+        if (dto.getRules() != null) {
+            dto.getRules().forEach((category, desc) -> {
+                Rule rule = Rule.builder()
+                        .study(study)
+                        .ruleCategory(category)
+                        .description(desc)
+                        .build();
+                ruleRepository.save(rule);
+            });
+        }
+    }
+
+    public StudyDtlDto getStudyDetail(Long studyId) {
+        Study study = studyRepository.findById(studyId)
+                .orElseThrow(() -> new IllegalArgumentException("스터디 없음"));
+
+        // 스타일 이름 리스트
+        List<String> styleNames = study.getStudyStyles().stream()
+                .map(ss -> ss.getStyle().getStyleName())
+                .toList();
+
+        // 규칙 맵
+        List<Rule> rules = ruleRepository.findByStudy(study);
+        Map<String, String> ruleMap = rules.stream()
+                .collect(java.util.stream.Collectors.toMap(Rule::getRuleCategory, Rule::getDescription));
+
+        return StudyDtlDto.builder()
+                .fieldName(study.getStudyField().getName())
+                .styleNames(styleNames)
+                .format(study.getFormat())
+                .contactType(study.getContactType().name())
+                .title(study.getTitle())
+                .description(study.getDescription())
+                .rules(ruleMap)
+                .authorId(study.getUser().getUserId())
+                .createdAt(study.getCreatedAt())
+                .build();
+    }
+}
