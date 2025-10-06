@@ -166,6 +166,8 @@ public class StudyService {
 
     public StudyDtlDto closedStudy(Long studyId)
     {
+        Study study = studyRepository.findById(studyId)
+                .orElseThrow(() -> new IllegalArgumentException("studyId에 해당하는 스터디 없음"));
         study.setStudyStatus(StudyStatus.CLOSED);
         studyRepository.save(study);
         return getStudyDetail(studyId);

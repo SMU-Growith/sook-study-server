@@ -48,7 +48,7 @@ public class StudyController {
         return ResponseEntity.ok().build();
     }
 
-    @PutMapping("/{studyId}/closed")
+    @PatchMapping("/{studyId}/closed")
     public ResponseEntity<Void> closedStudy(@PathVariable Long studyId) {
         studyService.closedStudy(studyId);
         return ResponseEntity.ok().build();
@@ -58,4 +58,5 @@ public class StudyController {
     public ResponseEntity<Void> deleteStudy(@PathVariable Long studyId) {
         studyService.deleteStudy(studyId);
         return ResponseEntity.ok().build();
+    }
 }
