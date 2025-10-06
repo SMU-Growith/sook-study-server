@@ -15,6 +15,22 @@ import java.util.List;
 public class StudyController {
     private final StudyService studyService;
 
+    @GetMapping
+    public ResponseEntity<List<StudyCardDto>> getStudies(
+            @RequestParam(required = false) List<String> fields,
+            @RequestParam(required = false) List<String> formats,
+            @RequestParam(required = false) List<String> styles,
+            @RequestParam(required = false) String status,
+            @RequestParam(required = false) String keyword,
+            @RequestParam(defaultValue = "new") String sort,
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "12") int size
+    ) {
+        return ResponseEntity.ok(
+            studyService.searchStudies(fields, formats, styles, status, keyword, sort, page, size)
+        );
+    }
+
     @GetMapping("/popular")
     public ResponseEntity<List<StudyCardDto>> getPopularStudies(
             @RequestParam(defaultValue = "0") int page,

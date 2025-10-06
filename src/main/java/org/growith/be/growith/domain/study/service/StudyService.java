@@ -15,6 +15,8 @@ import org.growith.be.growith.domain.study.repository.StudyStyleRepository;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.data.domain.Sort;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -60,7 +62,7 @@ public class StudyService {
                 .contactType(ContactType.valueOf(dto.getContactType()))
                 .user(user)
                 .studyField(field)
-                .format(dto.getFormat())
+                .format(Format.valueOf(dto.getFormat().toUpperCase()))
                 .build();
         studyRepository.save(study);
 
@@ -132,7 +134,7 @@ public class StudyService {
         study.setDescription(dto.getDescription());
         study.setContactType(ContactType.valueOf(dto.getContactType()));
         study.setStudyField(field);
-        study.setFormat(dto.getFormat());
+        study.setFormat(Format.valueOf(dto.getFormat().toUpperCase()));
         studyRepository.save(study);
 
         // 기존 스타일 삭제 후 새로 저장
@@ -177,5 +179,33 @@ public class StudyService {
         Study study = studyRepository.findById(studyId)
                 .orElseThrow(() -> new IllegalArgumentException("studyId에 해당하는 스터디 없음"));
         studyRepository.delete(study);
+    }
+
+    public List<StudyCardDto> searchStudies(
+            List<String> fields,
+            List<String> formats,
+            List<String> styles,
+            String status,
+            String keyword,
+            String sort,
+            int page,
+            int size
+    ) {
+        Specification<Study> spec = StudySpecifications.searchSpec(fields, formats, styles, status, keyword);
+        Sort sortObj = ("old".equalsIgnoreCase(sort)) ? Sort.by("createdAt").ascending() : Sort.by("createdAt").descending();
+        PageRequest pageable = PageRequest.of(page, size, sortObj);
+        return studyRepository.findAll(spec, pageable)
+                .stream()
+                .map(study -> StudyCardDto.builder()
+                        .studyId(study.getId())
+                        .studyStatus(study.getStudyStatus())
+                        .title(study.getTitle())
+                        .authorId(study.getUser().getUserId())
+                        .scrapCount(0L) // 0으로 하드코딩해둠. 추후에 스크랩 수를 계산하는 로직 추가 필요
+                        .format(study.getFormat() != null ? study.getFormat().name() : null)
+                        .fieldName(study.getStudyField().getName())
+                        .styleNames(study.getStudyStyles().stream().map(ss -> ss.getStyle().getStyleName()).toList())
+                        .build())
+                .toList();
     }
 }
