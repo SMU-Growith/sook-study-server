@@ -201,7 +201,7 @@ public class StudyService {
                         .studyStatus(study.getStudyStatus())
                         .title(study.getTitle())
                         .authorId(study.getUser().getUserId())
-                        .scrapCount(0L) // 0으로 하드코딩해둠. 추후에 스크랩 수를 계산하는 로직 추가 필요
+                        .scrapCount(study.getScrapCount())
                         .format(study.getFormat() != null ? study.getFormat().name() : null)
                         .fieldName(study.getStudyField().getName())
                         .styleNames(study.getStudyStyles().stream().map(ss -> ss.getStyle().getStyleName()).toList())

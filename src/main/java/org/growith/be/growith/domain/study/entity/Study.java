@@ -50,4 +50,17 @@ public class Study extends BaseEntity {
 
     @OneToMany(mappedBy = "study", fetch = FetchType.LAZY)
     private List<StudyStyle> studyStyles;
+
+    @Column(name = "scrap_count", nullable = false)
+    private Long scrapCount = 0L;
+
+    public void increaseScrapCount() {
+        this.scrapCount++;
+    }
+
+    public void decreaseScrapCount() {
+        if (this.scrapCount > 0) {
+            this.scrapCount--;
+        }
+    }
 }

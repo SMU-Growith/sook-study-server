@@ -18,7 +18,7 @@ public interface StudyRepository extends JpaRepository<Study, Long>, JpaSpecific
         s.studyStatus,
         s.title,
         u.userId,
-        COUNT(DISTINCT ss.id),
+        s.scrapCount,
         s.format,
         sf.name,
         COALESCE(CAST(COLLECT(DISTINCT st.styleName) AS list), NULL)
@@ -28,11 +28,10 @@ public interface StudyRepository extends JpaRepository<Study, Long>, JpaSpecific
     JOIN s.studyField sf
     LEFT JOIN s.studyStyles ss2
     LEFT JOIN ss2.style st
-    LEFT JOIN StudyScrap ss ON ss.study = s AND ss.createdAt >= :oneMonthAgo
-    GROUP BY s.id, s.studyStatus, s.title, u.userId, s.format, sf.name
-    ORDER BY COUNT(DISTINCT ss.id) DESC, s.title ASC
+    GROUP BY s.id, s.studyStatus, s.title, u.userId, s.format, sf.name, s.scrapCount
+    ORDER BY s.scrapCount DESC, s.title ASC
 """)
-    List<StudyCardDto> findPopularStudies(@Param("oneMonthAgo") LocalDateTime oneMonthAgo, Pageable pageable);
+    List<StudyCardDto> findPopularStudies(Pageable pageable);
 
 
     @Query("""
@@ -41,7 +40,7 @@ SELECT new org.growith.be.growith.domain.study.dto.StudyCardDto(
     s.studyStatus,
     s.title,
     u.userId,
-    (SELECT COUNT(ss.id) FROM StudyScrap ss WHERE ss.study = s),
+    s.scrapCount,
     s.format,
     sf.name,
     COALESCE(CAST(COLLECT(DISTINCT st.styleName) AS list), NULL)
@@ -52,7 +51,7 @@ JOIN s.studyField sf
 LEFT JOIN s.studyStyles ss2
 LEFT JOIN ss2.style st
 WHERE s.createdAt >= :oneMonthAgo
-GROUP BY s.id, s.studyStatus, s.title, u.userId, s.format, sf.name, s.createdAt
+GROUP BY s.id, s.studyStatus, s.title, u.userId, s.format, sf.name, s.createdAt, s.scrapCount
 ORDER BY s.createdAt DESC, s.title ASC
 """)
     List<StudyCardDto> findNewStudies(@Param("oneMonthAgo") LocalDateTime oneMonthAgo, Pageable pageable);
