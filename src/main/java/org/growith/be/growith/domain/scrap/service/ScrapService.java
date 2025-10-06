@@ -45,5 +45,9 @@ public class ScrapService {
     public Page<StudyScrap> getUserScraps(User user, int page, int size) {
         return studyScrapRepository.findByUser(user, PageRequest.of(page, size));
     }
-}
 
+    @Transactional(readOnly = true)
+    public long countUserScraps(User user) {
+        return studyScrapRepository.countByUser(user);
+    }
+}

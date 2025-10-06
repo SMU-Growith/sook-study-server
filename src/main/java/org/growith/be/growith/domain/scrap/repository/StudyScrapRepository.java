@@ -12,5 +12,5 @@ import java.util.Optional;
 public interface StudyScrapRepository extends JpaRepository<StudyScrap, Long> {
     Optional<StudyScrap> findByUserAndStudy(User user, Study study);
     Page<StudyScrap> findByUser(User user, Pageable pageable);
+    long countByUser(User user);
 }
-

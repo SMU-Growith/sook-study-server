@@ -47,6 +47,13 @@ public class ScrapController {
         return ResponseEntity.ok(dtos);
     }
 
+    // 스크랩 개수 조회
+    @GetMapping("/api/v1/users/scraps/count")
+    public ResponseEntity<Long> getUserScrapCount(@AuthenticationPrincipal User user) {
+        long count = scrapService.countUserScraps(user);
+        return ResponseEntity.ok(count);
+    }
+
     // Study -> StudyCardDto 변환 (필요시 StudyService에서 가져와도 됨)
     private StudyCardDto toStudyCardDto(Study study) {
         return StudyCardDto.builder()
@@ -61,4 +68,3 @@ public class ScrapController {
                 .build();
     }
 }
-
