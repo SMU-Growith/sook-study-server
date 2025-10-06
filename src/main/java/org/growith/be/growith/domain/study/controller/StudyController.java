@@ -42,4 +42,20 @@ public class StudyController {
         return ResponseEntity.ok(studyService.getStudyDetail(studyId));
     }
 
+    @PutMapping("/{studyId}")
+    public ResponseEntity<Void> updateStudy(@PathVariable Long studyId, @RequestBody StudyDtlDto studyDtlDto) {
+        studyService.updateStudy(studyId, studyDtlDto);
+        return ResponseEntity.ok().build();
+    }
+
+    @PutMapping("/{studyId}/closed")
+    public ResponseEntity<Void> closedStudy(@PathVariable Long studyId) {
+        studyService.closedStudy(studyId);
+        return ResponseEntity.ok().build();
+    }
+
+    @DeleteMapping("/{studyId}")
+    public ResponseEntity<Void> deleteStudy(@PathVariable Long studyId) {
+        studyService.deleteStudy(studyId);
+        return ResponseEntity.ok().build();
 }

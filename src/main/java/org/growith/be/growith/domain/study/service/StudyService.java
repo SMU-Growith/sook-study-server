@@ -56,7 +56,7 @@ public class StudyService {
         Study study = Study.builder()
                 .title(dto.getTitle())
                 .description(dto.getDescription())
-                .studyStatus(StudyStatus.RECRUITING)
+                .studyStatus(StudyStatus.ACTIVE) // 기본값 ACTIVE
                 .contactType(ContactType.valueOf(dto.getContactType()))
                 .user(user)
                 .studyField(field)
@@ -114,5 +114,66 @@ public class StudyService {
                 .authorId(study.getUser().getUserId())
                 .createdAt(study.getCreatedAt())
                 .build();
+    }
+
+    public StudyDtlDto updateStudy(Long studyId, StudyDtlDto dto) {
+        Study study = studyRepository.findById(studyId)
+                .orElseThrow(() -> new IllegalArgumentException("studyId에 해당하는 스터디 없음"));
+
+
+        // 분야 조회
+        //사용자가 보내준 수정값(분야)가 db에 있는지 확인
+        StudyField field = studyFieldRepository.findByName(dto.getFieldName())
+                .orElseThrow(() -> new IllegalArgumentException("분야 없음"));
+
+
+        // 스터디 정보 업데이트
+        study.setTitle(dto.getTitle());
+        study.setDescription(dto.getDescription());
+        study.setContactType(ContactType.valueOf(dto.getContactType()));
+        study.setStudyField(field);
+        study.setFormat(dto.getFormat());
+        studyRepository.save(study);
+
+        // 기존 스타일 삭제 후 새로 저장
+        studyStyleRepository.deleteByStudy(study);
+        if (dto.getStyleNames() != null) {
+            List<Style> styles = styleRepository.findByStyleNameIn(dto.getStyleNames());
+            for (Style style : styles) {
+                StudyStyle studyStyle = StudyStyle.builder()
+                        .study(study)
+                        .style(style)
+                        .build();
+                studyStyleRepository.save(studyStyle);
+            }
+        }
+
+        // 기존 규칙 삭제 후 새로 저장
+        ruleRepository.deleteByStudy(study);
+        if (dto.getRules() != null) {
+            dto.getRules().forEach((category, desc) -> {
+                Rule rule = Rule.builder()
+                        .study(study)
+                        .ruleCategory(category)
+                        .description(desc)
+                        .build();
+                ruleRepository.save(rule);
+            });
+        }
+
+        return getStudyDetail(studyId);
+    }
+
+    public StudyDtlDto closedStudy(Long studyId)
+    {
+        study.setStudyStatus(StudyStatus.CLOSED);
+        studyRepository.save(study);
+        return getStudyDetail(studyId);
+    }
+
+    public void deleteStudy(Long studyId) {
+        Study study = studyRepository.findById(studyId)
+                .orElseThrow(() -> new IllegalArgumentException("studyId에 해당하는 스터디 없음"));
+        studyRepository.delete(study);
     }
 }
