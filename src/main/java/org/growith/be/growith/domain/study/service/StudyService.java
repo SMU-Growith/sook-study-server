@@ -72,7 +72,7 @@ public class StudyService {
     @Transactional
     public void createStudy(StudyDtlDto dto) {
         // 작성자 조회
-        User user = userRepository.findByUserId(Long.parseLong(dto.getAuthorId()))
+        User user = userRepository.findById(Long.parseLong(dto.getAuthorId()))
                 .orElseThrow(() -> new IllegalArgumentException("사용자 없음"));
 
         // 분야 조회
