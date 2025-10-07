@@ -1,6 +1,7 @@
 package org.growith.be.growith.domain.study.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.growith.be.growith.domain.study.dto.StudyCardDto;
 import org.growith.be.growith.domain.study.dto.StudyDtlDto;
 import org.growith.be.growith.domain.study.entity.*;
@@ -12,6 +13,8 @@ import org.growith.be.growith.domain.study.repository.StudyFieldRepository;
 import org.growith.be.growith.domain.study.repository.StyleRepository;
 import org.growith.be.growith.domain.study.repository.RuleRepository;
 import org.growith.be.growith.domain.study.repository.StudyStyleRepository;
+import org.growith.be.growith.domain.study.repository.StudyRepository;
+import org.growith.be.growith.domain.study.repository.StudySpecifications;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -21,6 +24,8 @@ import org.springframework.data.domain.Sort;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
+import org.growith.be.growith.domain.study.entity.enums.RuleCategory;
+import org.growith.be.growith.domain.study.entity.enums.Format;
 
 @Slf4j
 @Service
@@ -36,18 +41,38 @@ public class StudyService {
 
     public List<StudyCardDto> getPopularStudies(int page, int size) {
         LocalDateTime oneMonthAgo = LocalDateTime.now().minusMonths(1);
-        return studyRepository.findPopularStudies(oneMonthAgo, PageRequest.of(page, size));
+        List<Study> studies = studyRepository.findPopularStudies(oneMonthAgo, PageRequest.of(page, size));
+        return studies.stream().map(study -> StudyCardDto.builder()
+                .studyId(study.getId())
+                .studyStatus(study.getStudyStatus())
+                .title(study.getTitle())
+                .authorId(study.getUser().getUserId() != null ? study.getUser().getUserId().toString() : null)
+                .scrapCount(study.getScrapCount())
+                .format(study.getFormat() != null ? study.getFormat().name() : null)
+                .fieldName(study.getStudyField().getName())
+                .styleNames(study.getStudyStyles().stream().map(ss -> ss.getStyle().getStyleName()).toList())
+                .build()).toList();
     }
 
     public List<StudyCardDto> getNewStudies(int page, int size) {
         LocalDateTime oneMonthAgo = LocalDateTime.now().minusMonths(1);
-        return studyRepository.findNewStudies(oneMonthAgo, PageRequest.of(page, size));
+        List<Study> studies = studyRepository.findNewStudies(oneMonthAgo, PageRequest.of(page, size));
+        return studies.stream().map(study -> StudyCardDto.builder()
+                .studyId(study.getId())
+                .studyStatus(study.getStudyStatus())
+                .title(study.getTitle())
+                .authorId(study.getUser().getUserId() != null ? study.getUser().getUserId().toString() : null)
+                .scrapCount(study.getScrapCount())
+                .format(study.getFormat() != null ? study.getFormat().name() : null)
+                .fieldName(study.getStudyField().getName())
+                .styleNames(study.getStudyStyles().stream().map(ss -> ss.getStyle().getStyleName()).toList())
+                .build()).toList();
     }
 
     @Transactional
     public void createStudy(StudyDtlDto dto) {
         // 작성자 조회
-        User user = userRepository.findByUserId(dto.getAuthorId())
+        User user = userRepository.findById(Long.parseLong(dto.getAuthorId()))
                 .orElseThrow(() -> new IllegalArgumentException("사용자 없음"));
 
         // 분야 조회
@@ -83,7 +108,7 @@ public class StudyService {
             dto.getRules().forEach((category, desc) -> {
                 Rule rule = Rule.builder()
                         .study(study)
-                        .ruleCategory(category)
+                        .ruleCategory(RuleCategory.valueOf(category))
                         .description(desc)
                         .build();
                 ruleRepository.save(rule);
@@ -103,17 +128,17 @@ public class StudyService {
         // 규칙 맵
         List<Rule> rules = ruleRepository.findByStudy(study);
         Map<String, String> ruleMap = rules.stream()
-                .collect(java.util.stream.Collectors.toMap(Rule::getRuleCategory, Rule::getDescription));
+                .collect(java.util.stream.Collectors.toMap(r -> r.getRuleCategory().name(), Rule::getDescription));
 
         return StudyDtlDto.builder()
                 .fieldName(study.getStudyField().getName())
                 .styleNames(styleNames)
-                .format(study.getFormat())
+                .format(study.getFormat() != null ? study.getFormat().name() : null)
                 .contactType(study.getContactType().name())
                 .title(study.getTitle())
                 .description(study.getDescription())
                 .rules(ruleMap)
-                .authorId(study.getUser().getUserId())
+                .authorId(study.getUser().getUserId() != null ? study.getUser().getUserId().toString() : null)
                 .createdAt(study.getCreatedAt())
                 .build();
     }
@@ -156,7 +181,7 @@ public class StudyService {
             dto.getRules().forEach((category, desc) -> {
                 Rule rule = Rule.builder()
                         .study(study)
-                        .ruleCategory(category)
+                        .ruleCategory(RuleCategory.valueOf(category))
                         .description(desc)
                         .build();
                 ruleRepository.save(rule);
@@ -200,7 +225,7 @@ public class StudyService {
                         .studyId(study.getId())
                         .studyStatus(study.getStudyStatus())
                         .title(study.getTitle())
-                        .authorId(study.getUser().getUserId())
+                        .authorId(study.getUser().getUserId() != null ? study.getUser().getUserId().toString() : null)
                         .scrapCount(study.getScrapCount())
                         .format(study.getFormat() != null ? study.getFormat().name() : null)
                         .fieldName(study.getStudyField().getName())

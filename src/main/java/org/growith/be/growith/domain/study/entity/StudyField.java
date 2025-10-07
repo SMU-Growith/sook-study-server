@@ -23,6 +23,7 @@ public class StudyField extends BaseEntity {
     @JoinColumn(name = "parent_id")
     private StudyField parent;
 
+    @Builder.Default
     @OneToMany(mappedBy = "parent")
     private List<StudyField> studyField = new ArrayList<>();
 
