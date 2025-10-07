@@ -60,7 +60,7 @@ public class ScrapController {
                 .studyId(study.getId())
                 .studyStatus(study.getStudyStatus())
                 .title(study.getTitle())
-                .authorId(study.getUser().getUserId())
+                .authorId(String.valueOf(study.getUser().getUserId()))
                 .scrapCount(study.getScrapCount())
                 .format(study.getFormat().name())
                 .fieldName(study.getStudyField().getName())
