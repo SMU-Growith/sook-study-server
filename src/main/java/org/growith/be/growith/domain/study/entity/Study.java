@@ -6,6 +6,10 @@ import lombok.*;
 import org.growith.be.growith.domain.study.entity.enums.ContactType;
 import org.growith.be.growith.domain.study.entity.enums.StudyStatus;
 import org.growith.be.growith.global.common.BaseEntity;
+import org.growith.be.growith.domain.user.entity.User;
+import org.growith.be.growith.domain.study.entity.enums.Format;
+
+import java.util.List;
 
 @Getter
 @Builder
@@ -36,4 +40,27 @@ public class Study extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "study_field_id")
     private StudyField studyField;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    @Enumerated(EnumType.STRING)
+    private Format format;
+
+    @OneToMany(mappedBy = "study", fetch = FetchType.LAZY)
+    private List<StudyStyle> studyStyles;
+
+    @Column(name = "scrap_count", nullable = false)
+    private Long scrapCount = 0L;
+
+    public void increaseScrapCount() {
+        this.scrapCount++;
+    }
+
+    public void decreaseScrapCount() {
+        if (this.scrapCount > 0) {
+            this.scrapCount--;
+        }
+    }
 }
