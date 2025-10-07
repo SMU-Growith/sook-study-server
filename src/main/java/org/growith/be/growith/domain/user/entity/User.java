@@ -41,4 +41,8 @@ public class User extends BaseEntity {
     private Boolean isNotice;
 
     private LocalDateTime isDeleted;
+
+    public Long getUserId() {
+        return this.id;
+    }
 }

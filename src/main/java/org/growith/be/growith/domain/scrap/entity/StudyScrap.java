@@ -27,4 +27,9 @@ public class StudyScrap extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "study_id")
     private Study study;
+
+    public StudyScrap(User user, Study study) {
+        this.user = user;
+        this.study = study;
+    }
 }
