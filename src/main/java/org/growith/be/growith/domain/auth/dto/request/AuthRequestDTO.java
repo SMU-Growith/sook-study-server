@@ -9,4 +9,18 @@ public record AuthRequestDTO() {
             String email,
             String password
     ){}
+
+    public record SignUp(
+            String loginId,
+            @Email
+            String email,
+            String password,
+            String nickname,
+            String major,
+            String studentStatus,
+            String phoneNumber
+    ){}
+
+
+
 }
