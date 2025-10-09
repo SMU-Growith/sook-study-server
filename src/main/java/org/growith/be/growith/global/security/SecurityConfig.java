@@ -40,7 +40,10 @@ public class SecurityConfig {
     private final JwtUtil jwtUtil;
 
     private String[] allowUrl = {
-
+            API_PREFIX + "/auth/**",
+            "/swagger-ui/**",
+            "/swagger-resources/**",
+            "/v3/api-docs/**"
     };
 
     private RequestMatcher[] admin = {

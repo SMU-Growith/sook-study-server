@@ -32,17 +32,19 @@ public class JsonLoginFilter extends OncePerRequestFilter {
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        if (this.requiresAuthentication(request)){
+        if (this.requiresAuthentication(request)) {
             try {
-                Authentication authentication = attemptAuthentication(request, response);
+                    Authentication authentication = attemptAuthentication(request, response);
 
-                if (authentication != null){
-                    return;
+                    if (authentication == null) {
+                        return;
+                    }
+                } catch (Exception e) {
+                    // TODO: Exceptionhandling 필요
                 }
-            } catch(Exception e){
-                // TODO: Exceptionhandling 필요
+            }  else {
+                filterChain.doFilter(request, response);
             }
-        }
     }
 
     public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response) throws AuthenticationException {
@@ -64,7 +66,7 @@ public class JsonLoginFilter extends OncePerRequestFilter {
 
     private boolean requiresAuthentication(HttpServletRequest request) {
         String contentType = request.getContentType();
-        return DEFAULT_REQUEST_MATCHER.matches(request)&& contentType != null && contentType.equals(MediaType.APPLICATION_JSON_VALUE);
+        return DEFAULT_REQUEST_MATCHER.matches(request) && contentType != null && contentType.equals(MediaType.APPLICATION_JSON_VALUE);
     }
 
 }
