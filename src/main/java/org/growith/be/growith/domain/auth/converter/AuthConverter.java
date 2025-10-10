@@ -23,8 +23,8 @@ public class AuthConverter {
                 .email(request.email())
                 .password(request.password())
                 .nickName(request.nickname())
-                .major(Major.valueOf(request.major()))
-                .studentStatus(StudentStatus.valueOf(request.studentStatus()))
+                .major(request.major())
+                .studentStatus(request.studentStatus())
                 .userRole(UserRole.USER)
                 .build();
     }
