@@ -12,6 +12,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.domain.Sort;
+import org.growith.be.growith.domain.journal.repository.StudyJournalRepository;
+import org.growith.be.growith.domain.journal.dto.StudyJournalDto;
+import org.growith.be.growith.domain.journal.dto.StudyJournalListDto;
 
 
 import java.time.LocalDateTime;
@@ -513,6 +516,6 @@ public class StudyService {
                     .submittedCount(submittedCount)
                     .totalCount(totalCount)
                     .build();
-        }
-
+        }).toList();
+    }
 }

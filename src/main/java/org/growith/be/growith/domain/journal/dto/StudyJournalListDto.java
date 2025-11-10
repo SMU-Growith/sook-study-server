@@ -4,7 +4,8 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-package org.growith.be.growith.domain.study.entity.enums.StudyRole;
+import org.growith.be.growith.domain.study.entity.enums.StudyRole;
+
 
 @Getter
 @Builder

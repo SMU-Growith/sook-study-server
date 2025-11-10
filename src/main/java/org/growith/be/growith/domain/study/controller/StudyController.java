@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 import org.growith.be.growith.domain.study.dto.StudySessionCardDto;
 import org.growith.be.growith.domain.study.dto.StudyMemberDto;
 import org.growith.be.growith.domain.journal.dto.StudyJournalDto;
-import org.growith.be.growith.domain.study.dto.StudyJournalListDto;
+import org.growith.be.growith.domain.journal.dto.StudyJournalListDto;
 
 import java.util.Map;
 

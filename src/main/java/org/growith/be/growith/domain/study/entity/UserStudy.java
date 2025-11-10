@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.growith.be.growith.domain.study.entity.enums.StudyRole;
 import org.growith.be.growith.global.common.BaseEntity;
+import org.growith.be.growith.domain.user.entity.User;
 
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)

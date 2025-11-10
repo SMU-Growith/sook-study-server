@@ -3,10 +3,13 @@ package org.growith.be.growith.domain.journal.entity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import org.growith.be.growith.global.common.BaseEntity;
 
+@Setter
 @Builder
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
