@@ -20,11 +20,13 @@ public class StudySession extends BaseEntity {
     @Column(name = "study_session_id")
     private Long id;
 
-    private int number;
+    private int number; //회차
 
-    private Boolean isSubmitted;
+    private Boolean isSubmitted; //제출여부
 
-    private Boolean isActive;
+    private Boolean isActive; //세션진행여부
+
+    private String title; //세션 제목 . . 추가했어영
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "study_id")
@@ -33,4 +35,20 @@ public class StudySession extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "study_journal_id")
     private StudyJournal studyJournal;
+
+    //세션 생성
+    public static StudySession createSession(int number, String title, Study study) {
+        StudySession session = new StudySession();
+        session.number = number;
+        session.title = title;
+        session.isSubmitted = false;
+        session.isActive = false;
+        session.study = study;
+        return session;
+    }
+    //세션 수정
+    public void updateTitle(String title) {
+        this.title = title;
+    }
 }
+

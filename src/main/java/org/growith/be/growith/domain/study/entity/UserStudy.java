@@ -22,5 +22,17 @@ public class UserStudy extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private StudyRole studyRole;
 
+    //매핑 추가했어요
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "study_id")
+    private Study studyId;
 
+    //매핑 추가했어요
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User userId;
+
+    public void changeRole(StudyRole newRole) {
+        this.studyRole = newRole;
+    }
 }
