@@ -12,7 +12,13 @@ import org.growith.be.growith.domain.study.dto.StudySessionCardDto;
 import org.growith.be.growith.domain.study.dto.StudyMemberDto;
 import org.growith.be.growith.domain.journal.dto.StudyJournalDto;
 import org.growith.be.growith.domain.journal.dto.StudyJournalListDto;
-
+import org.growith.be.growith.domain.application.dto.ApplicationDto;
+import org.growith.be.growith.domain.application.entity.ApplicationStatus;
+import org.growith.be.growith.domain.study.dto.StatusUpdateRequest;
+import java.io.File;
+import org.springframework.core.io.FileSystemResource;
+import org.growith.be.growith.domain.application.dto.ApplicationDto;
+import org.growith.be.growith.domain.study.dto.StatusUpdateRequest;
 import java.util.Map;
 
 import java.util.List;
@@ -99,7 +105,7 @@ public class StudyController {
             @PathVariable Long studyId,
             @AuthenticationPrincipal User user
     ) {
-        studyService.withdrawStudy(studyId, user.getUserId());
+        studyService.withdrawStudy(studyId, String.valueOf(user.getUserId()));
         return ResponseEntity.ok().build();
     }
     //스터디 세션 리스트 조회
@@ -212,4 +218,34 @@ public class StudyController {
         return ResponseEntity.ok(journals);
     }
 
+
+    // 스터디 지원
+    @PostMapping("/{studyId}/application")
+    public ResponseEntity<ApplicationDto> createApplication(
+            @PathVariable Long studyId,
+            @AuthenticationPrincipal User user,
+            @RequestBody ApplicationDto applicationDto) {
+        ApplicationDto createdApplication = studyService.createApplication(studyId, user.getUserId(), applicationDto);
+        return ResponseEntity.ok(createdApplication);
+    }
+
+    @PatchMapping("/{applicationId}/status")
+    public ResponseEntity<ApplicationDto> updateApplicationStatus(
+            @PathVariable Long applicationId,
+            @RequestBody StatusUpdateRequest request) {
+
+        ApplicationDto dto = studyService.updateApplicationStatus(
+                applicationId,
+                request.getStatus()
+        );
+
+        return ResponseEntity.ok(dto);
+    }
+
+    // 지원자 조회
+    @GetMapping("/{studyId}/applications")
+    public ResponseEntity<List<ApplicationDto>> getApplications(@PathVariable Long studyId) {
+        List<ApplicationDto> applications = studyService.getApplications(studyId);
+        return ResponseEntity.ok(applications);
+    }
 }

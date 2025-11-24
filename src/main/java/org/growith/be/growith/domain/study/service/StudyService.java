@@ -7,6 +7,7 @@ import org.growith.be.growith.domain.study.entity.*;
 import org.growith.be.growith.domain.user.entity.*;
 import org.growith.be.growith.domain.user.repository.*;
 import org.growith.be.growith.domain.study.repository.*;
+import org.growith.be.growith.domain.application.repository.StudyApplicationRepository;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -15,13 +16,16 @@ import org.springframework.data.domain.Sort;
 import org.growith.be.growith.domain.journal.repository.StudyJournalRepository;
 import org.growith.be.growith.domain.journal.dto.StudyJournalDto;
 import org.growith.be.growith.domain.journal.dto.StudyJournalListDto;
-
-
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import org.growith.be.growith.domain.study.entity.enums.*;
-
+import org.growith.be.growith.domain.application.dto.ApplicationDto;
+import org.growith.be.growith.domain.application.entity.ApplicationStatus;
+import org.growith.be.growith.domain.journal.entity.StudyJournal;
+import org.growith.be.growith.domain.application.entity.StudyApplication;
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -36,6 +40,7 @@ public class StudyService {
     private final StudyJournalRepository studyJournalRepository;
 
     private final StudyStyleRepository studyStyleRepository;
+    private final StudyApplicationRepository studyApplicationRepository;
 
     public List<StudyCardDto> getMyStudies(String userId, int page, int size, String studyStatus) {
         StudyStatus status = StudyStatus.valueOf(studyStatus.toUpperCase());
@@ -235,7 +240,7 @@ public class StudyService {
 
     public void withdrawStudy(Long studyId, String userId) {
         // 프론트에서 현재 로그인한 사용자 userId로 받아야함
-        studyRepository.withdraw(studyId, userId);
+        studyRepository.withdraw(studyId, Long.parseLong(userId));
     }
 
     public List<StudyCardDto> searchStudies(
@@ -316,24 +321,7 @@ public class StudyService {
                 .build();
     }
 
-    public void updateStudySession(Long sessionId, StudySessionCardDto dto) {
-        StudySession session = studySessionRepository.findById(sessionId)
-                .orElseThrow(() -> new IllegalArgumentException("세션을 찾을 수 없음"));
 
-        session.updateTitle(dto.getTitle());
-        studySessionRepository.save(session);
-    }
-
-    public StudySessionCardDto getStudySession(Long sessionId) {
-        StudySession session = studySessionRepository.findById(sessionId)
-                .orElseThrow(() -> new IllegalArgumentException("세션을 찾을 수 없음"));
-
-        return StudySessionCardDto.builder()
-                .sessionId(session.getId())
-                .sessionNumber(session.getNumber())
-                .title(session.getTitle())
-                .build();
-    }
 
     public Map<String, String> getStudyRules(Long studyId) {
         Study study = studyRepository.findById(studyId)
@@ -368,17 +356,7 @@ public class StudyService {
 
     // 스터디 멤버 조회
     public List<StudyMemberDto> getStudyMembers(Long studyId) {
-        List<User> members = studyRepository.findStudyMembers(studyId);
-
-        return members.stream()
-                .map(user -> StudyMemberDto.builder()
-                        .userId(user.getId())
-                        .nickName(user.getNickName())
-                        .studentStatus(user.getStudentStatus())
-                        .major(user.getMajor())
-                        .phoneNumber(user.getPhoneNumber())
-                        .build())
-                .toList();
+        return studyRepository.findStudyMembers(studyId);
     }
 
     // 리더->팀원으로 역할 변경
@@ -422,8 +400,10 @@ public class StudyService {
                 dto.getTitle(),
                 dto.getContent(),
                 dto.getUrl(),
-                sessionId,
-                userId
+                dto.getFileUrl(), 
+                dto.getFileName(), 
+sessionId,
+userId
         );
 
         StudyJournal savedJournal = studyJournalRepository.save(journal);
@@ -448,10 +428,32 @@ public class StudyService {
                 .title(journal.getTitle())
                 .content(journal.getContent())
                 .url(journal.getUrl())
+                .fileName(journal.getFileName())
                 .sessionId(journal.getSessionId())
                 .userId(journal.getUserId())
                 .build();
     }
+
+    public void updateStudySession(Long sessionId, StudySessionCardDto dto) {
+        StudySession session = studySessionRepository.findById(sessionId)
+                .orElseThrow(() -> new IllegalArgumentException("세션을 찾을 수 없음"));
+
+        session.updateTitle(dto.getTitle());
+        studySessionRepository.save(session);
+    }
+
+    public StudySessionCardDto getStudySession(Long sessionId) {
+        StudySession session = studySessionRepository.findById(sessionId)
+                .orElseThrow(() -> new IllegalArgumentException("세션을 찾을 수 없음"));
+
+        return StudySessionCardDto.builder()
+                .sessionId(session.getId())
+                .sessionNumber(session.getNumber())
+                .title(session.getTitle())
+                .build();
+    }
+
+
 
     @Transactional
     public StudyJournalDto updateStudyJournal(Long journalId, StudyJournalDto dto) {
@@ -459,7 +461,13 @@ public class StudyService {
                 .orElseThrow(() -> new IllegalArgumentException("일지를 찾을 수 없음"));
 
         // 일지 수정 메서드
-        journal.updateJournal(dto.getTitle(), dto.getContent(), dto.getUrl());
+        journal.updateJournal(
+                dto.getTitle(), 
+                dto.getContent(), 
+                dto.getUrl(),
+                dto.getFileUrl(),  
+                dto.getFileName()
+        );
 
         StudyJournal updatedJournal = studyJournalRepository.save(journal);
 
@@ -468,6 +476,8 @@ public class StudyService {
                 .title(updatedJournal.getTitle())
                 .content(updatedJournal.getContent())
                 .url(updatedJournal.getUrl())
+                .fileUrl(updatedJournal.getFileUrl())
+                .fileName(updatedJournal.getFileName())
                 .sessionId(updatedJournal.getSessionId())
                 .userId(updatedJournal.getUserId())
                 .build();
@@ -480,6 +490,7 @@ public class StudyService {
 
         studyJournalRepository.delete(journal);
     }
+
 
 
     public List<StudyJournalListDto> getStudyJournalsBySession(Long sessionId, int page, int size) {
@@ -511,11 +522,96 @@ public class StudyService {
                     .journalId(journal.getId())
                     .title(journal.getTitle())
                     .content(journal.getContent())
+                    .url(journal.getUrl())
                     .userId(journal.getUserId())
                     .studyRole(studyRole)
                     .submittedCount(submittedCount)
                     .totalCount(totalCount)
                     .build();
         }).toList();
+    }
+
+    // 스터디 지원
+    @Transactional
+    public org.growith.be.growith.domain.application.dto.ApplicationDto createApplication(Long studyId, Long userId, org.growith.be.growith.domain.application.dto.ApplicationDto applicationDto) {
+        // 스터디 존재 확인
+        Study study = studyRepository.findById(studyId)
+                .orElseThrow(() -> new IllegalArgumentException("스터디를 찾을 수 없음"));
+
+        // 사용자 존재 확인
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없음"));
+
+        // 지원서 생성
+        org.growith.be.growith.domain.application.entity.StudyApplication application = org.growith.be.growith.domain.application.entity.StudyApplication.builder()
+                .study(study)
+                .user(user)
+                .motivation(applicationDto.getMotivation())
+                .applicationStatus(org.growith.be.growith.domain.application.entity.ApplicationStatus.PENDING)
+                .build();
+
+        org.growith.be.growith.domain.application.entity.StudyApplication savedApplication = studyApplicationRepository.save(application);
+
+        return org.growith.be.growith.domain.application.dto.ApplicationDto.builder()
+                .applicationId(savedApplication.getId())
+                .studyId(savedApplication.getStudy().getId())
+                .userId(savedApplication.getUser().getUserId())
+                .nickName(savedApplication.getUser().getNickName())
+                .major(savedApplication.getUser().getMajor().name())
+                .studentStatus(savedApplication.getUser().getStudentStatus().name())
+                .applicationStatus(savedApplication.getApplicationStatus())
+                .motivation(savedApplication.getMotivation())
+                .build();
+    }
+
+    // 지원자 승인/거절
+    @Transactional
+    public ApplicationDto updateApplicationStatus(Long applicationId, ApplicationStatus status) {
+        StudyApplication application = studyApplicationRepository.findById(applicationId)
+                .orElseThrow(() -> new IllegalArgumentException("지원서를 찾을 수 없음"));
+
+        // 상태 업데이트
+        application.updateStatus(status);
+        StudyApplication updatedApplication = studyApplicationRepository.save(application);
+
+        // 만약 승인된 경우에만 UserStudy 추가
+        if (status == ApplicationStatus.ACCEPTED) {
+            UserStudy userStudy = UserStudy.builder()
+                    .userId(application.getUser())
+                    .studyId(application.getStudy())
+                    .studyRole(StudyRole.MEMBER)
+                    .build();
+            userStudyRepository.save(userStudy);
+        }
+
+        return ApplicationDto.builder()
+                .applicationId(updatedApplication.getId())
+                .studyId(updatedApplication.getStudy().getId())
+                .userId(updatedApplication.getUser().getUserId())
+                .nickName(updatedApplication.getUser().getNickName())
+                .major(updatedApplication.getUser().getMajor().name())
+                .studentStatus(updatedApplication.getUser().getStudentStatus().name())
+                .applicationStatus(updatedApplication.getApplicationStatus())
+                .motivation(updatedApplication.getMotivation())
+                .build();
+    }
+
+
+    // 지원자 조회
+    public List<org.growith.be.growith.domain.application.dto.ApplicationDto> getApplications(Long studyId) {
+        List<org.growith.be.growith.domain.application.entity.StudyApplication> applications = studyApplicationRepository.findByStudyId(studyId);
+
+        return applications.stream()
+                .map(application -> org.growith.be.growith.domain.application.dto.ApplicationDto.builder()
+                        .applicationId(application.getId())
+                        .studyId(application.getStudy().getId())
+                        .userId(application.getUser().getUserId())
+                        .nickName(application.getUser().getNickName())
+                        .major(application.getUser().getMajor().name())
+                        .studentStatus(application.getUser().getStudentStatus().name())
+                        .applicationStatus(application.getApplicationStatus())
+                        .motivation(application.getMotivation())
+                        .build())
+                .toList();
     }
 }

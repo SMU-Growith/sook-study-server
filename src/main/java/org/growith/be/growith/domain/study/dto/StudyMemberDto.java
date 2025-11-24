@@ -17,5 +17,5 @@ public class StudyMemberDto {
     private StudentStatus studentStatus;
     private Major major;
     private String phoneNumber;
-    // 지원동기도 추가 예정 - 지원로직 만들고나서 . ..
+    private String motivation;
 }

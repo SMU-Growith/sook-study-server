@@ -15,7 +15,9 @@ public class StudyJournalListDto {
     private Long journalId;
     private String title;
     private String content;
+    private String url;  // ✅ 추가
     private Long userId;
     private StudyRole studyRole;
+    private Integer submittedCount;  // ✅ 추가
     private Integer totalCount;
 }

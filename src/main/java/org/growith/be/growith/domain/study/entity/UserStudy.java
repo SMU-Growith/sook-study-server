@@ -3,13 +3,17 @@ package org.growith.be.growith.domain.study.entity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import org.growith.be.growith.domain.study.entity.enums.StudyRole;
 import org.growith.be.growith.global.common.BaseEntity;
 import org.growith.be.growith.domain.user.entity.User;
 
 @Getter
+@Builder
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity

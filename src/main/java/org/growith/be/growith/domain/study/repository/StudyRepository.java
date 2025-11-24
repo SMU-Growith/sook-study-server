@@ -10,7 +10,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.transaction.annotation.Transactional;
 import org.growith.be.growith.domain.study.entity.enums.*;
 import org.growith.be.growith.domain.user.entity.User;
-
+import org.growith.be.growith.domain.application.entity.StudyApplication;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -40,7 +40,12 @@ public interface StudyRepository extends JpaRepository<Study, Long>, JpaSpecific
     @Query("DELETE FROM Study s WHERE s.id= :studyId")
     void deleteByStudyId(@Param("studyId") Long studyId);
 
-    @Query("SELECT u FROM User u JOIN UserStudy us ON u.id = us.userId.id WHERE us.studyId.id = :studyId")
-    List<User> findStudyMembers(@Param("studyId") Long studyId);
+    @Query("SELECT new org.growith.be.growith.domain.study.dto.StudyMemberDto(" +
+            "u.id, u.nickName, u.studentStatus, u.major, u.phoneNumber, sa.motivation) " +
+            "FROM UserStudy us " +
+            "JOIN us.userId u " +
+            "LEFT JOIN StudyApplication sa ON sa.user = u AND sa.study = us.studyId " +
+            "WHERE us.studyId.id = :studyId")
+    List<org.growith.be.growith.domain.study.dto.StudyMemberDto> findStudyMembers(@Param("studyId") Long studyId);
 
 }

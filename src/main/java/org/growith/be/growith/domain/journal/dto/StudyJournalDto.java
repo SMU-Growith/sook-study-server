@@ -17,4 +17,6 @@ public class StudyJournalDto {
     private Long sessionId;
     private Long userId;
     private Integer submittedCount;
+    private String fileUrl;
+    private String fileName;
 }
