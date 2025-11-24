@@ -18,6 +18,27 @@ public class ScrapService {
     private final StudyRepository studyRepository;
 
     @Transactional
+    public void toggleScrap(Long studyId, User user) {
+        Study study = studyRepository.findById(studyId)
+                .orElseThrow(() -> new IllegalArgumentException("스터디가 존재하지 않습니다."));
+        
+        studyScrapRepository.findByUserAndStudy(user, study)
+                .ifPresentOrElse(
+                        scrap -> {
+                            // 스크랩이 존재하면 삭제
+                            studyScrapRepository.delete(scrap);
+                            study.decreaseScrapCount();
+                        },
+                        () -> {
+                            // 스크랩이 없으면 생성
+                            StudyScrap scrap = new StudyScrap(user, study);
+                            studyScrapRepository.save(scrap);
+                            study.increaseScrapCount();
+                        }
+                );
+    }
+
+    @Transactional
     public void createScrap(Long studyId, User user) {
         Study study = studyRepository.findById(studyId)
                 .orElseThrow(() -> new IllegalArgumentException("스터디가 존재하지 않습니다."));

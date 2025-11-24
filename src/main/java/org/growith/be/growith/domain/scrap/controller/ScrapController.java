@@ -1,6 +1,7 @@
 package org.growith.be.growith.domain.scrap.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.growith.be.growith.domain.scrap.dto.ScrapListResponseDto;
 import org.growith.be.growith.domain.scrap.entity.StudyScrap;
 import org.growith.be.growith.domain.scrap.service.ScrapService;
 import org.growith.be.growith.domain.study.dto.StudyCardDto;
@@ -19,23 +20,30 @@ import java.util.stream.Collectors;
 public class ScrapController {
     private final ScrapService scrapService;
 
-    // 스크랩 생성
-    @PostMapping("/api/v1/studies/{studyId}/scrap")
-    public ResponseEntity<Void> createScrap(@PathVariable Long studyId, @AuthenticationPrincipal User user) {
-        scrapService.createScrap(studyId, user);
+    // 스크랩 토글 (생성/삭제)
+    @PostMapping("/api/v1/studies/{studyId}/scrap/toggle")
+    public ResponseEntity<Void> toggleScrap(@PathVariable Long studyId, @AuthenticationPrincipal User user) {
+        scrapService.toggleScrap(studyId, user);
         return ResponseEntity.ok().build();
     }
 
-    // 스크랩 삭제
-    @DeleteMapping("/api/v1/users/scraps/{studyScrapId}")
-    public ResponseEntity<Void> deleteScrap(@PathVariable Long studyScrapId, @AuthenticationPrincipal User user) {
-        scrapService.deleteScrap(studyScrapId, user);
-        return ResponseEntity.ok().build();
-    }
+    // // 스크랩 생성
+    // @PostMapping("/api/v1/studies/{studyId}/scrap")
+    // public ResponseEntity<Void> createScrap(@PathVariable Long studyId, @AuthenticationPrincipal User user) {
+    //     scrapService.createScrap(studyId, user);
+    //     return ResponseEntity.ok().build();
+    // }
+
+    // // 스크랩 삭제
+    // @DeleteMapping("/api/v1/users/scraps/{studyScrapId}")
+    // public ResponseEntity<Void> deleteScrap(@PathVariable Long studyScrapId, @AuthenticationPrincipal User user) {
+    //     scrapService.deleteScrap(studyScrapId, user);
+    //     return ResponseEntity.ok().build();
+    // }
 
     // 스크랩 목록 조회
     @GetMapping("/api/v1/users/scraps")
-    public ResponseEntity<List<StudyCardDto>> getUserScraps(
+    public ResponseEntity<ScrapListResponseDto> getUserScraps(
             @AuthenticationPrincipal User user,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "16") int size
@@ -44,15 +52,21 @@ public class ScrapController {
         List<StudyCardDto> dtos = scrapPage.getContent().stream()
                 .map(scrap -> toStudyCardDto(scrap.getStudy()))
                 .collect(Collectors.toList());
-        return ResponseEntity.ok(dtos);
+        
+        ScrapListResponseDto response = ScrapListResponseDto.builder()
+                .scraps(dtos)
+                .totalCount(scrapPage.getTotalElements())
+                .build();
+        
+        return ResponseEntity.ok(response);
     }
 
-    // 스크랩 개수 조회
-    @GetMapping("/api/v1/users/scraps/count")
-    public ResponseEntity<Long> getUserScrapCount(@AuthenticationPrincipal User user) {
-        long count = scrapService.countUserScraps(user);
-        return ResponseEntity.ok(count);
-    }
+    // // 스크랩 개수 조회
+    // @GetMapping("/api/v1/users/scraps/count")
+    // public ResponseEntity<Long> getUserScrapCount(@AuthenticationPrincipal User user) {
+    //     long count = scrapService.countUserScraps(user);
+    //     return ResponseEntity.ok(count);
+    // }
 
     // Study -> StudyCardDto 변환 (필요시 StudyService에서 가져와도 됨)
     private StudyCardDto toStudyCardDto(Study study) {
