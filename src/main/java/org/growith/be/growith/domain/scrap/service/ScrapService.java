@@ -38,37 +38,37 @@ public class ScrapService {
                 );
     }
 
-    @Transactional
-    public void createScrap(Long studyId, User user) {
-        Study study = studyRepository.findById(studyId)
-                .orElseThrow(() -> new IllegalArgumentException("스터디가 존재하지 않습니다."));
-        if (studyScrapRepository.findByUserAndStudy(user, study).isPresent()) {
-            throw new IllegalStateException("이미 스크랩한 스터디입니다.");
-        }
-        StudyScrap scrap = new StudyScrap(user, study);
-        studyScrapRepository.save(scrap);
-        study.increaseScrapCount();
-    }
+    // @Transactional
+    // public void createScrap(Long studyId, User user) {
+    //     Study study = studyRepository.findById(studyId)
+    //             .orElseThrow(() -> new IllegalArgumentException("스터디가 존재하지 않습니다."));
+    //     if (studyScrapRepository.findByUserAndStudy(user, study).isPresent()) {
+    //         throw new IllegalStateException("이미 스크랩한 스터디입니다.");
+    //     }
+    //     StudyScrap scrap = new StudyScrap(user, study);
+    //     studyScrapRepository.save(scrap);
+    //     study.increaseScrapCount();
+    // }
 
-    @Transactional
-    public void deleteScrap(Long studyScrapId, User user) {
-        StudyScrap scrap = studyScrapRepository.findById(studyScrapId)
-                .orElseThrow(() -> new IllegalArgumentException("스크랩이 존재하지 않습니다."));
-        if (!scrap.getUser().equals(user)) {
-            throw new IllegalStateException("본인만 삭제할 수 있습니다.");
-        }
-        Study study = scrap.getStudy();
-        studyScrapRepository.delete(scrap);
-        study.decreaseScrapCount();
-    }
+    // @Transactional
+    // public void deleteScrap(Long studyScrapId, User user) {
+    //     StudyScrap scrap = studyScrapRepository.findById(studyScrapId)
+    //             .orElseThrow(() -> new IllegalArgumentException("스크랩이 존재하지 않습니다."));
+    //     if (!scrap.getUser().equals(user)) {
+    //         throw new IllegalStateException("본인만 삭제할 수 있습니다.");
+    //     }
+    //     Study study = scrap.getStudy();
+    //     studyScrapRepository.delete(scrap);
+    //     study.decreaseScrapCount();
+    // }
 
     @Transactional(readOnly = true)
     public Page<StudyScrap> getUserScraps(User user, int page, int size) {
         return studyScrapRepository.findByUser(user, PageRequest.of(page, size));
     }
 
-    @Transactional(readOnly = true)
-    public long countUserScraps(User user) {
-        return studyScrapRepository.countByUser(user);
-    }
+    // @Transactional(readOnly = true)
+    // public long countUserScraps(User user) {
+    //     return studyScrapRepository.countByUser(user);
+    // }
 }

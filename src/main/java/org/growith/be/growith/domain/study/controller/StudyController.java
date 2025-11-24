@@ -4,7 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.growith.be.growith.domain.study.dto.StudyCardDto;
 import org.growith.be.growith.domain.study.dto.StudyDtlDto;
 import org.growith.be.growith.domain.study.service.StudyService;
+import org.growith.be.growith.domain.user.entity.User;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import org.growith.be.growith.domain.study.dto.StudySessionCardDto;
 import org.growith.be.growith.domain.study.dto.StudyMemberDto;
@@ -39,13 +41,12 @@ public class StudyController {
 
     @GetMapping("/myStudies")
     public ResponseEntity<List<StudyCardDto>> getMyStudies(
-            //프론트에서 userId를 보내줄건지, 토큰에서 뽑아올건지 물어봐야됨
-            @RequestParam String userId,
+            @AuthenticationPrincipal User user,
             @RequestParam(defaultValue = "ACTIVE") String studyStatus,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "6") int size
     ) {
-        return ResponseEntity.ok(studyService.getMyStudies(userId, page, size, studyStatus));
+        return ResponseEntity.ok(studyService.getMyStudies(String.valueOf(user.getUserId()), page, size, studyStatus));
     }
 
     @GetMapping("/popular")
@@ -96,9 +97,9 @@ public class StudyController {
     @DeleteMapping("/{studyId}/withdraw")
     public ResponseEntity<Void> withdrawStudy(
             @PathVariable Long studyId,
-            @RequestParam String userId
+            @AuthenticationPrincipal User user
     ) {
-        studyService.withdrawStudy(studyId, Long.parseLong(userId));
+        studyService.withdrawStudy(studyId, user.getUserId());
         return ResponseEntity.ok().build();
     }
     //스터디 세션 리스트 조회
@@ -162,9 +163,9 @@ public class StudyController {
     @PatchMapping("/{studyId}/changeLeader")
     public ResponseEntity<Void> changeStudyLeader(
             @PathVariable Long studyId,
-            @RequestParam Long currentUserId,
+            @AuthenticationPrincipal User user,
             @RequestParam Long newLeaderUserId) {
-        studyService.changeStudyLeader(studyId, currentUserId, newLeaderUserId);
+        studyService.changeStudyLeader(studyId, user.getUserId(), newLeaderUserId);
         return ResponseEntity.ok().build();
     }
 
@@ -172,9 +173,9 @@ public class StudyController {
     @PostMapping("/session/{sessionId}/journal")
     public ResponseEntity<StudyJournalDto> createStudyJournal(
             @PathVariable Long sessionId,
-            @RequestParam Long userId,
+            @AuthenticationPrincipal User user,
             @RequestBody StudyJournalDto studyJournalDto) {
-        StudyJournalDto createdJournal = studyService.createStudyJournal(sessionId, userId, studyJournalDto);
+        StudyJournalDto createdJournal = studyService.createStudyJournal(sessionId, user.getUserId(), studyJournalDto);
         return ResponseEntity.ok(createdJournal);
     }
 
