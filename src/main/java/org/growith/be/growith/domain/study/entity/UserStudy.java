@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.growith.be.growith.domain.study.entity.enums.StudyRole;
 import org.growith.be.growith.global.common.BaseEntity;
+import org.growith.be.growith.domain.user.entity.User;
 
 @Getter
 @AllArgsConstructor(access = AccessLevel.PRIVATE)
@@ -22,5 +23,17 @@ public class UserStudy extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private StudyRole studyRole;
 
+    //매핑 추가했어요
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "study_id")
+    private Study studyId;
 
+    //매핑 추가했어요
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User userId;
+
+    public void changeRole(StudyRole newRole) {
+        this.studyRole = newRole;
+    }
 }

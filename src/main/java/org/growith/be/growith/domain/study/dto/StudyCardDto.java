@@ -17,4 +17,9 @@ public class StudyCardDto {
     private String format; // 진행방식
     private String fieldName; // 분야
     private List<String> styleNames;
+
+    // 내 스터디 조회에서 사용
+    private Integer memberCount;    // 스터디원 수
+    private Integer studyDays;  // 스터디 진행 일수
+    private String userRole; // 사용자의 스터디 내 역할
 }
