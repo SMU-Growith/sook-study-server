@@ -51,6 +51,10 @@ public class Study extends BaseEntity {
     @OneToMany(mappedBy = "study", fetch = FetchType.LAZY)
     private List<StudyStyle> studyStyles;
 
+        
+    @OneToMany(mappedBy = "study")
+    private List<StudySession> studySessions;  
+
     @Builder.Default
     @Column(name = "scrap_count", nullable = false)
     private Long scrapCount = 0L;
