@@ -11,3 +11,9 @@ spring:
     show-sql: true
     hibernate:
       ddl-auto: update
+
+jwt:
+  secret: test-secret-key-for-jwt-token-generation-minimum-256-bits-required
+  time:
+    access-token: 3600000
+    refresh-token: 10000000

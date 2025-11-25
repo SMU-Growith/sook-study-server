@@ -18,8 +18,8 @@ public class JwtConfigData {
     private String secret;
     private Time time;
 
-//    @Setter
-//    @Getter
+    @Setter
+    @Getter
     public static class Time {
         private long accessToken;
         private long refreshToken;
