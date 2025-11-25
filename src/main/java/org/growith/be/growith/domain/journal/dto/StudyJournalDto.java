@@ -19,4 +19,17 @@ public class StudyJournalDto {
     private Integer submittedCount;
     private String fileUrl;
     private String fileName;
+    private EmojiCounts emojiCounts;
+
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class EmojiCounts {
+        private Long heart;
+        private Long like;
+        private Long laugh;
+        private Long surprise;
+        private Long curiosity;
+    }
 }

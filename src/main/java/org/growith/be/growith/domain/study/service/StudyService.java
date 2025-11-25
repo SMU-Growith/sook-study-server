@@ -26,6 +26,7 @@ import org.growith.be.growith.domain.application.dto.ApplicationDto;
 import org.growith.be.growith.domain.application.entity.ApplicationStatus;
 import org.growith.be.growith.domain.journal.entity.StudyJournal;
 import org.growith.be.growith.domain.application.entity.StudyApplication;
+import org.growith.be.growith.domain.journal.service.JournalEmojiService;
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -38,7 +39,7 @@ public class StudyService {
     private final StudySessionRepository studySessionRepository;
     private final UserStudyRepository userStudyRepository;
     private final StudyJournalRepository studyJournalRepository;
-
+private final JournalEmojiService journalEmojiService;
     private final StudyStyleRepository studyStyleRepository;
     private final StudyApplicationRepository studyApplicationRepository;
 
@@ -423,14 +424,18 @@ userId
         StudyJournal journal = studyJournalRepository.findById(journalId)
                 .orElseThrow(() -> new IllegalArgumentException("일지를 찾을 수 없음"));
 
+        StudyJournalDto.EmojiCounts emojiCounts = journalEmojiService.getEmojiCounts(journalId);
+
         return StudyJournalDto.builder()
                 .journalId(journal.getId())
                 .title(journal.getTitle())
                 .content(journal.getContent())
                 .url(journal.getUrl())
+                .fileUrl(journal.getFileUrl())
                 .fileName(journal.getFileName())
                 .sessionId(journal.getSessionId())
                 .userId(journal.getUserId())
+                .emojiCounts(emojiCounts)
                 .build();
     }
 

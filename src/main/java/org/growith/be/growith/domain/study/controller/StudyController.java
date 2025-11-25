@@ -19,6 +19,8 @@ import java.io.File;
 import org.springframework.core.io.FileSystemResource;
 import org.growith.be.growith.domain.application.dto.ApplicationDto;
 import org.growith.be.growith.domain.study.dto.StatusUpdateRequest;
+import org.growith.be.growith.domain.journal.service.JournalEmojiService;
+import org.growith.be.growith.domain.journal.dto.EmojiToggleRequest;
 import java.util.Map;
 
 import java.util.List;
@@ -28,6 +30,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class StudyController {
     private final StudyService studyService;
+    private final JournalEmojiService journalEmojiService; 
 
     @GetMapping
     public ResponseEntity<List<StudyCardDto>> getStudies(
@@ -229,6 +232,7 @@ public class StudyController {
         return ResponseEntity.ok(createdApplication);
     }
 
+    // 지원자 상태 변경
     @PatchMapping("/{applicationId}/status")
     public ResponseEntity<ApplicationDto> updateApplicationStatus(
             @PathVariable Long applicationId,
@@ -248,4 +252,21 @@ public class StudyController {
         List<ApplicationDto> applications = studyService.getApplications(studyId);
         return ResponseEntity.ok(applications);
     }
+
+    // 스터디일지 이모티콘 토글
+    @PatchMapping("/journals/{studyJournalId}/emoji")
+    public ResponseEntity<StudyJournalDto.EmojiCounts> toggleEmoji(
+        @PathVariable Long studyJournalId,
+        @AuthenticationPrincipal User user,
+        @RequestBody EmojiToggleRequest request) {
+    
+        StudyJournalDto.EmojiCounts emojiCounts = journalEmojiService.toggleEmoji(
+                studyJournalId, 
+                user.getUserId(), 
+                request.getEmojiType()
+        );
+    
+        return ResponseEntity.ok(emojiCounts);
+    }
+   
 }
