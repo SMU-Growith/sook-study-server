@@ -21,18 +21,18 @@ public interface StudyRepository extends JpaRepository<Study, Long>, JpaSpecific
     @Query("SELECT s FROM Study s WHERE s.createdAt >= :oneMonthAgo ORDER BY s.createdAt DESC")
     List<Study> findNewStudies(@Param("oneMonthAgo") LocalDateTime oneMonthAgo, Pageable pageable);
 
-    @Query("SELECT s FROM Study s WHERE s.user.userId = :userId AND s.studyStatus = :studyStatus ORDER BY s.createdAt DESC")
+    @Query("SELECT s FROM Study s WHERE s.user.id = :userId AND s.studyStatus = :studyStatus ORDER BY s.createdAt DESC")
     List<Study> findMyStudies(@Param("userId") Long userId, Pageable pageable, @Param("studyStatus") StudyStatus studyStatus);
 
     @Query("SELECT COUNT(us) FROM UserStudy us WHERE us.study.id = :studyId")
     Integer countMembersByStudyId(@Param("studyId") Long studyId);
 
-    @Query("SELECT us.studyRole FROM UserStudy us WHERE us.study.id = :studyId AND us.user.userId = :userId")
+    @Query("SELECT us.studyRole FROM UserStudy us WHERE us.study.id = :studyId AND us.user.id = :userId")
     String findUserRoleInStudy(@Param("studyId") Long studyId, @Param("userId") Long userId);
 
     @Modifying
     @Transactional
-    @Query("DELETE FROM UserStudy us WHERE us.study.id = :studyId AND us.user.userId = :userId")
+    @Query("DELETE FROM UserStudy us WHERE us.study.id = :studyId AND us.user.id = :userId")
     void withdraw(@Param("studyId") Long studyId, @Param("userId") Long userId);
 
     @Modifying
@@ -43,9 +43,9 @@ public interface StudyRepository extends JpaRepository<Study, Long>, JpaSpecific
     @Query("SELECT new org.growith.be.growith.domain.study.dto.StudyMemberDto(" +
             "u.id, u.nickName, u.studentStatus, u.major, u.phoneNumber, sa.motivation) " +
             "FROM UserStudy us " +
-            "JOIN us.userId u " +
-            "LEFT JOIN StudyApplication sa ON sa.user = u AND sa.study = us.studyId " +
-            "WHERE us.studyId.id = :studyId")
+            "JOIN us.user u " +
+            "LEFT JOIN StudyApplication sa ON sa.user = u AND sa.study = us.study " +
+            "WHERE us.study.id = :studyId")
     List<org.growith.be.growith.domain.study.dto.StudyMemberDto> findStudyMembers(@Param("studyId") Long studyId);
 
 }

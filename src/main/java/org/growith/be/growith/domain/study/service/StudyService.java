@@ -16,8 +16,7 @@ import org.springframework.data.domain.Sort;
 import org.growith.be.growith.domain.journal.repository.StudyJournalRepository;
 import org.growith.be.growith.domain.journal.dto.StudyJournalDto;
 import org.growith.be.growith.domain.journal.dto.StudyJournalListDto;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -39,7 +38,7 @@ public class StudyService {
     private final StudySessionRepository studySessionRepository;
     private final UserStudyRepository userStudyRepository;
     private final StudyJournalRepository studyJournalRepository;
-private final JournalEmojiService journalEmojiService;
+    private final JournalEmojiService journalEmojiService;
     private final StudyStyleRepository studyStyleRepository;
     private final StudyApplicationRepository studyApplicationRepository;
 
@@ -364,7 +363,7 @@ private final JournalEmojiService journalEmojiService;
     @Transactional
     public void changeStudyLeader(Long studyId, Long currentUserId, Long newLeaderUserId) {
         // 현재 사용자가 해당 스터디의 리더인지 확인
-        UserStudy currentUserStudy = userStudyRepository.findByStudyIdIdAndUserIdId(studyId, currentUserId)
+        UserStudy currentUserStudy = userStudyRepository.findByStudyIdAndUserId(studyId, currentUserId)
                 .orElseThrow(() -> new IllegalArgumentException("스터디 멤버가 아님"));
 
         if (currentUserStudy.getStudyRole() != StudyRole.LEADER) {
@@ -372,7 +371,7 @@ private final JournalEmojiService journalEmojiService;
         }
 
         // 새 리더가 될 사용자가 해당 스터디의 멤버인지 확인
-        UserStudy newLeaderStudy = userStudyRepository.findByStudyIdIdAndUserIdId(studyId, newLeaderUserId)
+        UserStudy newLeaderStudy = userStudyRepository.findByStudyIdAndUserId(studyId, newLeaderUserId)
                 .orElseThrow(() -> new IllegalArgumentException("새 리더가 스터디 멤버가 아님"));
 
         if (newLeaderStudy.getStudyRole() != StudyRole.MEMBER) {
@@ -582,8 +581,8 @@ userId
         // 만약 승인된 경우에만 UserStudy 추가
         if (status == ApplicationStatus.ACCEPTED) {
             UserStudy userStudy = UserStudy.builder()
-                    .userId(application.getUser())
-                    .studyId(application.getStudy())
+                    .user(application.getUser())
+                    .study(application.getStudy())
                     .studyRole(StudyRole.MEMBER)
                     .build();
             userStudyRepository.save(userStudy);

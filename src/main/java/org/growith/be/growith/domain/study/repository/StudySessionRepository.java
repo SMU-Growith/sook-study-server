@@ -9,6 +9,6 @@ import java.util.Optional;
 public interface StudySessionRepository extends JpaRepository<StudySession, Long> {
     @Query("SELECT COUNT(us) FROM UserStudy us " +
             "JOIN StudySession ss ON ss.study.id = us.study.id " +
-            "WHERE ss.id = :sessionId AND us.isSubmitted = true")
+            "WHERE ss.id = :sessionId AND ss.isSubmitted = true")
     Integer countSubmittedBySessionId(@Param("sessionId") Long sessionId);
 }
