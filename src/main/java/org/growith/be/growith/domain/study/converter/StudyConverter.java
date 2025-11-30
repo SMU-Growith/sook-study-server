@@ -1,6 +1,7 @@
 package org.growith.be.growith.domain.study.converter;
 
-import org.growith.be.growith.domain.study.dto.request.StudyRequestDto;
+import org.growith.be.growith.domain.journal.dto.request.JournalRequestDto;
+import org.growith.be.growith.domain.journal.entity.StudyJournal;
 import org.growith.be.growith.domain.study.dto.response.StudyResponseDto;
 import org.growith.be.growith.domain.study.entity.Study;
 
@@ -22,5 +23,19 @@ public class StudyConverter {
                 .memberCount(memberCount)
                 .studyDays(studyDays)
                 .build();
+    }
+
+    // JournalRequestDto.createJournalDto -> StudyJournal
+    public static StudyJournal toJournalEntity(JournalRequestDto.createJournalDto dto){
+        return null;
+//        return StudyJournal.builder()
+//                .title(dto.getTitle())
+//                .content(dto.content)
+//                .url(dto.url)
+//                .fileUrl(dto.fileUrl)
+//                .fileName(fileName)
+//                .sessionId(sessionId)
+//                .userId(userId)
+//                .build();
     }
 }
