@@ -2,12 +2,17 @@ package org.growith.be.growith.domain.study.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.growith.be.growith.domain.study.converter.StudyConverter;
 import org.growith.be.growith.domain.study.dto.*;
+import org.growith.be.growith.domain.study.dto.request.StudyRequestDto;
+import org.growith.be.growith.domain.study.dto.response.StudyResponseDto;
 import org.growith.be.growith.domain.study.entity.*;
 import org.growith.be.growith.domain.user.entity.*;
 import org.growith.be.growith.domain.user.repository.*;
 import org.growith.be.growith.domain.study.repository.*;
 import org.growith.be.growith.domain.application.repository.StudyApplicationRepository;
+import org.growith.be.growith.global.error.code.status.StudyErrorCode;
+import org.growith.be.growith.global.error.exception.handler.StudyException;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -42,7 +47,8 @@ public class StudyService {
     private final StudyStyleRepository studyStyleRepository;
     private final StudyApplicationRepository studyApplicationRepository;
 
-    public List<StudyCardDto> getMyStudies(String userId, int page, int size, String studyStatus) {
+    // 자신의 스터디 조회
+    public List<StudyResponseDto.StudyCardDto> getMyStudies(String userId, int page, int size, String studyStatus) {
         StudyStatus status = StudyStatus.valueOf(studyStatus.toUpperCase());
         List<Study> studies = studyRepository.findMyStudies(Long.parseLong(userId), PageRequest.of(page, size), status);
 
@@ -60,16 +66,8 @@ public class StudyService {
             // 사용자의 스터디 내 역할 조회
             String userRole = studyRepository.findUserRoleInStudy(Long.parseLong(userId), study.getId());
 
-            return StudyCardDto.builder()
-                    .studyId(study.getId())
-                    .studyStatus(study.getStudyStatus())
-                    .title(study.getTitle())
-                    .format(study.getFormat() != null ? study.getFormat().name() : null)
-                    .fieldName(study.getStudyField().getName())
-                    .styleNames(study.getStudyStyles().stream().map(ss -> ss.getStyle().getStyleName()).toList())
-                    .memberCount(memberCount)
-                    .studyDays(studyDays)
-                    .build();
+            // Study -> StudyCardDto
+            return StudyConverter.toStudyCardDto(study, memberCount, studyDays);
         }).toList();
     }
 
@@ -297,7 +295,7 @@ public class StudyService {
 
     public StudySessionCardDto createStudySession(Long studyId, StudySessionCardDto dto) {
         Study study = studyRepository.findById(studyId)
-                .orElseThrow(() -> new IllegalArgumentException("studyId에 해당하는 스터디 없음"));
+                .orElseThrow(() -> new StudyException(StudyErrorCode.STUDY_NOT_FOUND));
 
         // 최대 회차 조회
         Integer maxNumber = study.getStudySessions().stream()
@@ -321,11 +319,9 @@ public class StudyService {
                 .build();
     }
 
-
-
     public Map<String, String> getStudyRules(Long studyId) {
         Study study = studyRepository.findById(studyId)
-                .orElseThrow(() -> new IllegalArgumentException("스터디 없음"));
+                .orElseThrow(() -> new StudyException(StudyErrorCode.STUDY_NOT_FOUND));
 
         List<Rule> rules = ruleRepository.findByStudy(study);
         // 이거 코드 뭔 뜻인지 찾아보기

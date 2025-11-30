@@ -1,29 +1,22 @@
 package org.growith.be.growith.domain.study.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.growith.be.growith.domain.study.dto.StudyCardDto;
-import org.growith.be.growith.domain.study.dto.StudyDtlDto;
+import org.growith.be.growith.domain.application.dto.ApplicationDto;
+import org.growith.be.growith.domain.journal.dto.EmojiToggleRequest;
+import org.growith.be.growith.domain.journal.dto.StudyJournalDto;
+import org.growith.be.growith.domain.journal.dto.StudyJournalListDto;
+import org.growith.be.growith.domain.journal.service.JournalEmojiService;
+import org.growith.be.growith.domain.study.dto.*;
+import org.growith.be.growith.domain.study.dto.response.StudyResponseDto;
 import org.growith.be.growith.domain.study.service.StudyService;
 import org.growith.be.growith.domain.user.entity.User;
+import org.growith.be.growith.global.error.ApiResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-import org.growith.be.growith.domain.study.dto.StudySessionCardDto;
-import org.growith.be.growith.domain.study.dto.StudyMemberDto;
-import org.growith.be.growith.domain.journal.dto.StudyJournalDto;
-import org.growith.be.growith.domain.journal.dto.StudyJournalListDto;
-import org.growith.be.growith.domain.application.dto.ApplicationDto;
-import org.growith.be.growith.domain.application.entity.ApplicationStatus;
-import org.growith.be.growith.domain.study.dto.StatusUpdateRequest;
-import java.io.File;
-import org.springframework.core.io.FileSystemResource;
-import org.growith.be.growith.domain.application.dto.ApplicationDto;
-import org.growith.be.growith.domain.study.dto.StatusUpdateRequest;
-import org.growith.be.growith.domain.journal.service.JournalEmojiService;
-import org.growith.be.growith.domain.journal.dto.EmojiToggleRequest;
-import java.util.Map;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/v1/studies")
@@ -49,13 +42,13 @@ public class StudyController {
     }
 
     @GetMapping("/myStudies")
-    public ResponseEntity<List<StudyCardDto>> getMyStudies(
+    public ApiResponse<List<StudyResponseDto.StudyCardDto>> getMyStudies(
             @AuthenticationPrincipal User user,
             @RequestParam(defaultValue = "ACTIVE") String studyStatus,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "6") int size
     ) {
-        return ResponseEntity.ok(studyService.getMyStudies(String.valueOf(user.getUserId()), page, size, studyStatus));
+        return ApiResponse.onSuccess(studyService.getMyStudies(String.valueOf(user.getUserId()), page, size, studyStatus));
     }
 
     @GetMapping("/popular")
