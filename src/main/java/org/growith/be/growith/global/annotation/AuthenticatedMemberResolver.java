@@ -22,7 +22,7 @@ public class AuthenticatedMemberResolver implements HandlerMethodArgumentResolve
 
     @Override
     public boolean supportsParameter(MethodParameter parameter) {
-        return parameter.hasParameterAnnotation(AuthenticatedMember.class)
+        return parameter.hasParameterAnnotation(AuthenticatedUser.class)
                 && parameter.getParameterType().equals(User.class);
     }
 
