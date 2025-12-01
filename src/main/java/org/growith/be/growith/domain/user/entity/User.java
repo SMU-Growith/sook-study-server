@@ -3,6 +3,7 @@ package org.growith.be.growith.domain.user.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.growith.be.growith.domain.user.dto.request.UserRequestDTO;
 import org.growith.be.growith.domain.user.entity.enums.Major;
 import org.growith.be.growith.domain.user.entity.enums.StudentStatus;
 import org.growith.be.growith.domain.user.entity.enums.UserRole;
@@ -33,6 +34,7 @@ public class User extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private Major major;
 
+    // 학적 상태
     @Enumerated(EnumType.STRING)
     private StudentStatus studentStatus;
 
@@ -47,5 +49,11 @@ public class User extends BaseEntity {
 
     public Long getUserId() {
         return this.id;
+    }
+
+    public void changeUserProfile(UserRequestDTO.ChangeInfo request){
+        this.nickName = request.nickName();
+        this.major = request.major();
+        this.studentStatus = request.studentStatus();
     }
 }
