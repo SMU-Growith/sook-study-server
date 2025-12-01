@@ -2,12 +2,17 @@ package org.growith.be.growith.domain.study.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.growith.be.growith.domain.study.converter.StudyConverter;
 import org.growith.be.growith.domain.study.dto.*;
+import org.growith.be.growith.domain.study.dto.request.StudyRequestDto;
+import org.growith.be.growith.domain.study.dto.response.StudyResponseDto;
 import org.growith.be.growith.domain.study.entity.*;
 import org.growith.be.growith.domain.user.entity.*;
 import org.growith.be.growith.domain.user.repository.*;
 import org.growith.be.growith.domain.study.repository.*;
 import org.growith.be.growith.domain.application.repository.StudyApplicationRepository;
+import org.growith.be.growith.global.error.code.status.StudyErrorCode;
+import org.growith.be.growith.global.error.exception.handler.StudyException;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -16,8 +21,7 @@ import org.springframework.data.domain.Sort;
 import org.growith.be.growith.domain.journal.repository.StudyJournalRepository;
 import org.growith.be.growith.domain.journal.dto.StudyJournalDto;
 import org.growith.be.growith.domain.journal.dto.StudyJournalListDto;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
@@ -39,11 +43,12 @@ public class StudyService {
     private final StudySessionRepository studySessionRepository;
     private final UserStudyRepository userStudyRepository;
     private final StudyJournalRepository studyJournalRepository;
-private final JournalEmojiService journalEmojiService;
+    private final JournalEmojiService journalEmojiService;
     private final StudyStyleRepository studyStyleRepository;
     private final StudyApplicationRepository studyApplicationRepository;
 
-    public List<StudyCardDto> getMyStudies(String userId, int page, int size, String studyStatus) {
+    // 자신의 스터디 조회
+    public List<StudyResponseDto.StudyCardDto> getMyStudies(String userId, int page, int size, String studyStatus) {
         StudyStatus status = StudyStatus.valueOf(studyStatus.toUpperCase());
         List<Study> studies = studyRepository.findMyStudies(Long.parseLong(userId), PageRequest.of(page, size), status);
 
@@ -61,16 +66,8 @@ private final JournalEmojiService journalEmojiService;
             // 사용자의 스터디 내 역할 조회
             String userRole = studyRepository.findUserRoleInStudy(Long.parseLong(userId), study.getId());
 
-            return StudyCardDto.builder()
-                    .studyId(study.getId())
-                    .studyStatus(study.getStudyStatus())
-                    .title(study.getTitle())
-                    .format(study.getFormat() != null ? study.getFormat().name() : null)
-                    .fieldName(study.getStudyField().getName())
-                    .styleNames(study.getStudyStyles().stream().map(ss -> ss.getStyle().getStyleName()).toList())
-                    .memberCount(memberCount)
-                    .studyDays(studyDays)
-                    .build();
+            // Study -> StudyCardDto
+            return StudyConverter.toStudyCardDto(study, memberCount, studyDays);
         }).toList();
     }
 
@@ -298,7 +295,7 @@ private final JournalEmojiService journalEmojiService;
 
     public StudySessionCardDto createStudySession(Long studyId, StudySessionCardDto dto) {
         Study study = studyRepository.findById(studyId)
-                .orElseThrow(() -> new IllegalArgumentException("studyId에 해당하는 스터디 없음"));
+                .orElseThrow(() -> new StudyException(StudyErrorCode.STUDY_NOT_FOUND));
 
         // 최대 회차 조회
         Integer maxNumber = study.getStudySessions().stream()
@@ -322,11 +319,9 @@ private final JournalEmojiService journalEmojiService;
                 .build();
     }
 
-
-
     public Map<String, String> getStudyRules(Long studyId) {
         Study study = studyRepository.findById(studyId)
-                .orElseThrow(() -> new IllegalArgumentException("스터디 없음"));
+                .orElseThrow(() -> new StudyException(StudyErrorCode.STUDY_NOT_FOUND));
 
         List<Rule> rules = ruleRepository.findByStudy(study);
         // 이거 코드 뭔 뜻인지 찾아보기
@@ -364,7 +359,7 @@ private final JournalEmojiService journalEmojiService;
     @Transactional
     public void changeStudyLeader(Long studyId, Long currentUserId, Long newLeaderUserId) {
         // 현재 사용자가 해당 스터디의 리더인지 확인
-        UserStudy currentUserStudy = userStudyRepository.findByStudyIdIdAndUserIdId(studyId, currentUserId)
+        UserStudy currentUserStudy = userStudyRepository.findByStudyIdAndUserId(studyId, currentUserId)
                 .orElseThrow(() -> new IllegalArgumentException("스터디 멤버가 아님"));
 
         if (currentUserStudy.getStudyRole() != StudyRole.LEADER) {
@@ -372,7 +367,7 @@ private final JournalEmojiService journalEmojiService;
         }
 
         // 새 리더가 될 사용자가 해당 스터디의 멤버인지 확인
-        UserStudy newLeaderStudy = userStudyRepository.findByStudyIdIdAndUserIdId(studyId, newLeaderUserId)
+        UserStudy newLeaderStudy = userStudyRepository.findByStudyIdAndUserId(studyId, newLeaderUserId)
                 .orElseThrow(() -> new IllegalArgumentException("새 리더가 스터디 멤버가 아님"));
 
         if (newLeaderStudy.getStudyRole() != StudyRole.MEMBER) {
@@ -582,8 +577,8 @@ userId
         // 만약 승인된 경우에만 UserStudy 추가
         if (status == ApplicationStatus.ACCEPTED) {
             UserStudy userStudy = UserStudy.builder()
-                    .userId(application.getUser())
-                    .studyId(application.getStudy())
+                    .user(application.getUser())
+                    .study(application.getStudy())
                     .studyRole(StudyRole.MEMBER)
                     .build();
             userStudyRepository.save(userStudy);

@@ -7,5 +7,9 @@ import java.util.List;
 import java.util.Optional;
 
 public interface UserStudyRepository extends JpaRepository<UserStudy, Long> {
-    Optional<UserStudy> findByStudyIdIdAndUserIdId(Long studyId, Long userId);
+    // 스터디 id와 User Id로 UserStudy 반환
+    Optional<UserStudy> findByStudyIdAndUserId(Long studyId, Long userId);
+
+    // 스터디 id로 UserStudy 반환
+    List<UserStudy> findByStudyId(Long studyId);
 }

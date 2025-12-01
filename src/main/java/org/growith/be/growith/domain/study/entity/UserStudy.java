@@ -30,12 +30,12 @@ public class UserStudy extends BaseEntity {
     //매핑 추가했어요
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "study_id")
-    private Study studyId;
+    private Study study;
 
     //매핑 추가했어요
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
-    private User userId;
+    private User user;
 
     public void changeRole(StudyRole newRole) {
         this.studyRole = newRole;
