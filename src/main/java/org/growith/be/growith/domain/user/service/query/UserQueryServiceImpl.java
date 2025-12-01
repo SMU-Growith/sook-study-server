@@ -15,4 +15,8 @@ public class UserQueryServiceImpl implements UserQueryService {
     public User findById(Long id) {
         return userRepository.findById(id).orElseThrow();
     }
+
+    public User getUserProfile(){
+        return null;
+    }
 }
