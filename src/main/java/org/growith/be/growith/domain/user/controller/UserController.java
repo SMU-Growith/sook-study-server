@@ -1,6 +1,7 @@
 package org.growith.be.growith.domain.user.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.growith.be.growith.domain.user.converter.UserConverter;
 import org.growith.be.growith.domain.user.dto.request.UserRequestDTO;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.*;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/users")
+@Tag(name = "사용자 정보 API")
 public class UserController {
 
     private final UserCommandService userCommandService;
