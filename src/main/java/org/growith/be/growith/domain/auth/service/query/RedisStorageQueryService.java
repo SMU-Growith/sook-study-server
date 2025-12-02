@@ -11,4 +11,9 @@ public class RedisStorageQueryService implements TokenStorageQueryService{
     public boolean isBlackList(String token) {
         return false;
     }
+
+    @Override
+    public String getRefreshToken(Long id) {
+        return "";
+    }
 }

@@ -5,9 +5,15 @@ import lombok.Builder;
 public record AuthResponseDTO() {
 
     @Builder
-    public record Login(
+    public record TokenResult(
             String accessToken,
             String refreshToken
+    ){}
+
+    @Builder
+    public record LoginResult(
+            Long userId,
+            String accessToken
     ){}
 
 

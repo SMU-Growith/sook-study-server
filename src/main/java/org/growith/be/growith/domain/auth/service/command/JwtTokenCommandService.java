@@ -14,8 +14,8 @@ public class JwtTokenCommandService implements TokenCommandService {
     private final JwtUtil jwtUtil;
 
     @Override
-    public AuthResponseDTO.Login createLoginToken(CustomUserDetails customUserDetails) {
-        return AuthConverter.toLoginResponse(
+    public AuthResponseDTO.TokenResult createLoginToken(CustomUserDetails customUserDetails) {
+        return AuthConverter.toTokenResult(
                 jwtUtil.createAccessToken(customUserDetails),
                 jwtUtil.createRefreshToken(customUserDetails)
         );
