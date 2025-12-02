@@ -5,5 +5,5 @@ import org.growith.be.growith.domain.application.entity.StudyApplication;
 import java.util.List;
 
 public interface StudyApplicationQueryService {
-    public List<StudyApplication> getStudyApplications(Long studyId);
+    List<StudyApplication> getStudyApplications(Long studyId);
 }
