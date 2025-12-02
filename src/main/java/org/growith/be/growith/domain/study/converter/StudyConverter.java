@@ -4,6 +4,9 @@ import org.growith.be.growith.domain.journal.dto.request.JournalRequestDto;
 import org.growith.be.growith.domain.journal.entity.StudyJournal;
 import org.growith.be.growith.domain.study.dto.response.StudyResponseDto;
 import org.growith.be.growith.domain.study.entity.Study;
+import org.growith.be.growith.domain.study.entity.UserStudy;
+import org.growith.be.growith.domain.study.entity.enums.StudyRole;
+import org.growith.be.growith.domain.user.entity.User;
 
 import java.util.List;
 
@@ -38,4 +41,14 @@ public class StudyConverter {
 //                .userId(userId)
 //                .build();
     }
+
+    //  User, Study, StudyRole -> UserStudy
+    public static UserStudy toUserStudyEntity(User user, Study study, StudyRole studyRole){
+        return UserStudy.builder()
+                .user(user)
+                .study(study)
+                .studyRole(studyRole)
+                .build();
+    }
+
 }

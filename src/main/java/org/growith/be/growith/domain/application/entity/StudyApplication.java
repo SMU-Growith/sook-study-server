@@ -1,13 +1,10 @@
 package org.growith.be.growith.domain.application.entity;
 
 import jakarta.persistence.*;
-// import lombok.AccessLevel;
-// import lombok.AllArgsConstructor;
-// import lombok.Getter;
-// import lombok.NoArgsConstructor;
 import lombok.*;
 import org.growith.be.growith.domain.study.entity.Study;
 import org.growith.be.growith.domain.user.entity.User;
+import org.growith.be.growith.domain.user.entity.enums.StudentStatus;
 import org.growith.be.growith.global.common.BaseEntity;
 
 @Getter
@@ -22,6 +19,16 @@ public class StudyApplication extends BaseEntity {
     @Column(name = "study_application_id")
     private Long id;
 
+    private String nickname;
+
+    @Enumerated(EnumType.STRING)
+    private StudentStatus studentStatus;
+
+    private String major;
+
+    private String phoneNumber;
+
+    @Column(length = 150)
     private String motivation;
 
     @Enumerated(EnumType.STRING)

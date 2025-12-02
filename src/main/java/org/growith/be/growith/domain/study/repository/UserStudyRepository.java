@@ -1,6 +1,7 @@
 package org.growith.be.growith.domain.study.repository;
 
 import org.growith.be.growith.domain.study.entity.UserStudy;
+import org.growith.be.growith.domain.study.entity.enums.StudyRole;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -12,4 +13,7 @@ public interface UserStudyRepository extends JpaRepository<UserStudy, Long> {
 
     // 스터디 id로 UserStudy 반환
     List<UserStudy> findByStudyId(Long studyId);
+
+    // 해당 사용자가 스터디의 팀장인지 확인
+    boolean existsByStudyIdAndUserIdAndStudyRole(Long studyId, Long userId, StudyRole studyRole);
 }

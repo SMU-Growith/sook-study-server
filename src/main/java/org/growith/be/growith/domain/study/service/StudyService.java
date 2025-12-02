@@ -2,35 +2,34 @@ package org.growith.be.growith.domain.study.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.growith.be.growith.domain.study.converter.StudyConverter;
-import org.growith.be.growith.domain.study.dto.*;
-import org.growith.be.growith.domain.study.dto.request.StudyRequestDto;
-import org.growith.be.growith.domain.study.dto.response.StudyResponseDto;
-import org.growith.be.growith.domain.study.entity.*;
-import org.growith.be.growith.domain.user.entity.*;
-import org.growith.be.growith.domain.user.repository.*;
-import org.growith.be.growith.domain.study.repository.*;
 import org.growith.be.growith.domain.application.repository.StudyApplicationRepository;
-import org.growith.be.growith.global.error.code.status.StudyErrorCode;
-import org.growith.be.growith.global.error.exception.handler.StudyException;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.stereotype.Service;
-import org.springframework.data.jpa.domain.Specification;
-import org.springframework.data.domain.Sort;
-import org.growith.be.growith.domain.journal.repository.StudyJournalRepository;
 import org.growith.be.growith.domain.journal.dto.StudyJournalDto;
 import org.growith.be.growith.domain.journal.dto.StudyJournalListDto;
+import org.growith.be.growith.domain.journal.entity.StudyJournal;
+import org.growith.be.growith.domain.journal.repository.StudyJournalRepository;
+import org.growith.be.growith.domain.journal.service.JournalEmojiService;
+import org.growith.be.growith.domain.study.converter.StudyConverter;
+import org.growith.be.growith.domain.study.dto.StudyCardDto;
+import org.growith.be.growith.domain.study.dto.StudyDtlDto;
+import org.growith.be.growith.domain.study.dto.StudyMemberDto;
+import org.growith.be.growith.domain.study.dto.StudySessionCardDto;
+import org.growith.be.growith.domain.study.dto.response.StudyResponseDto;
+import org.growith.be.growith.domain.study.entity.*;
+import org.growith.be.growith.domain.study.entity.enums.*;
+import org.growith.be.growith.domain.study.repository.*;
+import org.growith.be.growith.domain.user.entity.User;
+import org.growith.be.growith.domain.user.repository.UserRepository;
+import org.growith.be.growith.global.error.code.status.StudyErrorCode;
+import org.growith.be.growith.global.error.exception.handler.StudyException;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
-import org.growith.be.growith.domain.study.entity.enums.*;
-import org.growith.be.growith.domain.application.dto.ApplicationDto;
-import org.growith.be.growith.domain.application.entity.ApplicationStatus;
-import org.growith.be.growith.domain.journal.entity.StudyJournal;
-import org.growith.be.growith.domain.application.entity.StudyApplication;
-import org.growith.be.growith.domain.journal.service.JournalEmojiService;
 @Slf4j
 @Service
 @RequiredArgsConstructor
@@ -529,89 +528,5 @@ userId
                     .totalCount(totalCount)
                     .build();
         }).toList();
-    }
-
-    // 스터디 지원
-    @Transactional
-    public org.growith.be.growith.domain.application.dto.ApplicationDto createApplication(Long studyId, Long userId, org.growith.be.growith.domain.application.dto.ApplicationDto applicationDto) {
-        // 스터디 존재 확인
-        Study study = studyRepository.findById(studyId)
-                .orElseThrow(() -> new IllegalArgumentException("스터디를 찾을 수 없음"));
-
-        // 사용자 존재 확인
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없음"));
-
-        // 지원서 생성
-        org.growith.be.growith.domain.application.entity.StudyApplication application = org.growith.be.growith.domain.application.entity.StudyApplication.builder()
-                .study(study)
-                .user(user)
-                .motivation(applicationDto.getMotivation())
-                .applicationStatus(org.growith.be.growith.domain.application.entity.ApplicationStatus.PENDING)
-                .build();
-
-        org.growith.be.growith.domain.application.entity.StudyApplication savedApplication = studyApplicationRepository.save(application);
-
-        return org.growith.be.growith.domain.application.dto.ApplicationDto.builder()
-                .applicationId(savedApplication.getId())
-                .studyId(savedApplication.getStudy().getId())
-                .userId(savedApplication.getUser().getUserId())
-                .nickName(savedApplication.getUser().getNickName())
-                .major(savedApplication.getUser().getMajor().name())
-                .studentStatus(savedApplication.getUser().getStudentStatus().name())
-                .applicationStatus(savedApplication.getApplicationStatus())
-                .motivation(savedApplication.getMotivation())
-                .build();
-    }
-
-    // 지원자 승인/거절
-    @Transactional
-    public ApplicationDto updateApplicationStatus(Long applicationId, ApplicationStatus status) {
-        StudyApplication application = studyApplicationRepository.findById(applicationId)
-                .orElseThrow(() -> new IllegalArgumentException("지원서를 찾을 수 없음"));
-
-        // 상태 업데이트
-        application.updateStatus(status);
-        StudyApplication updatedApplication = studyApplicationRepository.save(application);
-
-        // 만약 승인된 경우에만 UserStudy 추가
-        if (status == ApplicationStatus.ACCEPTED) {
-            UserStudy userStudy = UserStudy.builder()
-                    .user(application.getUser())
-                    .study(application.getStudy())
-                    .studyRole(StudyRole.MEMBER)
-                    .build();
-            userStudyRepository.save(userStudy);
-        }
-
-        return ApplicationDto.builder()
-                .applicationId(updatedApplication.getId())
-                .studyId(updatedApplication.getStudy().getId())
-                .userId(updatedApplication.getUser().getUserId())
-                .nickName(updatedApplication.getUser().getNickName())
-                .major(updatedApplication.getUser().getMajor().name())
-                .studentStatus(updatedApplication.getUser().getStudentStatus().name())
-                .applicationStatus(updatedApplication.getApplicationStatus())
-                .motivation(updatedApplication.getMotivation())
-                .build();
-    }
-
-
-    // 지원자 조회
-    public List<org.growith.be.growith.domain.application.dto.ApplicationDto> getApplications(Long studyId) {
-        List<org.growith.be.growith.domain.application.entity.StudyApplication> applications = studyApplicationRepository.findByStudyId(studyId);
-
-        return applications.stream()
-                .map(application -> org.growith.be.growith.domain.application.dto.ApplicationDto.builder()
-                        .applicationId(application.getId())
-                        .studyId(application.getStudy().getId())
-                        .userId(application.getUser().getUserId())
-                        .nickName(application.getUser().getNickName())
-                        .major(application.getUser().getMajor().name())
-                        .studentStatus(application.getUser().getStudentStatus().name())
-                        .applicationStatus(application.getApplicationStatus())
-                        .motivation(application.getMotivation())
-                        .build())
-                .toList();
     }
 }
