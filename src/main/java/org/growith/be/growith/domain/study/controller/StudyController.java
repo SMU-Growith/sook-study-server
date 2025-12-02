@@ -1,12 +1,14 @@
 package org.growith.be.growith.domain.study.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.growith.be.growith.domain.application.dto.ApplicationDto;
 import org.growith.be.growith.domain.journal.dto.EmojiToggleRequest;
 import org.growith.be.growith.domain.journal.dto.StudyJournalDto;
 import org.growith.be.growith.domain.journal.dto.StudyJournalListDto;
 import org.growith.be.growith.domain.journal.service.JournalEmojiService;
-import org.growith.be.growith.domain.study.dto.*;
+import org.growith.be.growith.domain.study.dto.StudyCardDto;
+import org.growith.be.growith.domain.study.dto.StudyDtlDto;
+import org.growith.be.growith.domain.study.dto.StudyMemberDto;
+import org.growith.be.growith.domain.study.dto.StudySessionCardDto;
 import org.growith.be.growith.domain.study.dto.response.StudyResponseDto;
 import org.growith.be.growith.domain.study.service.StudyService;
 import org.growith.be.growith.domain.user.entity.User;
@@ -212,38 +214,6 @@ public class StudyController {
             @RequestParam(defaultValue = "6") int size) {
         List<StudyJournalListDto> journals = studyService.getStudyJournalsBySession(sessionId, page, size);
         return ResponseEntity.ok(journals);
-    }
-
-
-    // 스터디 지원
-    @PostMapping("/{studyId}/application")
-    public ResponseEntity<ApplicationDto> createApplication(
-            @PathVariable Long studyId,
-            @AuthenticationPrincipal User user,
-            @RequestBody ApplicationDto applicationDto) {
-        ApplicationDto createdApplication = studyService.createApplication(studyId, user.getUserId(), applicationDto);
-        return ResponseEntity.ok(createdApplication);
-    }
-
-    // 지원자 상태 변경
-    @PatchMapping("/{applicationId}/status")
-    public ResponseEntity<ApplicationDto> updateApplicationStatus(
-            @PathVariable Long applicationId,
-            @RequestBody StatusUpdateRequest request) {
-
-        ApplicationDto dto = studyService.updateApplicationStatus(
-                applicationId,
-                request.getStatus()
-        );
-
-        return ResponseEntity.ok(dto);
-    }
-
-    // 지원자 조회
-    @GetMapping("/{studyId}/applications")
-    public ResponseEntity<List<ApplicationDto>> getApplications(@PathVariable Long studyId) {
-        List<ApplicationDto> applications = studyService.getApplications(studyId);
-        return ResponseEntity.ok(applications);
     }
 
     // 스터디일지 이모티콘 토글
