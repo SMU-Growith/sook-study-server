@@ -2,15 +2,18 @@ package org.growith.be.growith.global.util;
 
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.Getter;
 import org.growith.be.growith.global.data.JwtConfigData;
 import org.growith.be.growith.global.error.code.status.TokenErrorCode;
 import org.growith.be.growith.global.error.exception.handler.TokenException;
+import org.growith.be.growith.global.security.constants.AuthenticationConstants;
 import org.growith.be.growith.global.security.domain.CustomUserDetails;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Component;
+import org.springframework.util.StringUtils;
 
 import javax.crypto.SecretKey;
 import java.nio.charset.StandardCharsets;
@@ -91,5 +94,13 @@ public class JwtUtil {
 
         User principal = new User(loginId, "", Collections.singleton(() -> role));
         return new UsernamePasswordAuthenticationToken(principal, token, principal.getAuthorities());
+    }
+
+    public static String resolveToken(HttpServletRequest request) {
+        String bearerToken = request.getHeader(AuthenticationConstants.AUTH_HEADER);
+        if(StringUtils.hasText(bearerToken) && bearerToken.startsWith(AuthenticationConstants.TOKEN_PREFIX)) {
+            return bearerToken.substring(AuthenticationConstants.TOKEN_PREFIX.length());
+        }
+        return null;
     }
 }

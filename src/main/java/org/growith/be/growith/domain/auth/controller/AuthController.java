@@ -40,17 +40,18 @@ public class AuthController {
     @Operation(summary = "Access Token 재발급 API", description = "토큰 재발급 API")
     @PostMapping("/reissue")
     public ApiResponse<String> reissueToken(HttpServletRequest request, HttpServletResponse response){
-//        authCommandService.reissueToken(request, response);
-        return ApiResponse.onSuccess(null);
+        String accessToken = authCommandService.reissueToken(request, response);
+        return ApiResponse.onSuccess(accessToken);
     }
 
 
     @Operation(summary = "로그아웃 API", description = "로그아웃 API")
     @PostMapping("/logout")
     public ApiResponse<String> logout(HttpServletRequest request, HttpServletResponse response){
-        // TODO: service 코드 구체화 필요
+        authCommandService.logout(request, response);
         return ApiResponse.onSuccess(null);
     }
+
 
 
 

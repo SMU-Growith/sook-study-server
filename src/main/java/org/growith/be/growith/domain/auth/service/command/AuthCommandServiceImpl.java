@@ -18,6 +18,7 @@ import org.growith.be.growith.global.error.exception.handler.TokenException;
 import org.growith.be.growith.global.error.exception.handler.UserException;
 import org.growith.be.growith.global.security.constants.AuthenticationConstants;
 import org.growith.be.growith.global.security.domain.CustomUserDetails;
+import org.growith.be.growith.global.util.JwtUtil;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -31,6 +32,7 @@ public class AuthCommandServiceImpl implements AuthCommandService {
     private final TokenCommandService tokenCommandService;
     private final TokenStorageQueryService tokenStorageQueryService;
     private final TokenStorageCommandService tokenStorageCommandService;
+    private final JwtUtil jwtUtil;
 
 
     @Override
@@ -59,7 +61,28 @@ public class AuthCommandServiceImpl implements AuthCommandService {
         return tokenCommandService.createLoginToken(customUserDetails);
     }
 
-    // TODO: Reissue하는 코드
+    @Override
+    public String reissueToken(HttpServletRequest request, HttpServletResponse response) {
+        String refreshToken = JwtUtil.resolveToken(request);
+        Long userId = getUserId(refreshToken);
+        if (!jwtUtil.validateToken(refreshToken) || userId == null || !tokenStorageQueryService.getRefreshToken(userId).equals(refreshToken)){
+            throw new TokenException(TokenErrorCode.INVALID_REFRESH_TOKEN);
+        }
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserException(UserErrorCode.NOT_FOUND));
+
+        CustomUserDetails customUserDetails = new CustomUserDetails(user);
+        return tokenCommandService.reissueAccessToken(customUserDetails);
+    }
+
+    @Override
+    public void logout(HttpServletRequest request, HttpServletResponse response) {
+        String accessToken = JwtUtil.resolveToken(request);
+
+        tokenStorageCommandService.addBlackList(accessToken);
+    }
+
 
     private void validateSignUp(AuthRequestDTO.SignUp request) throws AuthException{
         // 아이디 중복 검사
