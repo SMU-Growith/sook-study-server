@@ -32,14 +32,7 @@ public class RedisConfig {
 
     @Bean
     RedisConnectionFactory redisConnectionFactory() {
-        RedisStandaloneConfiguration config =
-                new RedisStandaloneConfiguration(redisConfigData.getHost(), redisConfigData.getPort());
-        LettuceClientConfiguration clientConfig =
-                LettuceClientConfiguration.builder()
-                        .useSsl()   // 🔥 TLS(SSL) 사용
-                        .build();
-
-        return new LettuceConnectionFactory(config, clientConfig);
+        return new LettuceConnectionFactory(redisConfigData.getHost(), redisConfigData.getPort());
     }
 
     @Bean
