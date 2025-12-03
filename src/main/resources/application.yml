@@ -11,6 +11,12 @@ spring:
     show-sql: true
     hibernate:
       ddl-auto: update
+  data:
+    redis:
+      host: ${REDIS_HOST}
+      port: 6379
+      ssl:
+        enabled: true
 
 
 cors:
@@ -40,3 +46,4 @@ beginner:
           - Exception
         web-hook-url: ${DISCORD_WEBHOOK_URL}
         enable: false
+

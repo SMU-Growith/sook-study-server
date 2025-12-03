@@ -5,7 +5,6 @@ import lombok.RequiredArgsConstructor;
 import org.growith.be.growith.domain.auth.service.query.TokenStorageQueryService;
 import org.growith.be.growith.domain.user.service.query.UserQueryService;
 import org.growith.be.growith.global.data.CorsConfigData;
-import org.growith.be.growith.global.security.filter.JsonLoginFilter;
 import org.growith.be.growith.global.security.filter.JwtFilter;
 import org.growith.be.growith.global.util.JwtUtil;
 import org.springframework.context.annotation.Bean;
@@ -19,6 +18,7 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.context.RequestAttributeSecurityContextRepository;
 import org.springframework.security.web.context.SecurityContextRepository;
@@ -37,14 +37,15 @@ public class SecurityConfig {
     private final CorsConfigData corsConfigData;
     private final TokenStorageQueryService tokenStorageQueryService;
     private final AuthenticationConfiguration authenticationConfiguration;
-    private final UserQueryService userQueryService;
+
     private final JwtUtil jwtUtil;
 
     private String[] allowUrl = {
             API_PREFIX + "/auth/**",
             "/swagger-ui/**",
             "/swagger-resources/**",
-            "/v3/api-docs/**"
+            "/v3/api-docs/**",
+            "/health"
     };
 
     private RequestMatcher[] admin = {
@@ -58,8 +59,7 @@ public class SecurityConfig {
                         .requestMatchers(allowUrl).permitAll()
                         .anyRequest().authenticated()
                 )
-                .addFilterBefore(jsonLoginFilter(authenticationManager()), UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(jwtFilter(), JsonLoginFilter.class)
+                .addFilterBefore(jwtFilter(), UsernamePasswordAuthenticationFilter.class)
                 .csrf(AbstractHttpConfigurer::disable)
                 .httpBasic(AbstractHttpConfigurer::disable)
                 .formLogin(AbstractHttpConfigurer::disable)
@@ -87,27 +87,18 @@ public class SecurityConfig {
     }
 
     @Bean
-    AuthenticationManager authenticationManager() throws Exception {
-        return authenticationConfiguration.getAuthenticationManager();
-    }
-
-    @Bean
     SecurityContextRepository requestSecurityContextRepository() {
         return new RequestAttributeSecurityContextRepository();
     }
 
     @Bean
-    Filter jsonLoginFilter(AuthenticationManager authenticationManager) {
-        return new JsonLoginFilter(authenticationManager);
-    }
-
-    @Bean
     Filter jwtFilter() {
-        return new JwtFilter(jwtUtil, userQueryService, tokenStorageQueryService);
+        return new JwtFilter(jwtUtil, tokenStorageQueryService);
     }
 
     private RequestMatcher requestMatcher(HttpMethod method, String url) {
         return PathPatternRequestMatcher.withDefaults().matcher(method, url);
     }
+
 
 }

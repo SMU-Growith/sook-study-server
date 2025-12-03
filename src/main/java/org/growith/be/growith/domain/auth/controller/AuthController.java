@@ -2,9 +2,12 @@ package org.growith.be.growith.domain.auth.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.growith.be.growith.domain.auth.dto.request.AuthRequestDTO;
+import org.growith.be.growith.domain.auth.dto.response.AuthResponseDTO;
 import org.growith.be.growith.domain.auth.service.command.AuthCommandService;
 import org.growith.be.growith.global.error.ApiResponse;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -22,8 +25,34 @@ public class AuthController {
 
     @Operation(summary = "회원가입 API", description = "최초 회원가입 시 필요한 정보를 포함하여 회원가입 진행")
     @PostMapping("/sign-up")
-    public ApiResponse<String> signUp(@RequestBody @Valid AuthRequestDTO.SignUp request){
-        authCommandService.signUp(request);
+    public ApiResponse<AuthResponseDTO.TokenResult> signUp(@RequestBody @Valid AuthRequestDTO.SignUp request){
+        AuthResponseDTO.TokenResult tokenResult = authCommandService.signUp(request);
+        return ApiResponse.onSuccess(tokenResult);
+    }
+
+    @Operation(summary = "로그인 API", description = "로그인 API")
+    @PostMapping("/login")
+    public ApiResponse<AuthResponseDTO.TokenResult> login(@RequestBody @Valid AuthRequestDTO.Login request){
+        AuthResponseDTO.TokenResult login = authCommandService.login(request);
+        return ApiResponse.onSuccess(login);
+    }
+
+    @Operation(summary = "Access Token 재발급 API", description = "토큰 재발급 API")
+    @PostMapping("/reissue")
+    public ApiResponse<AuthResponseDTO.AccessTokenResult> reissueToken(HttpServletRequest request, HttpServletResponse response){
+        AuthResponseDTO.AccessTokenResult accessTokenResult = authCommandService.reissueToken(request, response);
+        return ApiResponse.onSuccess(accessTokenResult);
+    }
+
+
+    @Operation(summary = "로그아웃 API", description = "로그아웃 API")
+    @PostMapping("/logout")
+    public ApiResponse<String> logout(HttpServletRequest request, HttpServletResponse response){
+        authCommandService.logout(request, response);
         return ApiResponse.onSuccess(null);
     }
+
+
+
+
 }
