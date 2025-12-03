@@ -1,11 +1,48 @@
 package org.growith.be.growith.domain.study.dto.request;
 
-import lombok.Builder;
-import org.growith.be.growith.domain.study.entity.enums.StudyStatus;
+import jakarta.validation.constraints.NotBlank;
+import org.growith.be.growith.domain.study.entity.enums.*;
 
 import java.util.List;
 
-public class StudyRequestDto {
+public record StudyRequestDto() {
+
+    public record CreateStudyDTO(
+            @NotBlank
+            String title,
+            String description,
+            @NotBlank
+            ContactType contactType,
+            String url,
+            @NotBlank
+            Long studyFieldId,
+            @NotBlank
+            StudyFormat studyFormat,
+            @NotBlank
+            StudyStyleCategory studyStyleCategory,
+            List<RuleDTO> ruleDTO
+    ){}
+
+    public record RuleDTO(
+            RuleCategory ruleCategory,
+            String description
+    ){ }
+
+    public record UpdateStudyDTO(
+            String title,
+            String description,
+            ContactType contactType,
+            String url,
+            Long studyFieldId,
+            StudyFormat studyFormat,
+            StudyStyleCategory studyStyleCategory,
+            StudyStatus studyStatus,
+            List<RuleDTO> ruleDTO
+    ){}
+
+    public record ChangeStudyStatusDTO(
+            StudyStatus studyStatus
+    ){}
 
 
 }

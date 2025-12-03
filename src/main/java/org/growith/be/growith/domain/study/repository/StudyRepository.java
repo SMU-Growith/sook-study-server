@@ -30,22 +30,4 @@ public interface StudyRepository extends JpaRepository<Study, Long>, JpaSpecific
     @Query("SELECT us.studyRole FROM UserStudy us WHERE us.study.id = :studyId AND us.user.id = :userId")
     String findUserRoleInStudy(@Param("studyId") Long studyId, @Param("userId") Long userId);
 
-    @Modifying
-    @Transactional
-    @Query("DELETE FROM UserStudy us WHERE us.study.id = :studyId AND us.user.id = :userId")
-    void withdraw(@Param("studyId") Long studyId, @Param("userId") Long userId);
-
-    @Modifying
-    @Transactional
-    @Query("DELETE FROM Study s WHERE s.id= :studyId")
-    void deleteByStudyId(@Param("studyId") Long studyId);
-
-    @Query("SELECT new org.growith.be.growith.domain.study.dto.StudyMemberDto(" +
-            "u.id, u.nickName, u.studentStatus, u.major, u.phoneNumber, sa.motivation) " +
-            "FROM UserStudy us " +
-            "JOIN us.user u " +
-            "LEFT JOIN StudyApplication sa ON sa.user = u AND sa.study = us.study " +
-            "WHERE us.study.id = :studyId")
-    List<org.growith.be.growith.domain.study.dto.StudyMemberDto> findStudyMembers(@Param("studyId") Long studyId);
-
 }

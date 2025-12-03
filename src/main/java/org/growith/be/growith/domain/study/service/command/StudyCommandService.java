@@ -1,0 +1,12 @@
+package org.growith.be.growith.domain.study.service.command;
+
+import org.growith.be.growith.domain.study.dto.request.StudyRequestDto;
+import org.growith.be.growith.domain.study.dto.response.StudyResponseDto;
+import org.growith.be.growith.domain.study.entity.enums.StudyStatus;
+
+public interface StudyCommandService {
+    StudyResponseDto.StudyDetail createStudy(StudyRequestDto.CreateStudyDTO request, Long userId);
+    StudyResponseDto.StudyDetail updateStudy(StudyRequestDto.UpdateStudyDTO request, Long studyId, Long userId);
+    void deleteStudy(Long studyId, Long userId);
+    StudyStatus changeStudyStatus(Long studyId, StudyStatus studyStatus, Long userId);
+}

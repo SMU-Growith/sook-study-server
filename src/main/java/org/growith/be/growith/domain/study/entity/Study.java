@@ -3,11 +3,14 @@ package org.growith.be.growith.domain.study.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.growith.be.growith.domain.journal.dto.StudySession;
+import org.growith.be.growith.domain.study.dto.request.StudyRequestDto;
 import org.growith.be.growith.domain.study.entity.enums.ContactType;
 import org.growith.be.growith.domain.study.entity.enums.StudyStatus;
+import org.growith.be.growith.domain.study.entity.enums.StudyStyleCategory;
 import org.growith.be.growith.global.common.BaseEntity;
 import org.growith.be.growith.domain.user.entity.User;
-import org.growith.be.growith.domain.study.entity.enums.Format;
+import org.growith.be.growith.domain.study.entity.enums.StudyFormat;
 
 import java.util.List;
 
@@ -46,14 +49,14 @@ public class Study extends BaseEntity {
     private User user;
 
     @Enumerated(EnumType.STRING)
-    private Format format;
+    private StudyFormat studyFormat;
 
-    @OneToMany(mappedBy = "study", fetch = FetchType.LAZY)
-    private List<StudyStyle> studyStyles;
+    @Enumerated(EnumType.STRING)
+    private StudyStyleCategory studyStyleCategory;
 
         
     @OneToMany(mappedBy = "study")
-    private List<StudySession> studySessions;  
+    private List<StudySession> studySessions;
 
     @Builder.Default
     @Column(name = "scrap_count", nullable = false)
@@ -69,11 +72,17 @@ public class Study extends BaseEntity {
         }
     }
 
-    public void setTitle(String title) { this.title = title; }
-    public void setDescription(String description) { this.description = description; }
-    public void setContactType(ContactType contactType) { this.contactType = contactType; }
-    public void setStudyField(StudyField studyField) { this.studyField = studyField; }
-    public void setFormat(Format format) { this.format = format; }
-    public void setStudyStatus(StudyStatus status) { this.studyStatus = status; }
-    public java.time.LocalDateTime getCreatedAt() { return super.getCreatedAt(); }
+    public void updateStudy(StudyRequestDto.UpdateStudyDTO request, StudyField studyField) {
+        this.title = request.title();
+        this.description = request.description();
+        this.contactType = request.contactType();
+        this.url = request.url();
+        this.studyStatus  = request.studyStatus();
+        this.studyFormat = request.studyFormat();
+        this.studyField = studyField;
+    }
+
+    public void changeStudyStatus (StudyStatus studyStatus) {
+        this.studyStatus = studyStatus;
+    }
 }

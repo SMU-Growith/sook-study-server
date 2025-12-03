@@ -1,7 +1,6 @@
 package org.growith.be.growith.domain.study.repository;
 
 import org.growith.be.growith.domain.study.entity.Study;
-import org.growith.be.growith.domain.study.entity.StudyStyle;
 import org.growith.be.growith.domain.study.entity.enums.StudyStatus;
 import org.springframework.data.jpa.domain.Specification;
 
@@ -27,11 +26,6 @@ public class StudySpecifications {
             // 진행방식 OR
             if (formats != null && !formats.isEmpty()) {
                 predicates.add(root.get("format").in(formats));
-            }
-            // 성향 OR (studyStyles join)
-            if (styles != null && !styles.isEmpty()) {
-                Join<Study, StudyStyle> styleJoin = root.join("studyStyles", JoinType.LEFT);
-                predicates.add(styleJoin.get("style").get("styleName").in(styles));
             }
             // 모집상태
             if (status != null && !status.isBlank()) {
