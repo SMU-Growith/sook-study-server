@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.jsontype.BasicPolymorphicTypeValidator;
 import com.fasterxml.jackson.databind.jsontype.PolymorphicTypeValidator;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.growith.be.growith.global.data.RedisConfigData;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -24,6 +25,7 @@ import java.time.Duration;
 
 import static org.springframework.data.redis.serializer.RedisSerializationContext.SerializationPair.fromSerializer;
 
+@Slf4j
 @Configuration
 @RequiredArgsConstructor
 public class RedisConfig {
@@ -32,6 +34,7 @@ public class RedisConfig {
 
     @Bean
     RedisConnectionFactory redisConnectionFactory() {
+        log.info(">>> Redis connect target = {}:{}", redisConfigData.getHost(), redisConfigData.getPort());
         return new LettuceConnectionFactory(redisConfigData.getHost(), redisConfigData.getPort());
     }
 
