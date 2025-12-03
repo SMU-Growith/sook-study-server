@@ -1,4 +1,4 @@
-package org.growith.be.growith.domain.study.entity;
+package org.growith.be.growith.domain.journal.dto;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.growith.be.growith.domain.journal.entity.StudyJournal;
+import org.growith.be.growith.domain.study.entity.Study;
 import org.growith.be.growith.global.common.BaseEntity;
 
 @Getter

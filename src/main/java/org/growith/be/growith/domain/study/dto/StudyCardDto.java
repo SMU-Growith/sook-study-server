@@ -2,6 +2,7 @@ package org.growith.be.growith.domain.study.dto;
 
 import lombok.*;
 import org.growith.be.growith.domain.study.entity.enums.StudyStatus;
+import org.growith.be.growith.domain.study.entity.enums.StudyStyleCategory;
 
 import java.util.List;
 
@@ -16,7 +17,7 @@ public class StudyCardDto {
     private Long scrapCount;
     private String format; // 진행방식
     private String fieldName; // 분야
-    private List<String> styleNames;
+    private StudyStyleCategory styleNames;
 
     // 내 스터디 조회에서 사용
     private Integer memberCount;    // 스터디원 수

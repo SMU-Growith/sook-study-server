@@ -1,12 +1,11 @@
 package org.growith.be.growith.domain.study.initializer;
 
-import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 
 import org.growith.be.growith.domain.study.entity.Study;
 import org.growith.be.growith.domain.study.entity.enums.ContactType;
 import org.growith.be.growith.domain.study.entity.enums.StudyStatus;
-import org.growith.be.growith.domain.study.entity.enums.Format;
+import org.growith.be.growith.domain.study.entity.enums.StudyFormat;
 import org.growith.be.growith.domain.study.repository.StudyRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -39,7 +38,7 @@ public class StudyDataInitializer implements CommandLineRunner {
                 .contactType(ContactType.KAKAO)
                 .url("https://example.com/ai-idea")
                 .isRecruiting(true)
-                .format(Format.ONLINE)
+                .studyFormat(StudyFormat.ONLINE)
                 .build();
 
         // ── 더미 스터디 2 ────────────────────────────────────────
@@ -50,7 +49,7 @@ public class StudyDataInitializer implements CommandLineRunner {
                 .contactType(ContactType.EMAIL)
                 .url("https://example.com/frontend-meetup")
                 .isRecruiting(true)
-                .format(Format.OFFLINE)
+                .studyFormat(StudyFormat.OFFLINE)
                 .build();
 
         // ── 더미 스터디 3 ────────────────────────────────────────
@@ -61,7 +60,7 @@ public class StudyDataInitializer implements CommandLineRunner {
                 .contactType(ContactType.GOOGLEFORM)
                 .url("https://example.com/data-science")
                 .isRecruiting(false)   // 모집 종료 예시
-                .format(Format.ONLINE)
+                .studyFormat(StudyFormat.ONLINE)
                 .build();
 
         // 저장

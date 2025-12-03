@@ -25,4 +25,9 @@ public class Rule extends BaseEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name ="study_id")
     private Study study;
+
+    public void update(RuleCategory ruleCategory, String description) {
+        this.ruleCategory = ruleCategory;
+        this.description = description;
+    }
 }
