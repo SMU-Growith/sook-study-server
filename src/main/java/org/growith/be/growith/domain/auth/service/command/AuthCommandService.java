@@ -8,6 +8,6 @@ import org.growith.be.growith.domain.auth.dto.response.AuthResponseDTO;
 public interface AuthCommandService {
     AuthResponseDTO.TokenResult signUp(AuthRequestDTO.SignUp request);
     AuthResponseDTO.TokenResult login(AuthRequestDTO.Login request);
-    String reissueToken(HttpServletRequest request, HttpServletResponse response);
+    AuthResponseDTO.AccessTokenResult reissueToken(HttpServletRequest request, HttpServletResponse response);
     void logout(HttpServletRequest request, HttpServletResponse response);
 }

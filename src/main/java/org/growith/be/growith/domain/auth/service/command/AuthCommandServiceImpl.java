@@ -58,11 +58,13 @@ public class AuthCommandServiceImpl implements AuthCommandService {
         }
 
         CustomUserDetails customUserDetails = new CustomUserDetails(user);
-        return tokenCommandService.createLoginToken(customUserDetails);
+        AuthResponseDTO.TokenResult loginToken = tokenCommandService.createLoginToken(customUserDetails);
+        tokenStorageCommandService.addRefreshToken(user.getId(), loginToken.refreshToken());
+        return loginToken;
     }
 
     @Override
-    public String reissueToken(HttpServletRequest request, HttpServletResponse response) {
+    public AuthResponseDTO.AccessTokenResult reissueToken(HttpServletRequest request, HttpServletResponse response) {
         String refreshToken = JwtUtil.resolveToken(request);
         Long userId = getUserId(refreshToken);
         if (!jwtUtil.validateToken(refreshToken) || userId == null || !tokenStorageQueryService.getRefreshToken(userId).equals(refreshToken)){
@@ -73,7 +75,8 @@ public class AuthCommandServiceImpl implements AuthCommandService {
                 .orElseThrow(() -> new UserException(UserErrorCode.NOT_FOUND));
 
         CustomUserDetails customUserDetails = new CustomUserDetails(user);
-        return tokenCommandService.reissueAccessToken(customUserDetails);
+        String accessToken = tokenCommandService.reissueAccessToken(customUserDetails);
+        return AuthConverter.toAccessTokenResult(user.getId(), accessToken);
     }
 
     @Override

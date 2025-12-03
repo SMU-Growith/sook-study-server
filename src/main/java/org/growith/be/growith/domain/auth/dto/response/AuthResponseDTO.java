@@ -11,7 +11,7 @@ public record AuthResponseDTO() {
     ){}
 
     @Builder
-    public record LoginResult(
+    public record AccessTokenResult(
             Long userId,
             String accessToken
     ){}

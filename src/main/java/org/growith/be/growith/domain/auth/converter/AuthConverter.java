@@ -29,8 +29,8 @@ public class AuthConverter {
     }
 
     // AuthResponseDTO.LoginResult
-    public static AuthResponseDTO.LoginResult toLoginResult(Long userId, String accessToken){
-        return AuthResponseDTO.LoginResult.builder()
+    public static AuthResponseDTO.AccessTokenResult toAccessTokenResult(Long userId, String accessToken){
+        return AuthResponseDTO.AccessTokenResult.builder()
                 .userId(userId)
                 .accessToken(accessToken)
                 .build();

@@ -39,9 +39,9 @@ public class AuthController {
 
     @Operation(summary = "Access Token 재발급 API", description = "토큰 재발급 API")
     @PostMapping("/reissue")
-    public ApiResponse<String> reissueToken(HttpServletRequest request, HttpServletResponse response){
-        String accessToken = authCommandService.reissueToken(request, response);
-        return ApiResponse.onSuccess(accessToken);
+    public ApiResponse<AuthResponseDTO.AccessTokenResult> reissueToken(HttpServletRequest request, HttpServletResponse response){
+        AuthResponseDTO.AccessTokenResult accessTokenResult = authCommandService.reissueToken(request, response);
+        return ApiResponse.onSuccess(accessTokenResult);
     }
 
 
