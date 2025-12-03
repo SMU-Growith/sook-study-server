@@ -35,6 +35,7 @@ public class SecurityConfig {
 
     private static final String API_PREFIX = "/api/v1";
     private final CorsConfigData corsConfigData;
+    private final TokenStorageQueryService tokenStorageQueryService;
     private final AuthenticationConfiguration authenticationConfiguration;
 
     private final JwtUtil jwtUtil;
@@ -92,7 +93,7 @@ public class SecurityConfig {
 
     @Bean
     Filter jwtFilter() {
-        return new JwtFilter(jwtUtil);
+        return new JwtFilter(jwtUtil, tokenStorageQueryService);
     }
 
     private RequestMatcher requestMatcher(HttpMethod method, String url) {
