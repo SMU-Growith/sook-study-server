@@ -82,8 +82,12 @@ public class AuthCommandServiceImpl implements AuthCommandService {
     @Override
     public void logout(HttpServletRequest request, HttpServletResponse response) {
         String accessToken = JwtUtil.resolveToken(request);
-
+        String refreshToken = tokenStorageQueryService.getRefreshToken(getUserId(accessToken));
+        // redis 블랙리스트 추가
         tokenStorageCommandService.addBlackList(accessToken);
+        tokenStorageCommandService.addBlackList(refreshToken);
+        // redis refresh token 삭제
+        tokenStorageCommandService.deleteRefreshToken(getUserId(refreshToken));
     }
 
 

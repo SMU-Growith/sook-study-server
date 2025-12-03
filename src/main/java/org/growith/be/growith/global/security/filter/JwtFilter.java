@@ -5,6 +5,7 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.growith.be.growith.domain.auth.service.query.TokenStorageQueryService;
 import org.growith.be.growith.global.security.constants.AuthenticationConstants;
 import org.growith.be.growith.global.util.JwtUtil;
 import org.springframework.security.core.Authentication;
@@ -18,6 +19,7 @@ import java.io.IOException;
 public class JwtFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
+    private final TokenStorageQueryService tokenStorageQueryService;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -27,7 +29,7 @@ public class JwtFilter extends OncePerRequestFilter {
 
         String token = resolveToken(request);
 
-        if (StringUtils.hasText(token) && jwtUtil.validateToken(token)) {
+        if (StringUtils.hasText(token) && jwtUtil.validateToken(token) && !tokenStorageQueryService.isBlackList(token)) {
             Authentication authentication = jwtUtil.getAuthentication(token);
             SecurityContextHolder.getContext().setAuthentication(authentication);
         }

@@ -13,7 +13,7 @@ public class RedisStorageQueryService implements TokenStorageQueryService{
 
     @Override
     public boolean isBlackList(String token) {
-        return false;
+        return Boolean.TRUE.equals(redisUtil.has(TokenStorageConstants.BLACKLIST_PREFIX + token));
     }
 
     @Override
