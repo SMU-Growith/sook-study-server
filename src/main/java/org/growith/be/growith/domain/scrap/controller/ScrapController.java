@@ -74,11 +74,11 @@ public class ScrapController {
                 .studyId(study.getId())
                 .studyStatus(study.getStudyStatus())
                 .title(study.getTitle())
-                .authorId(String.valueOf(study.getUser().getUserId()))
+                .authorId(String.valueOf(study.getUser().getId()))
                 .scrapCount(study.getScrapCount())
-                .format(study.getFormat().name())
+                .format(study.getStudyFormat().name())
                 .fieldName(study.getStudyField().getName())
-                .styleNames(study.getStudyStyles().stream().map(ss -> ss.getStyle().getStyleName()).collect(Collectors.toList()))
+                .styleNames(study.getStudyStyleCategory())
                 .build();
     }
 }

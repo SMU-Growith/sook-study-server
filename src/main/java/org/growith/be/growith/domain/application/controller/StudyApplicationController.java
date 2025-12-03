@@ -33,7 +33,7 @@ public class StudyApplicationController {
             @AuthenticatedUser User user,
             @RequestBody StudyApplicationRequestDTO.CreateStudyApplicationDTO applicationDto
     ) {
-        StudyApplication studyApplication = studyApplicationCommandService.createApplication(studyId, user.getUserId(), applicationDto);
+        StudyApplication studyApplication = studyApplicationCommandService.createApplication(studyId, user.getId(), applicationDto);
         return ApiResponse.onSuccess(StudyApplicationConverter.toApplicationDetailDTO(studyApplication));
     }
 

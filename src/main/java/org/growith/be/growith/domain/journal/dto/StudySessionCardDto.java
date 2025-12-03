@@ -1,4 +1,4 @@
-package org.growith.be.growith.domain.study.dto;
+package org.growith.be.growith.domain.journal.dto;
 
 import lombok.*;
 

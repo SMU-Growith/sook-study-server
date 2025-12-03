@@ -47,10 +47,6 @@ public class User extends BaseEntity {
 
     private LocalDateTime isDeleted;
 
-    public Long getUserId() {
-        return this.id;
-    }
-
     public void changeUserProfile(UserRequestDTO.ChangeInfo request){
         this.nickName = request.nickName();
         this.major = request.major();
