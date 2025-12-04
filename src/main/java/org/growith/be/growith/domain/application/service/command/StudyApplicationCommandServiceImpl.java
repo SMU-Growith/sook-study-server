@@ -36,7 +36,7 @@ public class StudyApplicationCommandServiceImpl implements StudyApplicationComma
     public StudyApplication createApplication(Long studyId, Long userId, StudyApplicationRequestDTO.CreateStudyApplicationDTO request) {
         // 스터디 확인
         Study study = studyRepository.findById(studyId)
-                .orElseThrow(() -> new IllegalArgumentException("스터디를 찾을 수 없음"));
+                .orElseThrow(() -> new StudyException(StudyErrorCode.STUDY_NOT_FOUND));
 
         // 사용자 확인
         User user = userRepository.findById(userId)
