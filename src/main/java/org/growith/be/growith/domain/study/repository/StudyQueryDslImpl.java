@@ -9,10 +9,8 @@ import org.growith.be.growith.domain.study.entity.enums.StudyFormat;
 import org.growith.be.growith.domain.study.entity.enums.StudyStatus;
 import org.growith.be.growith.domain.study.entity.enums.StudyStyleCategory;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
 
-import java.awt.print.Pageable;
 import java.util.List;
 
 import static org.growith.be.growith.domain.study.entity.QStudy.study;
@@ -33,7 +31,9 @@ public class StudyQueryDslImpl implements StudyQueryDsl {
                 )
                 .offset(pageRequest.getOffset())
                 .limit(pageRequest.getPageSize())
-                .orderBy(study.createdAt.desc())
+                .orderBy(study.createdAt.desc(),
+                        study.scrapCount.desc()
+                )
                 .fetch();
     }
 

@@ -12,6 +12,7 @@ import org.growith.be.growith.global.common.BaseEntity;
 import org.growith.be.growith.domain.user.entity.User;
 import org.growith.be.growith.domain.study.entity.enums.StudyFormat;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
@@ -36,6 +37,7 @@ public class Study extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private ContactType contactType;
 
+    // 연락 방식에 따른 url
     private String url;
 
     private Boolean isRecruiting;

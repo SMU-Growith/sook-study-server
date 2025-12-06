@@ -3,7 +3,6 @@ package org.growith.be.growith.domain.study.dto.request;
 import jakarta.validation.constraints.NotBlank;
 import org.growith.be.growith.domain.study.entity.StudyField;
 import org.growith.be.growith.domain.study.entity.enums.*;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -15,6 +14,7 @@ public record StudyRequestDto() {
             String description,
             @NotBlank
             ContactType contactType,
+            @NotBlank
             String url,
             @NotBlank
             Long studyFieldId,

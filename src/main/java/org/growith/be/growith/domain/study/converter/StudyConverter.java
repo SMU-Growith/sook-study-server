@@ -21,7 +21,7 @@ public class StudyConverter {
                 .description(dto.description())
                 .studyStatus(StudyStatus.ACTIVE)
                 .contactType(dto.contactType())
-                .url(null)
+                .url(dto.url())
                 .isRecruiting(true)
                 .studyFormat(dto.studyFormat())
                 .studyStyleCategory(dto.studyStyleCategory())
@@ -29,7 +29,6 @@ public class StudyConverter {
                 .studyField(studyField)
                 .build();
     }
-
 
     // CreateRuleDTO -> Rule
     public static Rule toRuleEntity(StudyRequestDto.RuleDTO dto, Study study){
@@ -50,6 +49,7 @@ public class StudyConverter {
                 .description(study.getDescription())
                 .studyStatus(study.getStudyStatus())
                 .contactType(study.getContactType())
+                .url(study.getUrl())
                 .isRecruiting(study.getIsRecruiting())
                 .studyFieldId(study.getStudyField().getId())
                 .studyFieldName(study.getStudyField().getName())
@@ -126,6 +126,37 @@ public class StudyConverter {
     public static StudyResponseDto.ChangedStudyStatus toChangedStudyStatus(StudyStatus studyStatus){
         return StudyResponseDto.ChangedStudyStatus.builder()
                 .studyStatus(studyStatus)
+                .build();
+    }
+
+    //  Study  -> StudyResponseDto.StudyPreviewDTO
+    public static StudyResponseDto.StudyPreviewDTO toStudyPreviewDTO(Study study){
+        Boolean isScraped = study.getScrapCount() != 0;
+
+        return StudyResponseDto.StudyPreviewDTO.builder()
+                .studyId(study.getId())
+                .studyStatus(study.getStudyStatus())
+                .title(study.getTitle())
+                .userId(study.getUser().getId())
+                .url(study.getUrl())
+                .scrapCount(study.getScrapCount())
+                .isScraped(isScraped)
+                .studyFormat(study.getStudyFormat())
+                .studyField(study.getStudyField())
+                .studyStyleCategory(study.getStudyStyleCategory())
+                .build();
+    }
+
+
+    // StudyResponseDto.StudyPreviewDTO
+    // -> StudyResponseDto.StudyPreviewDTOList
+    public static StudyResponseDto.StudyPreviewDTOList toStudyPreviewDTOList(List<Study> studies){
+        List<StudyResponseDto.StudyPreviewDTO> list = studies.stream()
+                .map(StudyConverter::toStudyPreviewDTO)
+                .toList();
+
+        return StudyResponseDto.StudyPreviewDTOList.builder()
+                .listSize(list.size())
                 .build();
     }
 

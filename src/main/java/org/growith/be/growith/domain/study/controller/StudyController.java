@@ -30,28 +30,28 @@ public class StudyController {
     private final StudyCommandService studycommandService;
     private final StudyQueryService studyQueryService;
 
+    @Operation(summary = "스터디 검색 API", description = "태그를 통해 스터디를 검색하는 API")
     @GetMapping
-    public ApiResponse<List<StudyCardDto>> getStudies(
+    public ApiResponse<StudyResponseDto.StudyPreviewDTOList> getStudies(
             StudyRequestDto.SearchStudyCondition request,
             @PageableDefault(page = 0, size = 12,
-                    sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
+                    sort = "createdAt", direction = Sort.Direction.DESC
+            ) Pageable pageable
     ) {
         List<Study> studies = studyQueryService.searchStudies(request, pageable);
-
-
-        return ApiResponse.onSuccess(null
-//                studyQueryService.searchStudies(fields, formats, styles, status, keyword, sort, page, size)
-        );
+        StudyResponseDto.StudyPreviewDTOList studyPreviewDTOList = StudyConverter.toStudyPreviewDTOList(studies);
+        return ApiResponse.onSuccess(studyPreviewDTOList);
     }
 
-    @GetMapping("/myStudies")
-    public ApiResponse<List<StudyResponseDto.StudyCardDto>> getMyStudies(
+
+    @GetMapping("/my-studies")
+    public ApiResponse<StudyResponseDto.StudyPreviewDTOList> getMyStudies(
             @AuthenticatedUser User user,
             @RequestParam(defaultValue = "ACTIVE") String studyStatus,
             @PageableDefault(page = 0, size = 6) Pageable pageable
     ) {
-//        studyQueryService.getMyStudies(String.valueOf(user.getUserId()), page, size, studyStatus)
-        return ApiResponse.onSuccess(null);
+        StudyResponseDto.StudyPreviewDTOList myStudies = studyQueryService.getMyStudies(String.valueOf(user.getId()), pageable.getPageNumber(), pageable.getPageSize(), studyStatus);
+        return ApiResponse.onSuccess(myStudies);
     }
 
     @GetMapping("/popular")
@@ -130,6 +130,7 @@ public class StudyController {
         return  ApiResponse.onSuccess(null);
     }
 
+    // 스터디 나가기 - 팀원만 나갈 수 있다, 스터디 탈퇴
     @DeleteMapping("/{studyId}/withdraw")
     public ApiResponse<Void> withdrawStudy(
             @PathVariable Long studyId,

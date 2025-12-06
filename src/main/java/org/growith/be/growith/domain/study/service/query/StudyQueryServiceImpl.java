@@ -42,7 +42,7 @@ public class StudyQueryServiceImpl implements StudyQueryService {
 
 
     // 자신의 스터디 조회
-    public List<StudyResponseDto.StudyCardDto> getMyStudies(String userId, int page, int size, String studyStatus) {
+    public StudyResponseDto.StudyPreviewDTOList getMyStudies(String userId, int page, int size, String studyStatus) {
         StudyStatus status = StudyStatus.valueOf(studyStatus.toUpperCase());
         List<Study> studies = studyRepository.findMyStudies(Long.parseLong(userId), PageRequest.of(page, size), status);
 
@@ -106,7 +106,7 @@ public class StudyQueryServiceImpl implements StudyQueryService {
         return StudyConverter.toStudyDetail(study, rules);
     }
 
-
+    // 스터디 검색
     public List<Study> searchStudies(
             StudyRequestDto.SearchStudyCondition request,
             Pageable pageable
@@ -115,6 +115,7 @@ public class StudyQueryServiceImpl implements StudyQueryService {
         return studyRepository.searchStudy(request, pageRequest);
     }
 
+    // 스터디 세션 조회
     public List<StudySessionCardDto> getStudySessions(Long studyId, int page, int size) {
         Study study = studyRepository.findById(studyId)
                 .orElseThrow(() -> new IllegalArgumentException("studyId에 해당하는 스터디 없음"));
