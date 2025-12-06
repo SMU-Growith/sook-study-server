@@ -161,4 +161,20 @@ public class StudyConverter {
                 .build();
     }
 
+    public static StudyResponseDto.UserStudyPreviewDto toUserStudyPreviewDto(UserStudy dto, Long memberCount, Long studySessionCount){
+        return StudyResponseDto.UserStudyPreviewDto.builder()
+                .studyId(dto.getStudy().getId())
+                .studyRole(dto.getStudyRole())
+                .title(dto.getStudy().getTitle())
+                .studyStatus(dto.getStudy().getStudyStatus())
+                .userId(dto.getUser().getId())
+                .url(dto.getStudy().getUrl())
+                .memberCount(memberCount)
+                .studySessionCount(studySessionCount)
+                .studyFormat(dto.getStudy().getStudyFormat())
+                .studyField(dto.getStudy().getStudyField())
+                .studyStyleCategory(dto.getStudy().getStudyStyleCategory())
+                .build();
+    }
+
 }

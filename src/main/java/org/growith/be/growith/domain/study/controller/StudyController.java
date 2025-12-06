@@ -42,14 +42,14 @@ public class StudyController {
         return ApiResponse.onSuccess(studyPreviewDTOList);
     }
 
-
+    @Operation(summary = "사용자 스터디 리스트 조회 API", description = "사용자의 참여 이력이 있는 스터디를 리스트로 조회하는 API")
     @GetMapping("/my-studies")
-    public ApiResponse<StudyResponseDto.StudyPreviewDTOList> getMyStudies(
+    public ApiResponse<List<StudyResponseDto.UserStudyPreviewDto>> getMyStudies(
             @AuthenticatedUser User user,
             @RequestParam(defaultValue = "ACTIVE") String studyStatus,
             @PageableDefault(page = 0, size = 6) Pageable pageable
     ) {
-        StudyResponseDto.StudyPreviewDTOList myStudies = studyQueryService.getMyStudies(String.valueOf(user.getId()), pageable.getPageNumber(), pageable.getPageSize(), studyStatus);
+        List<StudyResponseDto.UserStudyPreviewDto> myStudies = studyQueryService.getMyStudies(user.getId(), pageable);
         return ApiResponse.onSuccess(myStudies);
     }
 

@@ -7,6 +7,7 @@ import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.growith.be.growith.domain.study.dto.request.StudyRequestDto;
 import org.growith.be.growith.domain.study.entity.Study;
+import org.growith.be.growith.domain.study.entity.StudyField;
 import org.growith.be.growith.domain.study.entity.enums.StudyFormat;
 import org.growith.be.growith.domain.study.entity.enums.StudyStatus;
 import org.growith.be.growith.domain.study.entity.enums.StudyStyleCategory;
@@ -25,13 +26,14 @@ public class StudyQueryDslImpl implements StudyQueryDsl {
 
     private JPAQueryFactory queryFactory;
 
-    public List<Study> searchStudy(StudyRequestDto.SearchStudyCondition request, PageRequest pageRequest){
+    public List<Study> searchStudy(StudyRequestDto.SearchStudyCondition request, List<StudyField> studyFields, PageRequest pageRequest){
         return queryFactory.selectFrom(study)
                 .where(
                     studyStyleIn(request.studyStyleCategories()),
                     studyFormatIn(request.studyFormats()),
                     studyStatusEq(request.studyStatus()),
-                    contentContains(request.searchContent())
+                    contentContains(request.searchContent()),
+                    studyFieldIn(studyFields)
                 )
                 .offset(pageRequest.getOffset())
                 .limit(pageRequest.getPageSize())
@@ -76,6 +78,13 @@ public class StudyQueryDslImpl implements StudyQueryDsl {
             return null;
         }
         return study.title.containsIgnoreCase(searchContent);
+    }
+
+    private BooleanExpression studyFieldIn(List<StudyField> studyFields) {
+        if (studyFields == null || studyFields.isEmpty()) {
+            return null;
+        }
+        return study.studyField.in(studyFields);
     }
 
     private OrderSpecifier<?> getOrderSpecifier(Sort sort) {

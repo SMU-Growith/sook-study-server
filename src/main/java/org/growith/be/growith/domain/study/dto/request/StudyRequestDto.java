@@ -47,7 +47,7 @@ public record StudyRequestDto() {
     ){}
 
     public record SearchStudyCondition(
-            List<StudyField> studyFields,
+            List<Long> studyFieldIds,
             List<StudyFormat> studyFormats,
             List<StudyStyleCategory> studyStyleCategories,
             StudyStatus studyStatus,
