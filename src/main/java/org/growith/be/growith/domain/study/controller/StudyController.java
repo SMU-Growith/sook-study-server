@@ -92,6 +92,19 @@ public class StudyController {
     }
 
     @Operation(
+            summary = "스터디 상태 토글 API"
+            , description = "스터디 상태를 ACTIVE ↔ CLOSED로 토글. 팀장 권한을 갖는 사용자만 실행할 수 있다."
+    )
+    @PatchMapping("/{studyId}/toggle-status")
+    public ApiResponse<StudyResponseDto.ChangedStudyStatus> toggleStudyStatus(
+            @PathVariable Long studyId,
+            @AuthenticatedUser User user
+    ) {
+        StudyStatus newStatus = studycommandService.toggleStudyStatus(studyId, user.getId());
+        return ApiResponse.onSuccess(StudyConverter.toChangedStudyStatus(newStatus));
+    }
+
+    @Operation(
             summary = "스터디 수정 API"
             , description = "스터디 수정 API,  팀장 권한을 갖는 사용자만 스터디를 수정할 수 있다"
     )

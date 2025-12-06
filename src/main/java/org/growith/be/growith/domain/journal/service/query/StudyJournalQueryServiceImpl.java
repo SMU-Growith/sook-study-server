@@ -34,15 +34,24 @@ public class StudyJournalQueryServiceImpl implements StudyJournalQueryService {
 
         StudyJournalDto.EmojiCounts emojiCounts = journalEmojiService.getEmojiCounts(journalId);
 
+        // 첨부파일 DTO 변환
+        List<StudyJournalDto.AttachmentDto> attachmentDtos = journal.getAttachments().stream()
+                .map(att -> StudyJournalDto.AttachmentDto.builder()
+                        .attachmentId(att.getId())
+                        .fileUrl(att.getFileUrl())
+                        .fileName(att.getFileName())
+                        .fileSize(att.getFileSize())
+                        .build())
+                .toList();
+
         return StudyJournalDto.builder()
                 .journalId(journal.getId())
                 .title(journal.getTitle())
                 .content(journal.getContent())
                 .url(journal.getUrl())
-                .fileUrl(journal.getFileUrl())
-                .fileName(journal.getFileName())
                 .sessionId(journal.getSessionId())
                 .userId(journal.getUserId())
+                .attachments(attachmentDtos)
                 .emojiCounts(emojiCounts)
                 .build();
     }

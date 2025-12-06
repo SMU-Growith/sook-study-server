@@ -1,6 +1,7 @@
 package org.growith.be.growith.domain.study.service.command;
 
 import lombok.RequiredArgsConstructor;
+import org.growith.be.growith.domain.stamp.service.StampUpdateHelper;
 import org.growith.be.growith.domain.study.converter.StudyConverter;
 import org.growith.be.growith.domain.study.dto.request.StudyRequestDto;
 import org.growith.be.growith.domain.study.dto.response.StudyResponseDto;
@@ -28,6 +29,7 @@ public class StudyCommandServiceImpl implements StudyCommandService{
     private final StudyFieldRepository studyFieldRepository;
     private final RuleRepository ruleRepository;
     private final UserStudyRepository userStudyRepository;
+    private final StampUpdateHelper stampUpdateHelper;
 
     // 스터디 생성
     public StudyResponseDto.StudyDetail createStudy(StudyRequestDto.CreateStudyDTO request, Long userId) {
@@ -49,6 +51,11 @@ public class StudyCommandServiceImpl implements StudyCommandService{
                 .toList();
         // 규칙 저장
         ruleRepository.saveAll(rules);
+
+        // 리더숙 스탬프 업데이트
+        long createdStudyCount = studyRepository.countByUserId(userId);
+        stampUpdateHelper.updateLeaderStamp(userId, (int) createdStudyCount);
+
          return StudyConverter.toStudyDetail(savedStudy, rules);
     }
 
@@ -139,5 +146,23 @@ public class StudyCommandServiceImpl implements StudyCommandService{
 
         study.changeStudyStatus(studyStatus);
         return studyStatus;
+    }
+
+    public StudyStatus toggleStudyStatus(Long studyId, Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserException(UserErrorCode.NOT_FOUND));
+
+        Study study = studyRepository.findById(studyId)
+                .orElseThrow(() -> new StudyException(StudyErrorCode.STUDY_NOT_FOUND));
+
+        // 수정 권한 확인
+        if (!study.getUser().getId().equals(userId)) {
+            throw new StudyException(StudyErrorCode.STUDY_UPDATE_FORBIDDEN);
+        }
+
+        // 현재 상태를 토글
+        StudyStatus newStatus = study.getStudyStatus().toggle();
+        study.changeStudyStatus(newStatus);
+        return newStatus;
     }
 }

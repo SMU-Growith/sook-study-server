@@ -15,6 +15,7 @@ import org.growith.be.growith.global.error.ApiResponse;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
+import io.swagger.v3.oas.annotations.Operation;
 
 import java.util.List;
 
@@ -27,6 +28,7 @@ public class StudySessionController {
     private final StudyCommandService studycommandService;
     private final StudyQueryService studyQueryService;
     private final JournalEmojiService journalEmojiService;
+    private final org.growith.be.growith.domain.journal.service.command.StudyJournalCommandService studyJournalCommandService;
 
 
     //스터디 세션 리스트 조회
@@ -66,7 +68,19 @@ public class StudySessionController {
         return  ApiResponse.onSuccess(null);
     }
 
-
+    // 스터디 세션 삭제 (팀장권한)
+    @Operation(
+            summary = "스터디 세션 삭제 API",
+            description = "팀장 권한을 가진 사용자만 해당 스터디의 세션을 삭제할 수 있습니다."
+    )
+    @DeleteMapping("/session/{sessionId}")
+    public ApiResponse<Void> deleteStudySession(
+            @PathVariable Long sessionId,
+            @AuthenticatedUser User user
+    ) {
+        studyJournalCommandService.deleteStudySession(sessionId, user.getId());
+        return ApiResponse.onSuccess(null);
+    }
 
     // 스터디 일지 제출
     @PostMapping("/session/{sessionId}/journal")

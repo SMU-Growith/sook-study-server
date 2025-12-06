@@ -16,6 +16,8 @@ import org.growith.be.growith.global.error.exception.handler.StudyException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 @Service
 @Transactional
 @RequiredArgsConstructor
@@ -24,6 +26,7 @@ public class StudyJournalCommandServiceImpl implements StudyJournalCommandServic
     private final StudyJournalRepository studyJournalRepository;
     private final UserRepository userRepository;
     private final StudyRepository studyRepository;
+    private final org.growith.be.growith.domain.study.repository.UserStudyRepository userStudyRepository;
 
     public StudyJournalDto createStudyJournal(Long sessionId, Long userId, StudyJournalDto dto) {
         // 세션 존재 확인
@@ -34,17 +37,41 @@ public class StudyJournalCommandServiceImpl implements StudyJournalCommandServic
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없음"));
 
+        // 일지 생성 (첨부파일 제외)
         StudyJournal journal = StudyJournal.createJournal(
                 dto.getTitle(),
                 dto.getContent(),
                 dto.getUrl(),
-                dto.getFileUrl(),
-                dto.getFileName(),
                 sessionId,
                 userId
         );
 
         StudyJournal savedJournal = studyJournalRepository.save(journal);
+
+        // 첨부파일 처리
+        if (dto.getAttachments() != null && !dto.getAttachments().isEmpty()) {
+            for (StudyJournalDto.AttachmentDto attachmentDto : dto.getAttachments()) {
+                org.growith.be.growith.domain.journal.entity.JournalAttachment attachment = 
+                    org.growith.be.growith.domain.journal.entity.JournalAttachment.create(
+                        savedJournal,
+                        attachmentDto.getFileUrl(),
+                        attachmentDto.getFileName(),
+                        attachmentDto.getFileSize()
+                    );
+                savedJournal.addAttachment(attachment);
+            }
+            studyJournalRepository.save(savedJournal);
+        }
+
+        // DTO 변환
+        List<StudyJournalDto.AttachmentDto> attachmentDtos = savedJournal.getAttachments().stream()
+                .map(att -> StudyJournalDto.AttachmentDto.builder()
+                        .attachmentId(att.getId())
+                        .fileUrl(att.getFileUrl())
+                        .fileName(att.getFileName())
+                        .fileSize(att.getFileSize())
+                        .build())
+                .toList();
 
         return StudyJournalDto.builder()
                 .journalId(savedJournal.getId())
@@ -53,6 +80,7 @@ public class StudyJournalCommandServiceImpl implements StudyJournalCommandServic
                 .url(savedJournal.getUrl())
                 .sessionId(savedJournal.getSessionId())
                 .userId(savedJournal.getUserId())
+                .attachments(attachmentDtos)
                 .build();
     }
 
@@ -80,26 +108,49 @@ public class StudyJournalCommandServiceImpl implements StudyJournalCommandServic
         StudyJournal journal = studyJournalRepository.findById(journalId)
                 .orElseThrow(() -> new IllegalArgumentException("일지를 찾을 수 없음"));
 
-        // 일지 수정 메서드
+        // 일지 기본 정보 수정
         journal.updateJournal(
                 dto.getTitle(),
                 dto.getContent(),
-                dto.getUrl(),
-                dto.getFileUrl(),
-                dto.getFileName()
+                dto.getUrl()
         );
 
+        // 첨부파일 전체 교체 (기존 파일 삭제 후 새로 추가)
+        journal.getAttachments().clear();  // orphanRemoval=true로 자동 삭제됨
+        
+        if (dto.getAttachments() != null && !dto.getAttachments().isEmpty()) {
+            for (StudyJournalDto.AttachmentDto attachmentDto : dto.getAttachments()) {
+                org.growith.be.growith.domain.journal.entity.JournalAttachment attachment = 
+                    org.growith.be.growith.domain.journal.entity.JournalAttachment.create(
+                        journal,
+                        attachmentDto.getFileUrl(),
+                        attachmentDto.getFileName(),
+                        attachmentDto.getFileSize()
+                    );
+                journal.addAttachment(attachment);
+            }
+        }
+
         StudyJournal updatedJournal = studyJournalRepository.save(journal);
+
+        // DTO 변환
+        List<StudyJournalDto.AttachmentDto> attachmentDtos = updatedJournal.getAttachments().stream()
+                .map(att -> StudyJournalDto.AttachmentDto.builder()
+                        .attachmentId(att.getId())
+                        .fileUrl(att.getFileUrl())
+                        .fileName(att.getFileName())
+                        .fileSize(att.getFileSize())
+                        .build())
+                .toList();
 
         return StudyJournalDto.builder()
                 .journalId(updatedJournal.getId())
                 .title(updatedJournal.getTitle())
                 .content(updatedJournal.getContent())
                 .url(updatedJournal.getUrl())
-                .fileUrl(updatedJournal.getFileUrl())
-                .fileName(updatedJournal.getFileName())
                 .sessionId(updatedJournal.getSessionId())
                 .userId(updatedJournal.getUserId())
+                .attachments(attachmentDtos)
                 .build();
     }
 
@@ -134,6 +185,30 @@ public class StudyJournalCommandServiceImpl implements StudyJournalCommandServic
                 .sessionNumber(savedSession.getNumber())
                 .title(savedSession.getTitle())
                 .build();
+    }
+
+    @Override
+    public void deleteStudySession(Long sessionId, Long userId) {
+        // 세션 존재 확인
+        StudySession session = studySessionRepository.findById(sessionId)
+                .orElseThrow(() -> new IllegalArgumentException("세션을 찾을 수 없습니다."));
+
+        // 해당 세션의 스터디 ID 조회
+        Long studyId = session.getStudy().getId();
+
+        // 팀장 권한 확인
+        boolean isLeader = userStudyRepository.existsByStudyIdAndUserIdAndStudyRole(
+                studyId, 
+                userId, 
+                org.growith.be.growith.domain.study.entity.enums.StudyRole.LEADER
+        );
+
+        if (!isLeader) {
+            throw new StudyException(StudyErrorCode.STUDY_UPDATE_FORBIDDEN);
+        }
+
+        // 세션 삭제
+        studySessionRepository.delete(session);
     }
 
 }

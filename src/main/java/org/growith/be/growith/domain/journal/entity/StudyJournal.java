@@ -9,6 +9,9 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.growith.be.growith.global.common.BaseEntity;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Table(name = "study_journal")
 @Getter
@@ -28,22 +31,18 @@ public class StudyJournal extends BaseEntity {
 
     private String url;
 
-    // 파일 다운로드 경로 (S3 URL 또는 로컬 경로 등)
-    private String fileUrl;
-
-    // 실제 업로드된 파일 이름
-    private String fileName;
-
     private Long sessionId;
 
     private Long userId;
+
+    @OneToMany(mappedBy = "studyJournal", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Builder.Default
+    private List<JournalAttachment> attachments = new ArrayList<>();
 
     public static StudyJournal createJournal(
             String title,
             String content,
             String url,
-            String fileUrl,
-            String fileName,
             Long sessionId,
             Long userId
     ) {
@@ -51,18 +50,26 @@ public class StudyJournal extends BaseEntity {
                 .title(title)
                 .content(content)
                 .url(url)
-                .fileUrl(fileUrl)
-                .fileName(fileName)
                 .sessionId(sessionId)
                 .userId(userId)
+                .attachments(new ArrayList<>())
                 .build();
     }
 
-    public void updateJournal(String title, String content, String url, String fileUrl, String fileName) {
+    public void updateJournal(String title, String content, String url) {
         this.title = title;
         this.content = content;
         this.url = url;
-        this.fileUrl = fileUrl;
-        this.fileName = fileName;
+    }
+
+    // 첨부파일 추가
+    public void addAttachment(JournalAttachment attachment) {
+        this.attachments.add(attachment);
+    }
+
+    // 첨부파일 전체 교체
+    public void replaceAttachments(List<JournalAttachment> newAttachments) {
+        this.attachments.clear();
+        this.attachments.addAll(newAttachments);
     }
 }

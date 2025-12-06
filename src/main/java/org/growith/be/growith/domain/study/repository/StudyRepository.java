@@ -30,4 +30,6 @@ public interface StudyRepository extends JpaRepository<Study, Long>, JpaSpecific
     @Query("SELECT us.studyRole FROM UserStudy us WHERE us.study.id = :studyId AND us.user.id = :userId")
     String findUserRoleInStudy(@Param("studyId") Long studyId, @Param("userId") Long userId);
 
+    // 사용자가 생성한 스터디 개수 조회 (리더숙 스탬프용)
+    long countByUserId(Long userId);
 }

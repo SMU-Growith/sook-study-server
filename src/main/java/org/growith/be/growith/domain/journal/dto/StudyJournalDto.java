@@ -5,6 +5,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Getter
 @Builder
 @NoArgsConstructor
@@ -17,9 +19,19 @@ public class StudyJournalDto {
     private Long sessionId;
     private Long userId;
     private Integer submittedCount;
-    private String fileUrl;
-    private String fileName;
+    private List<AttachmentDto> attachments;  // 여러 파일
     private EmojiCounts emojiCounts;
+
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class AttachmentDto {
+        private Long attachmentId;
+        private String fileUrl;
+        private String fileName;
+        private Long fileSize;
+    }
 
     @Getter
     @Builder
