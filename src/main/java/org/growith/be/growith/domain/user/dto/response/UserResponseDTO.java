@@ -20,6 +20,7 @@ public record UserResponseDTO() {
         String nickName,
         StudentStatus studentStatus,
         Major major,
-        String studyStyle
+        String studyStyle,
+        String phoneNumber
     ){}
 }
