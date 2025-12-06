@@ -94,9 +94,6 @@ public class StudyCommandServiceImpl implements StudyCommandService{
     }
 
     public void withdrawStudy(Long studyId, Long userId) {
-        User user = userRepository.findById(userId)
-                .orElseThrow(() -> new UserException(UserErrorCode.NOT_FOUND));
-
         boolean isMember = userStudyRepository.existsByStudyIdAndUserIdAndStudyRole(studyId, userId, StudyRole.MEMBER);
         if (!isMember){
             throw new StudyException(StudyErrorCode.STUDY_WITHDRAW_FORBIDDEN);
