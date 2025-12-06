@@ -24,6 +24,7 @@ public record StudyResponseDto() {
             StudyFormat studyFormat,
             StudyStyleCategory studyStyleCategory,
             List<StudyResponseDto.RuleDetailDTO> ruleDTO,
+            Long userId,
             LocalDate createdAt
     ){}
 
