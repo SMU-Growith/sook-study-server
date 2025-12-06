@@ -96,7 +96,7 @@ public class StudyJournalQueryServiceImpl implements StudyJournalQueryService {
         }).toList();
     }
 
-    public List<StudySessionCardDto> getStudySessions(Long studyId, int page, int size) {
+    public StudySessionListDto getStudySessions(Long studyId, int page, int size) {
         Study study = studyRepository.findById(studyId)
                 .orElseThrow(() -> new IllegalArgumentException("studyId에 해당하는 스터디 없음"));
 
@@ -105,7 +105,7 @@ public class StudyJournalQueryServiceImpl implements StudyJournalQueryService {
         Integer totalCount = allSessions.size();
 
         // 페이징 처리
-        return allSessions.stream()
+        List<StudySessionCardDto> sessions = allSessions.stream()
                 .skip((long) page * size)
                 .limit(size)
                 .map(session -> {
@@ -115,8 +115,12 @@ public class StudyJournalQueryServiceImpl implements StudyJournalQueryService {
                             .sessionNumber(session.getNumber())
                             .title(session.getTitle())
                             .submittedCount(submittedCount)
-                            .totalCount(totalCount)
                             .build();
                 }).toList();
+
+        return StudySessionListDto.builder()
+                .studySessions(sessions)
+                .totalCount(totalCount)
+                .build();
     }
 }

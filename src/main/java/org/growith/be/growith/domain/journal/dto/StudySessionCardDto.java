@@ -11,5 +11,4 @@ public class StudySessionCardDto {
     private Integer sessionNumber;
     private String title;
     private Integer submittedCount;
-    private Integer totalCount;
 }

@@ -7,6 +7,7 @@ import org.growith.be.growith.domain.journal.dto.StudyJournalDto;
 import org.growith.be.growith.domain.journal.dto.StudyJournalListDto;
 import org.growith.be.growith.domain.journal.service.JournalEmojiService;
 import org.growith.be.growith.domain.journal.dto.StudySessionCardDto;
+import org.growith.be.growith.domain.journal.dto.StudySessionListDto;
 import org.growith.be.growith.domain.journal.service.command.StudyJournalCommandService;
 import org.growith.be.growith.domain.journal.service.query.StudyJournalQueryService;
 import org.growith.be.growith.domain.study.service.command.StudyCommandService;
@@ -38,13 +39,13 @@ public class StudySessionController {
             description = "스터디 세션 리스트를 조회할 수 있습니다."
     )
     @GetMapping("/{studyId}/sessions")
-    public ApiResponse<List<StudySessionCardDto>> getStudySessions(
+    public ApiResponse<StudySessionListDto> getStudySessions(
             @PathVariable Long studyId,
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "6") int size
     ) {
-        studyJournalQueryService.getStudySessions(studyId, page, size);
-        return  ApiResponse.onSuccess(null);
+        StudySessionListDto sessions = studyJournalQueryService.getStudySessions(studyId, page, size);
+        return  ApiResponse.onSuccess(sessions);
     }
 
     // 스터디 세션 생성 (팀장권한)
@@ -83,8 +84,8 @@ public class StudySessionController {
             @PathVariable Long sessionId,
             @PageableDefault(page = 0, size = 6) Pageable pageable
     ) {
-        List<StudySessionCardDto> studySessions = studyJournalQueryService.getStudySessions(sessionId, pageable.getPageNumber(), pageable.getPageSize());
-        return  ApiResponse.onSuccess(studySessions);
+        StudySessionListDto studySessions = studyJournalQueryService.getStudySessions(sessionId, pageable.getPageNumber(), pageable.getPageSize());
+        return  ApiResponse.onSuccess(studySessions.getStudySessions());
     }
 
     // 스터디 세션 삭제 (팀장권한)

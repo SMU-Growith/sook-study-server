@@ -5,6 +5,7 @@ import org.growith.be.growith.domain.application.entity.StudyApplication;
 import org.growith.be.growith.domain.application.repository.StudyApplicationRepository;
 import org.growith.be.growith.domain.journal.dto.StudySession;
 import org.growith.be.growith.domain.journal.dto.StudySessionCardDto;
+import org.growith.be.growith.domain.journal.dto.StudySessionListDto;
 import org.growith.be.growith.domain.journal.repository.StudyJournalRepository;
 import org.growith.be.growith.domain.journal.service.JournalEmojiService;
 import org.growith.be.growith.domain.scrap.repository.StudyScrapRepository;
@@ -108,7 +109,7 @@ public class StudyQueryServiceImpl implements StudyQueryService {
 
 
     // 스터디 세션 조회
-    public List<StudySessionCardDto> getStudySessions(Long studyId, int page, int size) {
+    public StudySessionListDto getStudySessions(Long studyId, int page, int size) {
         Study study = studyRepository.findById(studyId)
                 .orElseThrow(() -> new IllegalArgumentException("studyId에 해당하는 스터디 없음"));
 
@@ -117,7 +118,7 @@ public class StudyQueryServiceImpl implements StudyQueryService {
         Integer totalCount = allSessions.size();
 
         // 페이징 처리
-        return allSessions.stream()
+        List<StudySessionCardDto> sessions = allSessions.stream()
                 .skip((long) page * size)
                 .limit(size)
                 .map(session -> {
@@ -127,9 +128,13 @@ public class StudyQueryServiceImpl implements StudyQueryService {
                             .sessionNumber(session.getNumber())
                             .title(session.getTitle())
                             .submittedCount(submittedCount)
-                            .totalCount(totalCount)
                             .build();
                 }).toList();
+
+        return StudySessionListDto.builder()
+                .studySessions(sessions)
+                .totalCount(totalCount)
+                .build();
     }
 
 
