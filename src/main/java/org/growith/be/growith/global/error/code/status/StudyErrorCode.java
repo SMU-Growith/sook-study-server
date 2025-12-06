@@ -19,8 +19,9 @@ public enum StudyErrorCode implements BaseErrorCode {
 
     STUDY_FIELD_NOT_FOUND(HttpStatus.NOT_FOUND,"STUDY_FIELD_400_1", "해당 스터디 필드를 찾을 수 없습니다."),
 
-    STUDY_STYLE_NOT_FOUND(HttpStatus.NOT_FOUND,"STUDY_STYLE_400_1", "해당 스터디 성향 스타일을 찾을 수 없습니다.")
+    STUDY_STYLE_NOT_FOUND(HttpStatus.NOT_FOUND,"STUDY_STYLE_400_1", "해당 스터디 성향 스타일을 찾을 수 없습니다."),
 
+    STUDY_SCRAP_NOT_FOUND(HttpStatus.NOT_FOUND,"STUDY_SCRAP_400_1", "해당 스터디 스크랩을 찾을 수 없습니다.")
     ;
 
     private final HttpStatus httpStatus;

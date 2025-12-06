@@ -6,69 +6,48 @@ import org.growith.be.growith.domain.scrap.repository.StudyScrapRepository;
 import org.growith.be.growith.domain.study.entity.Study;
 import org.growith.be.growith.domain.study.repository.StudyRepository;
 import org.growith.be.growith.domain.user.entity.User;
+import org.growith.be.growith.domain.user.repository.UserRepository;
+import org.growith.be.growith.global.error.code.status.StudyErrorCode;
+import org.growith.be.growith.global.error.code.status.UserErrorCode;
+import org.growith.be.growith.global.error.exception.handler.StudyException;
+import org.growith.be.growith.global.error.exception.handler.UserException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Optional;
+
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class ScrapService {
     private final StudyScrapRepository studyScrapRepository;
     private final StudyRepository studyRepository;
+    private final UserRepository userRepository;
 
-    @Transactional
-    public void toggleScrap(Long studyId, User user) {
+    public void toggleScrap(Long studyId, Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserException(UserErrorCode.NOT_FOUND));
+
         Study study = studyRepository.findById(studyId)
-                .orElseThrow(() -> new IllegalArgumentException("스터디가 존재하지 않습니다."));
-        
-        studyScrapRepository.findByUserAndStudy(user, study)
-                .ifPresentOrElse(
-                        scrap -> {
-                            // 스크랩이 존재하면 삭제
-                            studyScrapRepository.delete(scrap);
-                            study.decreaseScrapCount();
-                        },
-                        () -> {
-                            // 스크랩이 없으면 생성
-                            StudyScrap scrap = new StudyScrap(user, study);
-                            studyScrapRepository.save(scrap);
-                            study.increaseScrapCount();
-                        }
-                );
+                .orElseThrow(() -> new StudyException(StudyErrorCode.STUDY_NOT_FOUND));
+
+        Optional<StudyScrap> studyScrap = studyScrapRepository.findByUserAndStudy(user, study);
+
+        if (studyScrap.isPresent()) {
+            studyScrapRepository.delete(studyScrap.get());
+            study.decreaseScrapCount();
+        } else {
+            studyScrapRepository.save(StudyScrap.builder()
+                    .user(user).study(study).build());
+            study.increaseScrapCount();
+        }
     }
-
-    // @Transactional
-    // public void createScrap(Long studyId, User user) {
-    //     Study study = studyRepository.findById(studyId)
-    //             .orElseThrow(() -> new IllegalArgumentException("스터디가 존재하지 않습니다."));
-    //     if (studyScrapRepository.findByUserAndStudy(user, study).isPresent()) {
-    //         throw new IllegalStateException("이미 스크랩한 스터디입니다.");
-    //     }
-    //     StudyScrap scrap = new StudyScrap(user, study);
-    //     studyScrapRepository.save(scrap);
-    //     study.increaseScrapCount();
-    // }
-
-    // @Transactional
-    // public void deleteScrap(Long studyScrapId, User user) {
-    //     StudyScrap scrap = studyScrapRepository.findById(studyScrapId)
-    //             .orElseThrow(() -> new IllegalArgumentException("스크랩이 존재하지 않습니다."));
-    //     if (!scrap.getUser().equals(user)) {
-    //         throw new IllegalStateException("본인만 삭제할 수 있습니다.");
-    //     }
-    //     Study study = scrap.getStudy();
-    //     studyScrapRepository.delete(scrap);
-    //     study.decreaseScrapCount();
-    // }
 
     @Transactional(readOnly = true)
-    public Page<StudyScrap> getUserScraps(User user, int page, int size) {
-        return studyScrapRepository.findByUser(user, PageRequest.of(page, size));
+    public Page<StudyScrap> getUserScraps(User user, Pageable pageable) {
+        return studyScrapRepository.findByUser(user, PageRequest.of(pageable.getPageNumber(), pageable.getPageSize()));
     }
-
-    // @Transactional(readOnly = true)
-    // public long countUserScraps(User user) {
-    //     return studyScrapRepository.countByUser(user);
-    // }
 }
