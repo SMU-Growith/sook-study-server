@@ -8,6 +8,7 @@ import org.growith.be.growith.domain.study.converter.StudyConverter;
 import org.growith.be.growith.domain.study.dto.StudyCardDto;
 import org.growith.be.growith.domain.study.dto.request.StudyRequestDto;
 import org.growith.be.growith.domain.study.dto.response.StudyResponseDto;
+import org.growith.be.growith.domain.study.entity.Study;
 import org.growith.be.growith.domain.study.entity.enums.StudyStatus;
 import org.growith.be.growith.domain.study.service.command.StudyCommandService;
 import org.growith.be.growith.domain.study.service.query.StudyQueryService;
@@ -15,6 +16,7 @@ import org.growith.be.growith.domain.user.entity.User;
 import org.growith.be.growith.global.annotation.AuthenticatedUser;
 import org.growith.be.growith.global.error.ApiResponse;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,14 +32,13 @@ public class StudyController {
 
     @GetMapping
     public ApiResponse<List<StudyCardDto>> getStudies(
-            @RequestParam(required = false) List<String> fields,
-            @RequestParam(required = false) List<String> formats,
-            @RequestParam(required = false) List<String> styles,
-            @RequestParam(required = false) String status,
-            @RequestParam(required = false) String keyword,
-            @RequestParam(defaultValue = "new") String sort,
-            @PageableDefault(page = 0, size = 12) Pageable pageable
+            StudyRequestDto.SearchStudyCondition request,
+            @PageableDefault(page = 0, size = 12,
+                    sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
     ) {
+        List<Study> studies = studyQueryService.searchStudies(request, pageable);
+
+
         return ApiResponse.onSuccess(null
 //                studyQueryService.searchStudies(fields, formats, styles, status, keyword, sort, page, size)
         );

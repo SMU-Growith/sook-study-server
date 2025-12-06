@@ -48,6 +48,7 @@ public class Study extends BaseEntity {
     @JoinColumn(name = "user_id")
     private User user;
 
+    // 스터디 진행 방식
     @Enumerated(EnumType.STRING)
     private StudyFormat studyFormat;
 

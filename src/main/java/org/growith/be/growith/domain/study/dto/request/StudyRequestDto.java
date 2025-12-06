@@ -1,7 +1,9 @@
 package org.growith.be.growith.domain.study.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
+import org.growith.be.growith.domain.study.entity.StudyField;
 import org.growith.be.growith.domain.study.entity.enums.*;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 
@@ -42,6 +44,14 @@ public record StudyRequestDto() {
 
     public record ChangeStudyStatusDTO(
             StudyStatus studyStatus
+    ){}
+
+    public record SearchStudyCondition(
+            List<StudyField> studyFields,
+            List<StudyFormat> studyFormats,
+            List<StudyStyleCategory> studyStyleCategories,
+            StudyStatus studyStatus,
+            String searchContent
     ){}
 
 
