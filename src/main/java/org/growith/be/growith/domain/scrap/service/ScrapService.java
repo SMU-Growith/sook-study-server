@@ -27,7 +27,7 @@ public class ScrapService {
     private final StudyRepository studyRepository;
     private final UserRepository userRepository;
 
-    public void toggleScrap(Long studyId, Long userId) {
+    public Study toggleScrap(Long studyId, Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserException(UserErrorCode.NOT_FOUND));
 
@@ -44,6 +44,7 @@ public class ScrapService {
                     .user(user).study(study).build());
             study.increaseScrapCount();
         }
+        return study;
     }
 
     @Transactional(readOnly = true)
