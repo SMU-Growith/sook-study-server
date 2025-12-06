@@ -74,4 +74,32 @@ public record StudyResponseDto() {
     public record ChangedStudyStatus(
             StudyStatus studyStatus
     ){}
+
+    @Builder
+    public record UserStudyPreviewDto(
+            Long studyId,
+            StudyRole studyRole,
+            String title,
+            StudyStatus studyStatus,
+            Long userId,
+            String url,
+            Long memberCount,
+            Long studySessionCount,
+            // 진행방식
+            StudyFormat studyFormat,
+            // 스터디 분야
+            StudyField studyField,
+            StudyStyleCategory studyStyleCategory
+    ){}
+
+    @Builder
+     public record StudyUsers(
+             Long userId,
+             StudyRole studyRole,
+             String nickName,
+             StudentStatus studentStatus,
+             Major major,
+             String phoneNumber,
+             String motivation
+     ){}
 }

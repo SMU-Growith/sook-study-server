@@ -161,4 +161,32 @@ public class StudyConverter {
                 .build();
     }
 
+    // StudyResponseDto.UserStudyPreviewDto
+    public static StudyResponseDto.UserStudyPreviewDto toUserStudyPreviewDto(UserStudy dto, Long memberCount, Long studySessionCount){
+        return StudyResponseDto.UserStudyPreviewDto.builder()
+                .studyId(dto.getStudy().getId())
+                .studyRole(dto.getStudyRole())
+                .title(dto.getStudy().getTitle())
+                .studyStatus(dto.getStudy().getStudyStatus())
+                .userId(dto.getUser().getId())
+                .url(dto.getStudy().getUrl())
+                .memberCount(memberCount)
+                .studySessionCount(studySessionCount)
+                .studyFormat(dto.getStudy().getStudyFormat())
+                .studyField(dto.getStudy().getStudyField())
+                .studyStyleCategory(dto.getStudy().getStudyStyleCategory())
+                .build();
+    }
+
+    // StudyUsers
+    public static StudyResponseDto.StudyUsers toStudyUsers(UserStudy userStudy, String motivation){
+        return StudyResponseDto.StudyUsers.builder()
+                .userId(userStudy.getUser().getId())
+                .studyRole(userStudy.getStudyRole())
+                .nickName(userStudy.getUser().getNickName())
+                .studentStatus(userStudy.getUser().getStudentStatus())
+                .phoneNumber(userStudy.getUser().getPhoneNumber())
+                .motivation(motivation)
+                .build();
+    }
 }

@@ -42,14 +42,14 @@ public class StudyController {
         return ApiResponse.onSuccess(studyPreviewDTOList);
     }
 
-
+    @Operation(summary = "사용자 스터디 리스트 조회 API", description = "사용자의 참여 이력이 있는 스터디를 리스트로 조회하는 API")
     @GetMapping("/my-studies")
-    public ApiResponse<StudyResponseDto.StudyPreviewDTOList> getMyStudies(
+    public ApiResponse<List<StudyResponseDto.UserStudyPreviewDto>> getMyStudies(
             @AuthenticatedUser User user,
             @RequestParam(defaultValue = "ACTIVE") String studyStatus,
             @PageableDefault(page = 0, size = 6) Pageable pageable
     ) {
-        StudyResponseDto.StudyPreviewDTOList myStudies = studyQueryService.getMyStudies(String.valueOf(user.getId()), pageable.getPageNumber(), pageable.getPageSize(), studyStatus);
+        List<StudyResponseDto.UserStudyPreviewDto> myStudies = studyQueryService.getMyStudies(user.getId(), pageable);
         return ApiResponse.onSuccess(myStudies);
     }
 
@@ -135,10 +135,11 @@ public class StudyController {
 
 
     // 스터디 멤버 조회
+    @Operation(summary = "스터디 멤버 조회 API", description = "스터디에 참여한 사용자들을 조회하는 API")
     @GetMapping("/{studyId}/users")
-    public ApiResponse<List<Void>> getStudyMembers(@PathVariable Long studyId) {
-//        return ResponseEntity.ok(studyQueryService.getStudyMembers(studyId));
-        return  ApiResponse.onSuccess(null);
+    public ApiResponse<List<StudyResponseDto.StudyUsers>> getStudyMembers(@PathVariable Long studyId) {
+        List<StudyResponseDto.StudyUsers> studyMembers = studyQueryService.getStudyMembers(studyId);
+        return  ApiResponse.onSuccess(studyMembers);
     }
 
     // 스터디 팀장 변경
