@@ -7,6 +7,8 @@ import org.growith.be.growith.domain.journal.dto.StudyJournalDto;
 import org.growith.be.growith.domain.journal.dto.StudyJournalListDto;
 import org.growith.be.growith.domain.journal.service.JournalEmojiService;
 import org.growith.be.growith.domain.journal.dto.StudySessionCardDto;
+import org.growith.be.growith.domain.journal.service.command.StudyJournalCommandService;
+import org.growith.be.growith.domain.journal.service.query.StudyJournalQueryService;
 import org.growith.be.growith.domain.study.service.command.StudyCommandService;
 import org.growith.be.growith.domain.study.service.query.StudyQueryService;
 import org.growith.be.growith.domain.user.entity.User;
@@ -25,10 +27,9 @@ import java.util.List;
 @Tag(name = "스터디 세션 일지 API")
 public class StudySessionController {
 
-    private final StudyCommandService studycommandService;
-    private final StudyQueryService studyQueryService;
+    private final StudyJournalCommandService studyJournalCommandService;
+    private final StudyJournalQueryService studyJournalQueryService;
     private final JournalEmojiService journalEmojiService;
-    private final org.growith.be.growith.domain.journal.service.command.StudyJournalCommandService studyJournalCommandService;
 
 
     //스터디 세션 리스트 조회
@@ -38,7 +39,7 @@ public class StudySessionController {
             @RequestParam(defaultValue = "0") int page,
             @RequestParam(defaultValue = "6") int size
     ) {
-//        studyQueryService.getStudySessions(studyId, page, size)
+        studyJournalQueryService.getStudySessions(studyId, page, size);
         return  ApiResponse.onSuccess(null);
     }
 
@@ -47,8 +48,8 @@ public class StudySessionController {
     public ApiResponse<StudySessionCardDto> createStudySession(
             @PathVariable Long studyId,
             @RequestBody StudySessionCardDto studySessionCardDto) {
-//        StudySessionCardDto createdSession = studyQueryService.createStudySession(studyId, studySessionCardDto);
-        return  ApiResponse.onSuccess(null);
+        StudySessionCardDto createdSession = studyJournalCommandService.createStudySession(studyId, studySessionCardDto);
+        return  ApiResponse.onSuccess(createdSession);
     }
 
     // 스터디 세션 수정 (팀장권한)
@@ -56,16 +57,18 @@ public class StudySessionController {
     public ApiResponse<Void> updateStudySession(
             @PathVariable Long sessionId,
             @RequestBody StudySessionCardDto studySessionCardDto) {
-//        studyService.updateStudySession(sessionId, studySessionCardDto);
+        studyJournalCommandService.updateStudySession(sessionId, studySessionCardDto);
         return  ApiResponse.onSuccess(null);
     }
 
     // 스터디 세션 조회 (팀장권한)
     @GetMapping("/session/{sessionId}")
-    public ApiResponse<StudySessionCardDto> getStudySession(
-            @PathVariable Long sessionId) {
-//        StudySessionCardDto session = studyService.getStudySession(sessionId);
-        return  ApiResponse.onSuccess(null);
+    public ApiResponse<List<StudySessionCardDto>> getStudySession(
+            @PathVariable Long sessionId,
+            @PageableDefault(page = 0, size = 6) Pageable pageable
+    ) {
+        List<StudySessionCardDto> studySessions = studyJournalQueryService.getStudySessions(sessionId, pageable.getPageNumber(), pageable.getPageSize());
+        return  ApiResponse.onSuccess(studySessions);
     }
 
     // 스터디 세션 삭제 (팀장권한)
@@ -88,15 +91,15 @@ public class StudySessionController {
             @PathVariable Long sessionId,
             @AuthenticatedUser User user,
             @RequestBody StudyJournalDto studyJournalDto) {
-//        StudyJournalDto createdJournal = studyService.createStudyJournal(sessionId, user.getUserId(), studyJournalDto);
-        return  ApiResponse.onSuccess(null);
+        StudyJournalDto createdJournal = studyJournalCommandService.createStudyJournal(sessionId, user.getId(), studyJournalDto);
+        return  ApiResponse.onSuccess(createdJournal);
     }
 
     // 스터디 일지 조회
     @GetMapping("/journal/{journalId}")
     public ApiResponse<StudyJournalDto> getStudyJournal(@PathVariable Long journalId) {
-//        StudyJournalDto journal = studyService.getStudyJournal(journalId);
-        return  ApiResponse.onSuccess(null);
+        StudyJournalDto journal = studyJournalQueryService.getStudyJournal(journalId);
+        return  ApiResponse.onSuccess(journal);
     }
 
     // 스터디 일지 수정
@@ -104,14 +107,14 @@ public class StudySessionController {
     public ApiResponse<StudyJournalDto> updateStudyJournal(
             @PathVariable Long journalId,
             @RequestBody StudyJournalDto studyJournalDto) {
-//        StudyJournalDto updatedJournal = studyService.updateStudyJournal(journalId, studyJournalDto);
-        return  ApiResponse.onSuccess(null);
+        StudyJournalDto updatedJournal = studyJournalCommandService.updateStudyJournal(journalId, studyJournalDto);
+        return  ApiResponse.onSuccess(updatedJournal);
     }
 
     // 스터디 일지 삭제
     @DeleteMapping("/journal/{journalId}")
     public ApiResponse<Void> deleteStudyJournal(@PathVariable Long journalId) {
-//        studyService.deleteStudyJournal(journalId);
+        studyJournalCommandService.deleteStudyJournal(journalId);
         return  ApiResponse.onSuccess(null);
     }
 
@@ -121,8 +124,8 @@ public class StudySessionController {
             @PathVariable Long sessionId,
             @PageableDefault(page = 0, size = 6) Pageable pageable
     ) {
-//        List<StudyJournalListDto> journals = studyService.getStudyJournalsBySession(sessionId, page, size);
-        return  ApiResponse.onSuccess(null);
+        List<StudyJournalListDto> journals = studyJournalQueryService.getStudyJournalsBySession(sessionId, pageable.getPageNumber(), pageable.getPageSize());
+        return  ApiResponse.onSuccess(journals);
     }
 
     // 스터디일지 이모티콘 토글

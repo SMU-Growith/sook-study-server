@@ -14,7 +14,7 @@ import org.growith.be.growith.domain.application.entity.StudyApplication;
 import java.time.LocalDateTime;
 import java.util.List;
 
-public interface StudyRepository extends JpaRepository<Study, Long>, JpaSpecificationExecutor<Study> {
+public interface StudyRepository extends JpaRepository<Study, Long>, JpaSpecificationExecutor<Study>, StudyQueryDsl {
     @Query("SELECT s FROM Study s WHERE s.createdAt >= :oneMonthAgo ORDER BY s.scrapCount DESC")
     List<Study> findPopularStudies(@Param("oneMonthAgo") LocalDateTime oneMonthAgo, Pageable pageable);
 

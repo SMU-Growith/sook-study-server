@@ -4,9 +4,11 @@ import lombok.RequiredArgsConstructor;
 import org.growith.be.growith.domain.journal.dto.StudyJournalDto;
 import org.growith.be.growith.domain.journal.dto.StudyJournalListDto;
 import org.growith.be.growith.domain.journal.dto.StudySession;
+import org.growith.be.growith.domain.journal.dto.StudySessionCardDto;
 import org.growith.be.growith.domain.journal.entity.StudyJournal;
 import org.growith.be.growith.domain.journal.repository.StudyJournalRepository;
 import org.growith.be.growith.domain.journal.service.JournalEmojiService;
+import org.growith.be.growith.domain.study.entity.Study;
 import org.growith.be.growith.domain.study.entity.enums.StudyRole;
 import org.growith.be.growith.domain.study.repository.StudyRepository;
 import org.growith.be.growith.domain.study.repository.StudySessionRepository;
@@ -92,5 +94,29 @@ public class StudyJournalQueryServiceImpl implements StudyJournalQueryService {
                     .totalCount(totalCount)
                     .build();
         }).toList();
+    }
+
+    public List<StudySessionCardDto> getStudySessions(Long studyId, int page, int size) {
+        Study study = studyRepository.findById(studyId)
+                .orElseThrow(() -> new IllegalArgumentException("studyId에 해당하는 스터디 없음"));
+
+        // 전체 세션 수 (페이징 전 전체 카운트)
+        List<StudySession> allSessions = study.getStudySessions();
+        Integer totalCount = allSessions.size();
+
+        // 페이징 처리
+        return allSessions.stream()
+                .skip((long) page * size)
+                .limit(size)
+                .map(session -> {
+                    Integer submittedCount = studySessionRepository.countSubmittedBySessionId(session.getId());
+                    return StudySessionCardDto.builder()
+                            .sessionId(session.getId())
+                            .sessionNumber(session.getNumber())
+                            .title(session.getTitle())
+                            .submittedCount(submittedCount)
+                            .totalCount(totalCount)
+                            .build();
+                }).toList();
     }
 }

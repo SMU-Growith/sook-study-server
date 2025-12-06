@@ -10,4 +10,8 @@ public interface StudySessionRepository extends JpaRepository<StudySession, Long
             "JOIN StudySession ss ON ss.study.id = us.study.id " +
             "WHERE ss.id = :sessionId AND ss.isSubmitted = true")
     Integer countSubmittedBySessionId(@Param("sessionId") Long sessionId);
+
+
+    @Query("SELECT COUNT(ss) FROM StudySession ss WHERE ss.study.id = :studyId")
+    Long countByStudyId(Long studyId);
 }

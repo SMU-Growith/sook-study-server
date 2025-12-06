@@ -100,11 +100,16 @@ public class StudyCommandServiceImpl implements StudyCommandService{
         studyRepository.deleteById(studyId);
     }
 
-    public void withdrawStudy(Long studyId, String userId) {
-        // 프론트에서 현재 로그인한 사용자 userId로 받아야함
-//        studyRepository.withdraw(studyId, Long.parseLong(userId));
-    }
+    public void withdrawStudy(Long studyId, Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserException(UserErrorCode.NOT_FOUND));
 
+        boolean isMember = userStudyRepository.existsByStudyIdAndUserIdAndStudyRole(studyId, userId, StudyRole.MEMBER);
+        if (!isMember){
+            throw new StudyException(StudyErrorCode.STUDY_WITHDRAW_FORBIDDEN);
+        }
+        userStudyRepository.deleteByStudyIdAndUserId(studyId, userId);
+    }
 
     // 리더->팀원으로 역할 변경
     public void changeStudyLeader(Long studyId, Long currentUserId, Long newLeaderUserId) {
@@ -132,6 +137,7 @@ public class StudyCommandServiceImpl implements StudyCommandService{
         userStudyRepository.save(newLeaderStudy);
     }
 
+    // 스터디 상태 수정
     public StudyStatus changeStudyStatus(Long studyId, StudyStatus studyStatus, Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserException(UserErrorCode.NOT_FOUND));

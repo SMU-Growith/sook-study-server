@@ -11,6 +11,7 @@ public class UserConverter {
                 .nickName(user.getNickName())
                 .studentStatus(user.getStudentStatus())
                 .major(user.getMajor())
+                .phoneNumber(user.getPhoneNumber())
                 // TODO: studyStyle 구현 필요
                 .studyStyle(null)
                 .build();
@@ -19,6 +20,10 @@ public class UserConverter {
     // User -> UserResponseDTO.ChangeInfo
     public static UserResponseDTO.ChangeInfo toChangeInfo(User user){
         return UserResponseDTO.ChangeInfo.builder()
+                .nickName(user.getNickName())
+                .studentStatus(user.getStudentStatus())
+                .major(user.getMajor())
+                .phoneNumber(user.getPhoneNumber())
                 .build();
     }
 }

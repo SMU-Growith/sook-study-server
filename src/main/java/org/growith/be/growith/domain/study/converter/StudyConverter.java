@@ -21,7 +21,7 @@ public class StudyConverter {
                 .description(dto.description())
                 .studyStatus(StudyStatus.ACTIVE)
                 .contactType(dto.contactType())
-                .url(null)
+                .url(dto.url())
                 .isRecruiting(true)
                 .studyFormat(dto.studyFormat())
                 .studyStyleCategory(dto.studyStyleCategory())
@@ -29,7 +29,6 @@ public class StudyConverter {
                 .studyField(studyField)
                 .build();
     }
-
 
     // CreateRuleDTO -> Rule
     public static Rule toRuleEntity(StudyRequestDto.RuleDTO dto, Study study){
@@ -50,12 +49,14 @@ public class StudyConverter {
                 .description(study.getDescription())
                 .studyStatus(study.getStudyStatus())
                 .contactType(study.getContactType())
+                .url(study.getUrl())
                 .isRecruiting(study.getIsRecruiting())
                 .studyFieldId(study.getStudyField().getId())
                 .studyFieldName(study.getStudyField().getName())
                 .studyFormat(study.getStudyFormat())
                 .studyStyleCategory(study.getStudyStyleCategory())
                 .ruleDTO(ruleList)
+                .createdAt(study.getCreatedAt().toLocalDate())
                 .build();
     }
 
@@ -129,4 +130,63 @@ public class StudyConverter {
                 .build();
     }
 
+    //  Study  -> StudyResponseDto.StudyPreviewDTO
+    public static StudyResponseDto.StudyPreviewDTO toStudyPreviewDTO(Study study){
+        Boolean isScraped = study.getScrapCount() != 0;
+
+        return StudyResponseDto.StudyPreviewDTO.builder()
+                .studyId(study.getId())
+                .studyStatus(study.getStudyStatus())
+                .title(study.getTitle())
+                .userId(study.getUser().getId())
+                .url(study.getUrl())
+                .scrapCount(study.getScrapCount())
+                .isScraped(isScraped)
+                .studyFormat(study.getStudyFormat())
+                .studyField(study.getStudyField())
+                .studyStyleCategory(study.getStudyStyleCategory())
+                .build();
+    }
+
+
+    // StudyResponseDto.StudyPreviewDTO
+    // -> StudyResponseDto.StudyPreviewDTOList
+    public static StudyResponseDto.StudyPreviewDTOList toStudyPreviewDTOList(List<Study> studies){
+        List<StudyResponseDto.StudyPreviewDTO> list = studies.stream()
+                .map(StudyConverter::toStudyPreviewDTO)
+                .toList();
+
+        return StudyResponseDto.StudyPreviewDTOList.builder()
+                .listSize(list.size())
+                .build();
+    }
+
+    // StudyResponseDto.UserStudyPreviewDto
+    public static StudyResponseDto.UserStudyPreviewDto toUserStudyPreviewDto(UserStudy dto, Long memberCount, Long studySessionCount){
+        return StudyResponseDto.UserStudyPreviewDto.builder()
+                .studyId(dto.getStudy().getId())
+                .studyRole(dto.getStudyRole())
+                .title(dto.getStudy().getTitle())
+                .studyStatus(dto.getStudy().getStudyStatus())
+                .userId(dto.getUser().getId())
+                .url(dto.getStudy().getUrl())
+                .memberCount(memberCount)
+                .studySessionCount(studySessionCount)
+                .studyFormat(dto.getStudy().getStudyFormat())
+                .studyField(dto.getStudy().getStudyField())
+                .studyStyleCategory(dto.getStudy().getStudyStyleCategory())
+                .build();
+    }
+
+    // StudyUsers
+    public static StudyResponseDto.StudyUsers toStudyUsers(UserStudy userStudy, String motivation){
+        return StudyResponseDto.StudyUsers.builder()
+                .userId(userStudy.getUser().getId())
+                .studyRole(userStudy.getStudyRole())
+                .nickName(userStudy.getUser().getNickName())
+                .studentStatus(userStudy.getUser().getStudentStatus())
+                .phoneNumber(userStudy.getUser().getPhoneNumber())
+                .motivation(motivation)
+                .build();
+    }
 }
