@@ -10,7 +10,8 @@ public record UserResponseDTO() {
     public record ChangeInfo(
             String nickName,
             StudentStatus studentStatus,
-            Major major
+            Major major,
+            String phoneNumber
 //            String studyStyle
     ){}
 
@@ -19,6 +20,7 @@ public record UserResponseDTO() {
         String nickName,
         StudentStatus studentStatus,
         Major major,
-        String studyStyle
+        String studyStyle,
+        String phoneNumber
     ){}
 }

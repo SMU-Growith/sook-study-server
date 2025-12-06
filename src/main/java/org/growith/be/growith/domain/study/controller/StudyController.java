@@ -5,9 +5,9 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.growith.be.growith.domain.study.converter.StudyConverter;
-import org.growith.be.growith.domain.study.dto.StudyCardDto;
 import org.growith.be.growith.domain.study.dto.request.StudyRequestDto;
 import org.growith.be.growith.domain.study.dto.response.StudyResponseDto;
+import org.growith.be.growith.domain.study.entity.Study;
 import org.growith.be.growith.domain.study.entity.enums.StudyStatus;
 import org.growith.be.growith.domain.study.service.command.StudyCommandService;
 import org.growith.be.growith.domain.study.service.query.StudyQueryService;
@@ -15,6 +15,7 @@ import org.growith.be.growith.domain.user.entity.User;
 import org.growith.be.growith.global.annotation.AuthenticatedUser;
 import org.growith.be.growith.global.error.ApiResponse;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,45 +29,38 @@ public class StudyController {
     private final StudyCommandService studycommandService;
     private final StudyQueryService studyQueryService;
 
-    @GetMapping
-    public ApiResponse<List<StudyCardDto>> getStudies(
-            @RequestParam(required = false) List<String> fields,
-            @RequestParam(required = false) List<String> formats,
-            @RequestParam(required = false) List<String> styles,
-            @RequestParam(required = false) String status,
-            @RequestParam(required = false) String keyword,
-            @RequestParam(defaultValue = "new") String sort,
-            @PageableDefault(page = 0, size = 12) Pageable pageable
+    @Operation(summary = "스터디 검색 API", description = "태그를 통해 스터디를 검색하는 API")
+    @GetMapping("/search")
+    public ApiResponse<StudyResponseDto.StudyPreviewDTOList> getStudies(
+            StudyRequestDto.SearchStudyCondition request,
+            @PageableDefault(page = 0, size = 12,
+                    sort = "createdAt", direction = Sort.Direction.DESC
+            ) Pageable pageable
     ) {
-        return ApiResponse.onSuccess(null
-//                studyQueryService.searchStudies(fields, formats, styles, status, keyword, sort, page, size)
-        );
+        List<Study> studies = studyQueryService.searchStudies(request, pageable);
+        StudyResponseDto.StudyPreviewDTOList studyPreviewDTOList = StudyConverter.toStudyPreviewDTOList(studies);
+        return ApiResponse.onSuccess(studyPreviewDTOList);
     }
 
-    @GetMapping("/myStudies")
-    public ApiResponse<List<StudyResponseDto.StudyCardDto>> getMyStudies(
+
+    @GetMapping("/my-studies")
+    public ApiResponse<StudyResponseDto.StudyPreviewDTOList> getMyStudies(
             @AuthenticatedUser User user,
             @RequestParam(defaultValue = "ACTIVE") String studyStatus,
             @PageableDefault(page = 0, size = 6) Pageable pageable
     ) {
-//        studyQueryService.getMyStudies(String.valueOf(user.getUserId()), page, size, studyStatus)
-        return ApiResponse.onSuccess(null);
+        StudyResponseDto.StudyPreviewDTOList myStudies = studyQueryService.getMyStudies(String.valueOf(user.getId()), pageable.getPageNumber(), pageable.getPageSize(), studyStatus);
+        return ApiResponse.onSuccess(myStudies);
     }
 
-    @GetMapping("/popular")
-    public ApiResponse<List<StudyCardDto>> getPopularStudies(
-            @PageableDefault(page = 0, size = 4) Pageable pageable
+    @Operation(summary = "인기/최근 스터디 조회 API", description = "홈에서 인기 혹은 최근 스터디 조회하는 API")
+    @GetMapping
+    public ApiResponse<StudyResponseDto.StudyPreviewDTOList> getPopularStudies(
+            @PageableDefault(page = 0, size = 3) Pageable pageable
     ) {
-//        studyQueryService.getPopularStudies(page, size);
-        return ApiResponse.onSuccess(null);
-    }
-
-    @GetMapping("/new")
-    public ApiResponse<List<StudyCardDto>> getNewStudies(
-            @PageableDefault(page = 0, size = 4) Pageable pageable
-    ) {
-//        studyQueryService.getNewStudies(page, size);
-        return  ApiResponse.onSuccess(null);
+        List<Study> studies = studyQueryService.getStudiesByPopularOrNew(pageable);
+        StudyResponseDto.StudyPreviewDTOList studyPreviewDTOList = StudyConverter.toStudyPreviewDTOList(studies);
+        return ApiResponse.onSuccess(studyPreviewDTOList);
     }
 
     @Operation(
@@ -129,6 +123,7 @@ public class StudyController {
         return  ApiResponse.onSuccess(null);
     }
 
+    // 스터디 나가기 - 팀원만 나갈 수 있다, 스터디 탈퇴
     @DeleteMapping("/{studyId}/withdraw")
     public ApiResponse<Void> withdrawStudy(
             @PathVariable Long studyId,
