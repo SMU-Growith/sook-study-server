@@ -81,8 +81,8 @@ public class StudyController {
             , description = "스터디의 상세 조회 API"
     )
     @GetMapping("/{studyId}")
-    public ApiResponse<StudyResponseDto.StudyDetail> getStudyDetail(@PathVariable Long studyId) {
-        return ApiResponse.onSuccess(studyQueryService.getStudyDetail(studyId));
+    public ApiResponse<StudyResponseDto.StudyDetail> getStudyDetail(@PathVariable Long studyId, @AuthenticatedUser User user) {
+        return ApiResponse.onSuccess(studyQueryService.getStudyDetail(studyId, user));
     }
 
     @Operation(

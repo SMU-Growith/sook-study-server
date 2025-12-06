@@ -3,13 +3,14 @@ package org.growith.be.growith.domain.study.service.query;
 import org.growith.be.growith.domain.study.dto.request.StudyRequestDto;
 import org.growith.be.growith.domain.study.dto.response.StudyResponseDto;
 import org.growith.be.growith.domain.study.entity.Study;
+import org.growith.be.growith.domain.user.entity.User;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 
 public interface StudyQueryService {
     // 리팩토링 완료
-    StudyResponseDto.StudyDetail getStudyDetail(Long studyId);
+    StudyResponseDto.StudyDetail getStudyDetail(Long studyId, User user);
     List<Study> searchStudies(StudyRequestDto.SearchStudyCondition request, Pageable pageable);
     List<Study> getStudiesByPopularOrNew(Pageable pageable);
     List<StudyResponseDto.UserStudyPreviewDto> getMyStudies(Long userId, String studyStatus, Pageable pageable);

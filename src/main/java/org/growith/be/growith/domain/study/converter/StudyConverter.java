@@ -39,7 +39,7 @@ public class StudyConverter {
                 .build();
     }
 
-    public static StudyResponseDto.StudyDetail toStudyDetail(Study study, List<Rule> rules){
+    public static StudyResponseDto.StudyDetail toStudyDetail(Study study, List<Rule> rules, Boolean isScraped){
         List<StudyResponseDto.RuleDetailDTO> ruleList = rules.stream()
                 .map(StudyConverter::toRuleDetailDTO)
                 .toList();
@@ -57,6 +57,7 @@ public class StudyConverter {
                 .studyStyleCategory(study.getStudyStyleCategory())
                 .ruleDTO(ruleList)
                 .userId(study.getUser().getId())
+                .isScraped(isScraped)
                 .createdAt(study.getCreatedAt().toLocalDate())
                 .build();
     }
@@ -140,7 +141,6 @@ public class StudyConverter {
                 .studyStatus(study.getStudyStatus())
                 .title(study.getTitle())
                 .userId(study.getUser().getId())
-                .url(study.getUrl())
                 .scrapCount(study.getScrapCount())
                 .isScraped(isScraped)
                 .studyFormat(study.getStudyFormat())

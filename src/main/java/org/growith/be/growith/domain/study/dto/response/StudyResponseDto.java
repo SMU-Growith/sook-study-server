@@ -25,6 +25,7 @@ public record StudyResponseDto() {
             StudyStyleCategory studyStyleCategory,
             List<StudyResponseDto.RuleDetailDTO> ruleDTO,
             Long userId,
+            Boolean isScraped,
             LocalDate createdAt
     ){}
 
@@ -49,7 +50,6 @@ public record StudyResponseDto() {
             String description,
             StudyStatus studyStatus,
             Long userId,
-            String url,
             Boolean isScraped,
             Long scrapCount,
             // 진행방식

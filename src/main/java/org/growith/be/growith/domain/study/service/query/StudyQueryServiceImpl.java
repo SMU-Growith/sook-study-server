@@ -7,6 +7,7 @@ import org.growith.be.growith.domain.journal.dto.StudySession;
 import org.growith.be.growith.domain.journal.dto.StudySessionCardDto;
 import org.growith.be.growith.domain.journal.repository.StudyJournalRepository;
 import org.growith.be.growith.domain.journal.service.JournalEmojiService;
+import org.growith.be.growith.domain.scrap.repository.StudyScrapRepository;
 import org.growith.be.growith.domain.study.converter.StudyConverter;
 import org.growith.be.growith.domain.study.dto.request.StudyRequestDto;
 import org.growith.be.growith.domain.study.dto.response.StudyResponseDto;
@@ -16,6 +17,7 @@ import org.growith.be.growith.domain.study.entity.StudyField;
 import org.growith.be.growith.domain.study.entity.UserStudy;
 import org.growith.be.growith.domain.study.entity.enums.StudyStatus;
 import org.growith.be.growith.domain.study.repository.*;
+import org.growith.be.growith.domain.user.entity.User;
 import org.growith.be.growith.domain.user.repository.UserRepository;
 import org.growith.be.growith.global.error.code.status.StudyErrorCode;
 import org.growith.be.growith.global.error.exception.handler.StudyException;
@@ -40,6 +42,7 @@ public class StudyQueryServiceImpl implements StudyQueryService {
     private final StudyJournalRepository studyJournalRepository;
     private final JournalEmojiService journalEmojiService;
     private final StudyApplicationRepository studyApplicationRepository;
+    private final StudyScrapRepository studyScrapRepository;
 
 
     // 자신의 스터디 조회
@@ -65,11 +68,17 @@ public class StudyQueryServiceImpl implements StudyQueryService {
     }
 
     // 스터디 상세 조회
-    public StudyResponseDto.StudyDetail getStudyDetail(Long studyId) {
+    public StudyResponseDto.StudyDetail getStudyDetail(Long studyId, User user) {
         Study study = studyRepository.findById(studyId)
                 .orElseThrow(() -> new StudyException(StudyErrorCode.STUDY_NOT_FOUND));
         List<Rule> rules = ruleRepository.findByStudy(study);
-        return StudyConverter.toStudyDetail(study, rules);
+
+        Boolean isScraped = false;
+        if (user != null) { // 로그인한 유저인 경우에만 스크랩 여부 확인
+            isScraped = studyScrapRepository.findByUserAndStudy(user, study).isPresent();
+        }
+
+        return StudyConverter.toStudyDetail(study, rules, isScraped);
     }
 
     // 스터디 검색

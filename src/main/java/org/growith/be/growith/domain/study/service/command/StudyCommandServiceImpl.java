@@ -9,6 +9,7 @@ import org.growith.be.growith.domain.study.entity.*;
 import org.growith.be.growith.domain.study.entity.enums.StudyRole;
 import org.growith.be.growith.domain.study.entity.enums.StudyStatus;
 import org.growith.be.growith.domain.study.repository.*;
+import org.growith.be.growith.domain.scrap.repository.StudyScrapRepository;
 import org.growith.be.growith.domain.user.entity.User;
 import org.growith.be.growith.domain.user.repository.UserRepository;
 import org.growith.be.growith.global.error.code.status.StudyErrorCode;
@@ -30,6 +31,7 @@ public class StudyCommandServiceImpl implements StudyCommandService{
     private final RuleRepository ruleRepository;
     private final UserStudyRepository userStudyRepository;
     private final StampUpdateHelper stampUpdateHelper;
+    private final StudyScrapRepository studyScrapRepository;
 
     // 스터디 생성
     public StudyResponseDto.StudyDetail createStudy(StudyRequestDto.CreateStudyDTO request, Long userId) {
@@ -56,7 +58,7 @@ public class StudyCommandServiceImpl implements StudyCommandService{
         long createdStudyCount = studyRepository.countByUserId(userId);
         stampUpdateHelper.updateLeaderStamp(userId, (int) createdStudyCount);
 
-         return StudyConverter.toStudyDetail(savedStudy, rules);
+         return StudyConverter.toStudyDetail(savedStudy, rules, false);
     }
 
     // 스터디 수정
@@ -83,7 +85,11 @@ public class StudyCommandServiceImpl implements StudyCommandService{
                 .toList();
         // 규칙 저장
         ruleRepository.saveAll(rules);
-        return StudyConverter.toStudyDetail(updatedStudy, rules);
+
+        User user = study.getUser(); 
+        Boolean isScraped = studyScrapRepository.findByUserAndStudy(user, updatedStudy).isPresent();
+
+        return StudyConverter.toStudyDetail(updatedStudy, rules, isScraped);
     }
 
     // 스터디 삭제
