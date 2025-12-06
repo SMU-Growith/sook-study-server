@@ -161,6 +161,7 @@ public class StudyConverter {
                 .build();
     }
 
+    // StudyResponseDto.UserStudyPreviewDto
     public static StudyResponseDto.UserStudyPreviewDto toUserStudyPreviewDto(UserStudy dto, Long memberCount, Long studySessionCount){
         return StudyResponseDto.UserStudyPreviewDto.builder()
                 .studyId(dto.getStudy().getId())
@@ -177,4 +178,15 @@ public class StudyConverter {
                 .build();
     }
 
+    // StudyUsers
+    public static StudyResponseDto.StudyUsers toStudyUsers(UserStudy userStudy, String motivation){
+        return StudyResponseDto.StudyUsers.builder()
+                .userId(userStudy.getUser().getId())
+                .studyRole(userStudy.getStudyRole())
+                .nickName(userStudy.getUser().getNickName())
+                .studentStatus(userStudy.getUser().getStudentStatus())
+                .phoneNumber(userStudy.getUser().getPhoneNumber())
+                .motivation(motivation)
+                .build();
+    }
 }

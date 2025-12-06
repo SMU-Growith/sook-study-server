@@ -92,5 +92,14 @@ public record StudyResponseDto() {
             StudyStyleCategory studyStyleCategory
     ){}
 
-
+    @Builder
+     public record StudyUsers(
+             Long userId,
+             StudyRole studyRole,
+             String nickName,
+             StudentStatus studentStatus,
+             Major major,
+             String phoneNumber,
+             String motivation
+     ){}
 }

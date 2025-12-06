@@ -1,6 +1,8 @@
 package org.growith.be.growith.domain.study.service.query;
 
 import lombok.RequiredArgsConstructor;
+import org.growith.be.growith.domain.application.entity.StudyApplication;
+import org.growith.be.growith.domain.application.repository.StudyApplicationRepository;
 import org.growith.be.growith.domain.journal.dto.StudySession;
 import org.growith.be.growith.domain.journal.dto.StudySessionCardDto;
 import org.growith.be.growith.domain.journal.repository.StudyJournalRepository;
@@ -38,6 +40,7 @@ public class StudyQueryServiceImpl implements StudyQueryService {
     private final UserStudyRepository userStudyRepository;
     private final StudyJournalRepository studyJournalRepository;
     private final JournalEmojiService journalEmojiService;
+    private final StudyApplicationRepository studyApplicationRepository;
 
 
     // 자신의 스터디 조회
@@ -82,6 +85,16 @@ public class StudyQueryServiceImpl implements StudyQueryService {
         return studyRepository.searchStudy(request, studyFields, pageRequest);
     }
 
+    // 스터디 멤버 조회
+    public List<StudyResponseDto.StudyUsers> getStudyMembers(Long studyId) {
+        return userStudyRepository.findByStudyId(studyId).stream()
+                .map(userStudy -> {
+                    StudyApplication studyApplication = studyApplicationRepository.findByStudyIdAndUserId(userStudy.getStudy().getId(), userStudy.getUser().getId());
+                    return StudyConverter.toStudyUsers(userStudy, studyApplication.getMotivation());
+                }).toList();
+    }
+
+
     // 스터디 세션 조회
     public List<StudySessionCardDto> getStudySessions(Long studyId, int page, int size) {
         Study study = studyRepository.findById(studyId)
@@ -106,13 +119,5 @@ public class StudyQueryServiceImpl implements StudyQueryService {
                             .build();
                 }).toList();
     }
-
-    /*
-    // 스터디 멤버 조회
-    public List<Study> getStudyMembers(Long studyId) {
-        Optional<Study> byId = studyRepository.findById(studyId);
-    }
-    */
-
 
 }
