@@ -33,6 +33,10 @@ public class StudySessionController {
 
 
     //스터디 세션 리스트 조회
+    @Operation(
+            summary = "스터디 세션 리스트 조회 API",
+            description = "스터디 세션 리스트를 조회할 수 있습니다."
+    )
     @GetMapping("/{studyId}/sessions")
     public ApiResponse<List<StudySessionCardDto>> getStudySessions(
             @PathVariable Long studyId,
@@ -44,6 +48,10 @@ public class StudySessionController {
     }
 
     // 스터디 세션 생성 (팀장권한)
+    @Operation(
+            summary = "스터디 세션 생성 API",
+            description = "팀장 권한을 가진 사용자만 스터디 세션을 생성할 수 있습니다."
+    )
     @PostMapping("/{studyId}/session")
     public ApiResponse<StudySessionCardDto> createStudySession(
             @PathVariable Long studyId,
@@ -53,6 +61,10 @@ public class StudySessionController {
     }
 
     // 스터디 세션 수정 (팀장권한)
+    @Operation(
+            summary = "스터디 세션 수정 API",
+            description = "팀장 권한을 가진 사용자만 스터디 세션을 수정할 수 있습니다."
+    )
     @PutMapping("/session/{sessionId}")
     public ApiResponse<Void> updateStudySession(
             @PathVariable Long sessionId,
@@ -62,6 +74,10 @@ public class StudySessionController {
     }
 
     // 스터디 세션 조회 (팀장권한)
+    @Operation(
+            summary = "스터디 세션 조회 API",
+            description = "스터디 세션을 조회할 수 있습니다."
+    )
     @GetMapping("/session/{sessionId}")
     public ApiResponse<List<StudySessionCardDto>> getStudySession(
             @PathVariable Long sessionId,
@@ -86,6 +102,10 @@ public class StudySessionController {
     }
 
     // 스터디 일지 제출
+    @Operation(
+            summary = "스터디 일지 제출 API",
+            description = "스터디 일지를 제출할 수 있습니다."
+    )
     @PostMapping("/session/{sessionId}/journal")
     public ApiResponse<StudyJournalDto> createStudyJournal(
             @PathVariable Long sessionId,
@@ -96,6 +116,10 @@ public class StudySessionController {
     }
 
     // 스터디 일지 조회
+    @Operation(
+            summary = "스터디 일지 조회 API",
+            description = "스터디 일지를 조회할 수 있습니다."
+    )
     @GetMapping("/journal/{journalId}")
     public ApiResponse<StudyJournalDto> getStudyJournal(@PathVariable Long journalId) {
         StudyJournalDto journal = studyJournalQueryService.getStudyJournal(journalId);
@@ -103,6 +127,10 @@ public class StudySessionController {
     }
 
     // 스터디 일지 수정
+    @Operation(
+            summary = "스터디 일지 수정 API",
+            description = "스터디 일지를 수정할 수 있습니다."
+    )
     @PutMapping("/journal/{journalId}")
     public ApiResponse<StudyJournalDto> updateStudyJournal(
             @PathVariable Long journalId,
@@ -112,6 +140,10 @@ public class StudySessionController {
     }
 
     // 스터디 일지 삭제
+    @Operation(
+            summary = "스터디 일지 삭제 API",
+            description = "스터디 일지를 삭제할 수 있습니다."
+    )
     @DeleteMapping("/journal/{journalId}")
     public ApiResponse<Void> deleteStudyJournal(@PathVariable Long journalId) {
         studyJournalCommandService.deleteStudyJournal(journalId);
@@ -119,6 +151,10 @@ public class StudySessionController {
     }
 
     // 세션별 스터디 일지 목록 조회
+    @Operation(
+            summary = "세션별 스터디 일지 목록 조회 API",
+            description = "세션별 스터디 일지 목록을 조회할 수 있습니다."
+    )
     @GetMapping("/session/{sessionId}/journals")
     public ApiResponse<List<StudyJournalListDto>> getStudyJournalsBySession(
             @PathVariable Long sessionId,
@@ -129,6 +165,10 @@ public class StudySessionController {
     }
 
     // 스터디일지 이모티콘 토글
+    @Operation(
+            summary = "스터디일지 이모티콘 토글 API",
+            description = "스터디일지 이모티콘을 토글할 수 있습니다."
+    )
     @PatchMapping("/journals/{studyJournalId}/emoji")
     public ApiResponse<StudyJournalDto.EmojiCounts> toggleEmoji(
             @PathVariable Long studyJournalId,

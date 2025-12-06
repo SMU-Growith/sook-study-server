@@ -45,4 +45,11 @@ public class StudyApplicationConverter {
                 .map(StudyApplicationConverter::toApplicationDetailDTO)
                 .toList();
     }
+    public static StudyApplicationResponseDTO.UpdateApplicationResponseDTO toUpdateApplicationResponseDTO(StudyApplication studyApplication){
+        return StudyApplicationResponseDTO.UpdateApplicationResponseDTO.builder()
+                .applicationId(studyApplication.getId())
+                .studyId(studyApplication.getStudy().getId())
+                .applicationStatus(studyApplication.getApplicationStatus())
+                .build();
+    }
 }

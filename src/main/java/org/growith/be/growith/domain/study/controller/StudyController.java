@@ -112,19 +112,19 @@ public class StudyController {
         return  ApiResponse.onSuccess(studyDetail);
     }
 
-    @Operation(
-            summary = "스터디 상태 수정 API"
-            , description = "스터디 상태 수정 API,  팀장 권한을 갖는 사용자만 스터디 상태를 수정할 수 있다"
-    )
-    @PatchMapping("/{studyId}/change-status")
-    public ApiResponse<StudyResponseDto.ChangedStudyStatus> closedStudy(
-            @RequestBody StudyRequestDto.ChangeStudyStatusDTO request,
-            @PathVariable Long studyId,
-            @AuthenticatedUser User user
-    ) {
-        StudyStatus studyStatus = studycommandService.changeStudyStatus(studyId, request.studyStatus(), user.getId());
-        return ApiResponse.onSuccess(StudyConverter.toChangedStudyStatus(studyStatus));
-    }
+//     @Operation(
+//             summary = "스터디 상태 수정 API"
+//             , description = "스터디 상태 수정 API,  팀장 권한을 갖는 사용자만 스터디 상태를 수정할 수 있다"
+//     )
+//     @PatchMapping("/{studyId}/change-status")
+//     public ApiResponse<StudyResponseDto.ChangedStudyStatus> closedStudy(
+//             @RequestBody StudyRequestDto.ChangeStudyStatusDTO request,
+//             @PathVariable Long studyId,
+//             @AuthenticatedUser User user
+//     ) {
+//         StudyStatus studyStatus = studycommandService.changeStudyStatus(studyId, request.studyStatus(), user.getId());
+//         return ApiResponse.onSuccess(StudyConverter.toChangedStudyStatus(studyStatus));
+//     }
     
     @Operation(
             summary = "스터디 삭제 API"

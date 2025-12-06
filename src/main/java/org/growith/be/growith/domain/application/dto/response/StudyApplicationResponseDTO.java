@@ -19,4 +19,10 @@ public record StudyApplicationResponseDTO() {
             ApplicationStatus applicationStatus
     ){}
 
+    @Builder
+    public record UpdateApplicationResponseDTO(
+            Long applicationId,
+            Long studyId,
+            ApplicationStatus applicationStatus
+    ){}
 }

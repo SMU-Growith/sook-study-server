@@ -40,13 +40,13 @@ public class StudyApplicationController {
     // 지원서 승인/거절
     @Operation(summary = "스터디 지원서 승인/거절 API (팀장 권한)", description = "해당 스터디의 스터디 지원서를 승인/거절하는 API, 팀장 권한")
     @PatchMapping("/{applicationId}/status")
-    public ApiResponse<StudyApplicationResponseDTO.StudyApplicationDetailDTO> updateApplicationStatus(
+    public ApiResponse<StudyApplicationResponseDTO.UpdateApplicationResponseDTO> updateApplicationStatus(
             @PathVariable Long applicationId,
             @AuthenticatedUser User user,
             @RequestBody StudyApplicationRequestDTO.UpdateStudyApplicationDTO request
     ) {
         StudyApplication studyApplication = studyApplicationCommandService.updateApplicationStatus(applicationId, user.getId(), request);
-        return ApiResponse.onSuccess(StudyApplicationConverter.toApplicationDetailDTO(studyApplication));
+        return ApiResponse.onSuccess(StudyApplicationConverter.toUpdateApplicationResponseDTO(studyApplication));
     }
 
     // 지원서 리스트 조회
