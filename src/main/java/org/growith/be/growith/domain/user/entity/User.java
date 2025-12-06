@@ -51,6 +51,7 @@ public class User extends BaseEntity {
         this.nickName = request.nickName();
         this.major = request.major();
         this.studentStatus = request.studentStatus();
+        this.phoneNumber = request.phoneNumber();
     }
 
     public void encodePassword(String password) {
