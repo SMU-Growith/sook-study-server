@@ -1,10 +1,12 @@
 package org.growith.be.growith.domain.study.dto.response;
 
 import lombok.Builder;
+import org.growith.be.growith.domain.study.entity.StudyField;
 import org.growith.be.growith.domain.study.entity.enums.*;
 import org.growith.be.growith.domain.user.entity.enums.Major;
 import org.growith.be.growith.domain.user.entity.enums.StudentStatus;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public record StudyResponseDto() {
@@ -21,7 +23,8 @@ public record StudyResponseDto() {
             String studyFieldName,
             StudyFormat studyFormat,
             StudyStyleCategory studyStyleCategory,
-            List<StudyResponseDto.RuleDetailDTO> ruleDTO
+            List<StudyResponseDto.RuleDetailDTO> ruleDTO,
+            LocalDate createdAt
     ){}
 
     @Builder
@@ -30,31 +33,41 @@ public record StudyResponseDto() {
             String description
     ){ }
 
-
-    // 내 스터디 조회에서 사용
     @Builder
-    public record StudyCardDto ( // record -> StudyCardDto.getStudyId get
-        Long studyId,
-        StudyStatus studyStatus,
-        String title,
-        String authorId,
-        Long scrapCount,
-        String format, // 진행방식
-        String fieldName, // 분야
-        List<String> styleNames,
+    public record StudyPreviewDTOList(
+            List<StudyPreviewDTO> studyPreviews,
+            Integer listSize,
+            Integer totalPage,
+            Long totalElements,
+            Boolean isFirst,
+            Boolean isLast
+    ){}
 
-        Integer memberCount,    // 스터디원 수
-        Integer studyDays,  // 스터디 진행 일수
-        String userRole // 사용자의 스터디 내 역할
+
+    // 내 스터디 조회에서 사용 
+    @Builder
+    public record StudyPreviewDTO(
+            Long studyId,
+            String title,
+            StudyStatus studyStatus,
+            Long userId,
+            String url,
+            Boolean isScraped,
+            Long scrapCount,
+            // 진행방식
+            StudyFormat studyFormat,
+            // 스터디 분야
+            StudyField studyField,
+            StudyStyleCategory studyStyleCategory
     ){}
 
     public record StudyMemberDto(
-        Long userId,
-        String nickName,
-        StudentStatus studentStatus,
-        Major major,
-        String phoneNumber,
-        String motivation
+            Long userId,
+            String nickName,
+            StudentStatus studentStatus,
+            Major major,
+            String phoneNumber,
+            String motivation
     ){}
 
     @Builder

@@ -8,7 +8,8 @@ public record UserRequestDTO() {
     public record ChangeInfo(
             String nickName,
             StudentStatus studentStatus,
-            Major major
+            Major major,
+            String phoneNumber
 //            String studyStyle
     ){}
 }

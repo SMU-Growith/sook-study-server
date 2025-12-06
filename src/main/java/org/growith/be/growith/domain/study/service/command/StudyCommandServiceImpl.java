@@ -125,6 +125,7 @@ public class StudyCommandServiceImpl implements StudyCommandService{
         userStudyRepository.save(newLeaderStudy);
     }
 
+    // 스터디 상태 수정
     public StudyStatus changeStudyStatus(Long studyId, StudyStatus studyStatus, Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserException(UserErrorCode.NOT_FOUND));
