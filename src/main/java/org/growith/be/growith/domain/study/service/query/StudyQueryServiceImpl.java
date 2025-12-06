@@ -14,6 +14,7 @@ import org.growith.be.growith.domain.study.entity.Rule;
 import org.growith.be.growith.domain.study.entity.Study;
 import org.growith.be.growith.domain.study.entity.StudyField;
 import org.growith.be.growith.domain.study.entity.UserStudy;
+import org.growith.be.growith.domain.study.entity.enums.StudyStatus;
 import org.growith.be.growith.domain.study.repository.*;
 import org.growith.be.growith.domain.user.repository.UserRepository;
 import org.growith.be.growith.global.error.code.status.StudyErrorCode;
@@ -42,14 +43,18 @@ public class StudyQueryServiceImpl implements StudyQueryService {
 
 
     // 자신의 스터디 조회
-    public List<StudyResponseDto.UserStudyPreviewDto> getMyStudies(Long userId, Pageable pageable) {
-
-        Page<UserStudy> userStudies = userStudyRepository.findByUserId(userId, pageable);
+    public List<StudyResponseDto.UserStudyPreviewDto> getMyStudies(Long userId, String studyStatus, Pageable pageable) {
+        StudyStatus status = StudyStatus.valueOf(studyStatus.toUpperCase());
+        Page<UserStudy> userStudies = userStudyRepository.findByUserIdAndStatus(userId, status, pageable);
         return userStudies.stream()
                 .map(userStudy -> {
                     Long memberCount = userStudyRepository.countByStudyId(userStudy.getStudy().getId());
-                    Long studySessionCount = studySessionRepository.countByStudyId(userStudy.getStudy().getId()) + 1;
-                    return StudyConverter.toUserStudyPreviewDto(userStudy, memberCount, studySessionCount);
+                    // 스터디 시작일(생성일)로부터 며칠 지났는지 계산 (D-Day 개념, 시작일이 1일)
+                    Long studyDays = java.time.temporal.ChronoUnit.DAYS.between(
+                            userStudy.getStudy().getCreatedAt().toLocalDate(), 
+                            java.time.LocalDate.now()
+                    ) + 1;
+                    return StudyConverter.toUserStudyPreviewDto(userStudy, memberCount, studyDays);
                 })
                 .toList();
     }

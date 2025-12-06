@@ -6,6 +6,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.growith.be.growith.domain.study.entity.enums.StudyStatus;
 
 import java.util.List;
 import java.util.Optional;
@@ -20,7 +21,8 @@ public interface UserStudyRepository extends JpaRepository<UserStudy, Long> {
     @Query("SELECT COUNT(us) FROM UserStudy us WHERE us.study.id = :studyId")
     Long countByStudyId(Long studyId);
 
-    Page<UserStudy> findByUserId(Long userId, Pageable pageable);
+    @Query("SELECT us FROM UserStudy us WHERE us.user.id = :userId AND us.study.studyStatus = :studyStatus ORDER BY us.createdAt DESC")
+    Page<UserStudy> findByUserIdAndStatus(Long userId, StudyStatus studyStatus, Pageable pageable);
 
     // 해당 사용자가 스터디의 팀장인지 확인
     boolean existsByStudyIdAndUserIdAndStudyRole(Long studyId, Long userId, StudyRole studyRole);

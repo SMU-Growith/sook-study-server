@@ -49,7 +49,7 @@ public class StudyController {
             @RequestParam(defaultValue = "ACTIVE") String studyStatus,
             @PageableDefault(page = 0, size = 6) Pageable pageable
     ) {
-        List<StudyResponseDto.UserStudyPreviewDto> myStudies = studyQueryService.getMyStudies(user.getId(), pageable);
+        List<StudyResponseDto.UserStudyPreviewDto> myStudies = studyQueryService.getMyStudies(user.getId(), studyStatus, pageable);
         return ApiResponse.onSuccess(myStudies);
     }
 

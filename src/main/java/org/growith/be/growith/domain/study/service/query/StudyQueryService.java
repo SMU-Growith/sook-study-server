@@ -12,7 +12,7 @@ public interface StudyQueryService {
     StudyResponseDto.StudyDetail getStudyDetail(Long studyId);
     List<Study> searchStudies(StudyRequestDto.SearchStudyCondition request, Pageable pageable);
     List<Study> getStudiesByPopularOrNew(Pageable pageable);
-    List<StudyResponseDto.UserStudyPreviewDto> getMyStudies(Long userId, Pageable pageable);
+    List<StudyResponseDto.UserStudyPreviewDto> getMyStudies(Long userId, String studyStatus, Pageable pageable);
     List<StudyResponseDto.StudyUsers> getStudyMembers(Long studyId);
     List<StudyResponseDto.StudyFieldDto> getStudyFields();
 }

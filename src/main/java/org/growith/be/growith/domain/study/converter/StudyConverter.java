@@ -157,6 +157,7 @@ public class StudyConverter {
                 .toList();
 
         return StudyResponseDto.StudyPreviewDTOList.builder()
+                .studyPreviews(list)
                 .listSize(list.size())
                 .build();
     }
@@ -173,7 +174,8 @@ public class StudyConverter {
                 .memberCount(memberCount)
                 .studySessionCount(studySessionCount)
                 .studyFormat(dto.getStudy().getStudyFormat())
-                .studyField(dto.getStudy().getStudyField())
+                .studyFieldId(dto.getStudy().getStudyField().getId())
+                .studyFieldName(dto.getStudy().getStudyField().getName())
                 .studyStyleCategory(dto.getStudy().getStudyStyleCategory())
                 .build();
     }

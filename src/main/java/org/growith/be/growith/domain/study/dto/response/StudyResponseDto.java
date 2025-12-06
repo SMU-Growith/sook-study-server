@@ -36,11 +36,7 @@ public record StudyResponseDto() {
     @Builder
     public record StudyPreviewDTOList(
             List<StudyPreviewDTO> studyPreviews,
-            Integer listSize,
-            Integer totalPage,
-            Long totalElements,
-            Boolean isFirst,
-            Boolean isLast
+            Integer listSize
     ){}
 
 
@@ -88,7 +84,8 @@ public record StudyResponseDto() {
             // 진행방식
             StudyFormat studyFormat,
             // 스터디 분야
-            StudyField studyField,
+            Long studyFieldId,
+            String studyFieldName,
             StudyStyleCategory studyStyleCategory
     ){}
 
