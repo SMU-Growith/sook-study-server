@@ -14,7 +14,6 @@ import org.growith.be.growith.domain.study.entity.Rule;
 import org.growith.be.growith.domain.study.entity.Study;
 import org.growith.be.growith.domain.study.entity.StudyField;
 import org.growith.be.growith.domain.study.entity.UserStudy;
-import org.growith.be.growith.domain.study.entity.enums.StudyStatus;
 import org.growith.be.growith.domain.study.repository.*;
 import org.growith.be.growith.domain.user.repository.UserRepository;
 import org.growith.be.growith.global.error.code.status.StudyErrorCode;
@@ -26,7 +25,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -46,7 +44,7 @@ public class StudyQueryServiceImpl implements StudyQueryService {
     // 자신의 스터디 조회
     public List<StudyResponseDto.UserStudyPreviewDto> getMyStudies(Long userId, Pageable pageable) {
 
-        Page<UserStudy> userStudies = userStudyRepository.findByUserIdWithPageable(userId, pageable);
+        Page<UserStudy> userStudies = userStudyRepository.findByUserId(userId, pageable);
         return userStudies.stream()
                 .map(userStudy -> {
                     Long memberCount = userStudyRepository.countByStudyId(userStudy.getStudy().getId());

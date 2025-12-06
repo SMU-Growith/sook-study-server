@@ -20,8 +20,10 @@ public interface UserStudyRepository extends JpaRepository<UserStudy, Long> {
     @Query("SELECT COUNT(us) FROM UserStudy us WHERE us.study.id = :studyId")
     Long countByStudyId(Long studyId);
 
-    Page<UserStudy> findByUserIdWithPageable(Long userId, Pageable pageable);
+    Page<UserStudy> findByUserId(Long userId, Pageable pageable);
 
     // 해당 사용자가 스터디의 팀장인지 확인
     boolean existsByStudyIdAndUserIdAndStudyRole(Long studyId, Long userId, StudyRole studyRole);
+
+    void deleteByStudyIdAndUserId(Long studyId, Long userId);
 }

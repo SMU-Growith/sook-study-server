@@ -9,4 +9,5 @@ public interface StudyCommandService {
     StudyResponseDto.StudyDetail updateStudy(StudyRequestDto.UpdateStudyDTO request, Long studyId, Long userId);
     void deleteStudy(Long studyId, Long userId);
     StudyStatus changeStudyStatus(Long studyId, StudyStatus studyStatus, Long userId);
+    void withdrawStudy(Long studyId, Long userId);
 }
