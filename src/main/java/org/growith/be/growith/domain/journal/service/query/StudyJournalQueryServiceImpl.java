@@ -3,6 +3,7 @@ package org.growith.be.growith.domain.journal.service.query;
 import lombok.RequiredArgsConstructor;
 import org.growith.be.growith.domain.journal.dto.StudyJournalDto;
 import org.growith.be.growith.domain.journal.dto.StudyJournalListDto;
+import org.growith.be.growith.domain.journal.dto.StudySessionListDto;
 import org.growith.be.growith.domain.journal.dto.StudySession;
 import org.growith.be.growith.domain.journal.dto.StudySessionCardDto;
 import org.growith.be.growith.domain.journal.entity.StudyJournal;
