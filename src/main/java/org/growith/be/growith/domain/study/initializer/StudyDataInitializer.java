@@ -57,7 +57,7 @@ public class StudyDataInitializer implements CommandLineRunner {
                 .title("데이터 사이언스 스터디")
                 .description("Python, Pandas, Scikit‑Learn을 이용한 데이터 분석 실습")
                 .studyStatus(StudyStatus.ACTIVE)
-                .contactType(ContactType.GOOGLEFORM)
+                .contactType(ContactType.EMAIL)
                 .url("https://example.com/data-science")
                 .isRecruiting(false)   // 모집 종료 예시
                 .studyFormat(StudyFormat.ONLINE)

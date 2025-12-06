@@ -118,4 +118,24 @@ public class StudyQueryServiceImpl implements StudyQueryService {
                 }).toList();
     }
 
+
+    // 스터디 분야 목록 조회
+    @Override
+    public List<StudyResponseDto.StudyFieldDto> getStudyFields() {
+        return studyFieldRepository.findAll().stream()
+                .filter(field -> field.getParent() == null)
+                .map(this::toFieldDto)
+                .toList();
+    }
+
+    private StudyResponseDto.StudyFieldDto toFieldDto(StudyField field) {
+        return StudyResponseDto.StudyFieldDto.builder()
+                .id(field.getId())
+                .name(field.getName())
+                .children(field.getStudyField().stream()
+                        .map(this::toFieldDto)
+                        .toList())
+                .build();
+    }
+
 }

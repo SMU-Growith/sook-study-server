@@ -14,4 +14,5 @@ public interface StudyQueryService {
     List<Study> getStudiesByPopularOrNew(Pageable pageable);
     List<StudyResponseDto.UserStudyPreviewDto> getMyStudies(Long userId, Pageable pageable);
     List<StudyResponseDto.StudyUsers> getStudyMembers(Long studyId);
+    List<StudyResponseDto.StudyFieldDto> getStudyFields();
 }

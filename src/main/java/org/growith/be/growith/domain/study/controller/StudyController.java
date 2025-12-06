@@ -167,4 +167,10 @@ public class StudyController {
     }
 
    
+    // 스터디 분야 조회
+    @Operation(summary = "스터디 분야 목록 조회 API", description = "스터디 생성 시 선택할 수 있는 분야 목록을 조회합니다.")
+    @GetMapping("/fields")
+    public ApiResponse<List<StudyResponseDto.StudyFieldDto>> getStudyFields() {
+        return ApiResponse.onSuccess(studyQueryService.getStudyFields());
+    }
 }

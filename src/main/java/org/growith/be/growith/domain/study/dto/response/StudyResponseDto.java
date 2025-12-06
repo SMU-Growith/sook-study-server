@@ -102,4 +102,11 @@ public record StudyResponseDto() {
              String phoneNumber,
              String motivation
      ){}
+
+    @Builder
+    public record StudyFieldDto(
+            Long id,
+            String name,
+            List<StudyFieldDto> children
+    ){}
 }
