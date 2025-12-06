@@ -27,7 +27,9 @@ public class ScrapService {
     private final StudyRepository studyRepository;
     private final UserRepository userRepository;
 
-    public Study toggleScrap(Long studyId, Long userId) {
+    public record ToggleResult(Study study, Boolean isScraped) {}
+
+    public ToggleResult toggleScrap(Long studyId, Long userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserException(UserErrorCode.NOT_FOUND));
 
@@ -35,16 +37,19 @@ public class ScrapService {
                 .orElseThrow(() -> new StudyException(StudyErrorCode.STUDY_NOT_FOUND));
 
         Optional<StudyScrap> studyScrap = studyScrapRepository.findByUserAndStudy(user, study);
+        boolean isScraped;
 
         if (studyScrap.isPresent()) {
             studyScrapRepository.delete(studyScrap.get());
             study.decreaseScrapCount();
+            isScraped = false;
         } else {
             studyScrapRepository.save(StudyScrap.builder()
                     .user(user).study(study).build());
             study.increaseScrapCount();
+            isScraped = true;
         }
-        return study;
+        return new ToggleResult(study, isScraped);
     }
 
     @Transactional(readOnly = true)

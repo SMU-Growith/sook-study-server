@@ -46,6 +46,7 @@ public record StudyResponseDto() {
     public record StudyPreviewDTO(
             Long studyId,
             String title,
+            String description,
             StudyStatus studyStatus,
             Long userId,
             String url,
@@ -54,7 +55,8 @@ public record StudyResponseDto() {
             // 진행방식
             StudyFormat studyFormat,
             // 스터디 분야
-            StudyField studyField,
+            Long studyFieldId,
+            String studyFieldName,
             StudyStyleCategory studyStyleCategory
     ){}
 
@@ -63,6 +65,7 @@ public record StudyResponseDto() {
             String nickName,
             StudentStatus studentStatus,
             Major major,
+            String majorName,
             String phoneNumber,
             String motivation
     ){}
@@ -97,6 +100,7 @@ public record StudyResponseDto() {
              String nickName,
              StudentStatus studentStatus,
              Major major,
+             String majorName,
              String phoneNumber,
              String motivation
      ){}
@@ -106,5 +110,11 @@ public record StudyResponseDto() {
             Long id,
             String name,
             List<StudyFieldDto> children
+    ){}
+    @Builder
+    public record ToggleScrapResponseDto(
+            Long studyId,
+            Boolean isScraped,
+            Long scrapCount
     ){}
 }

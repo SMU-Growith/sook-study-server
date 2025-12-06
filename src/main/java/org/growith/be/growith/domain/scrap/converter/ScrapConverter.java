@@ -16,4 +16,11 @@ public class ScrapConverter {
                 .toList();
         return StudyConverter.toStudyPreviewDTOList(list);
     }
+    public static StudyResponseDto.ToggleScrapResponseDto toToggleScrapResponseDto(Study study, Boolean isScraped){
+        return StudyResponseDto.ToggleScrapResponseDto.builder()
+                .studyId(study.getId())
+                .isScraped(isScraped)
+                .scrapCount(study.getScrapCount())
+                .build();
+    }
 }

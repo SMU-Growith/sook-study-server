@@ -11,7 +11,8 @@ public record UserResponseDTO() {
             String nickName,
             StudentStatus studentStatus,
             Major major,
-            String phoneNumber
+            String phoneNumber,
+            Boolean noticeYn
 //            String studyStyle
     ){}
 
@@ -21,6 +22,7 @@ public record UserResponseDTO() {
         StudentStatus studentStatus,
         Major major,
         String studyStyle,
-        String phoneNumber
+        String phoneNumber,
+        Boolean noticeYn
     ){}
 }

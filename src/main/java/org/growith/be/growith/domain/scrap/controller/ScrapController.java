@@ -28,12 +28,12 @@ public class ScrapController {
     // 스크랩 토글 (생성/삭제)
     @Operation(summary = "스터디 스크랩 생성/삭제 API", description = "스터디를 생성 혹은 삭제하는 API")
     @PostMapping("/studies/{studyId}/scrap/toggle")
-    public ApiResponse<StudyResponseDto.StudyPreviewDTO> toggleScrap(
+    public ApiResponse<StudyResponseDto.ToggleScrapResponseDto> toggleScrap(
             @PathVariable Long studyId,
             @AuthenticatedUser User user
     ) {
-        Study study = scrapService.toggleScrap(studyId, user.getId());
-        return ApiResponse.onSuccess(StudyConverter.toStudyPreviewDTO(study));
+        ScrapService.ToggleResult result = scrapService.toggleScrap(studyId, user.getId());
+        return ApiResponse.onSuccess(ScrapConverter.toToggleScrapResponseDto(result.study(), result.isScraped()));
     }
 
     // 스크랩 목록 조회

@@ -144,7 +144,8 @@ public class StudyConverter {
                 .scrapCount(study.getScrapCount())
                 .isScraped(isScraped)
                 .studyFormat(study.getStudyFormat())
-                .studyField(study.getStudyField())
+                .studyFieldId(study.getStudyField().getId())
+                .studyFieldName(study.getStudyField().getName())
                 .studyStyleCategory(study.getStudyStyleCategory())
                 .build();
     }
@@ -188,6 +189,8 @@ public class StudyConverter {
                 .studyRole(userStudy.getStudyRole())
                 .nickName(userStudy.getUser().getNickName())
                 .studentStatus(userStudy.getUser().getStudentStatus())
+                .major(userStudy.getUser().getMajor())
+                .majorName(userStudy.getUser().getMajor().getDescription())
                 .phoneNumber(userStudy.getUser().getPhoneNumber())
                 .motivation(motivation)
                 .build();

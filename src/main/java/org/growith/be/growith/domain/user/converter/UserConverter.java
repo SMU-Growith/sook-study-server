@@ -12,8 +12,9 @@ public class UserConverter {
                 .studentStatus(user.getStudentStatus())
                 .major(user.getMajor())
                 .phoneNumber(user.getPhoneNumber())
+                .noticeYn(Boolean.TRUE.equals(user.getIsNotice()))
                 // TODO: studyStyle 구현 필요
-                .studyStyle(null)
+                .studyStyle("하드코딩")
                 .build();
     }
 
@@ -24,6 +25,7 @@ public class UserConverter {
                 .studentStatus(user.getStudentStatus())
                 .major(user.getMajor())
                 .phoneNumber(user.getPhoneNumber())
+                .noticeYn(Boolean.TRUE.equals(user.getIsNotice()))
                 .build();
     }
 }
