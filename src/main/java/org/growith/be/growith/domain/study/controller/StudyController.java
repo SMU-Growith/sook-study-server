@@ -124,12 +124,13 @@ public class StudyController {
     }
 
     // 스터디 나가기 - 팀원만 나갈 수 있다, 스터디 탈퇴
+    @Operation(summary = "스터디 탈퇴 API", description = "스터디를 탈퇴하는 API, 팀원만 나갈 수 있다")
     @DeleteMapping("/{studyId}/withdraw")
     public ApiResponse<Void> withdrawStudy(
             @PathVariable Long studyId,
             @AuthenticatedUser User user
     ) {
-//        studycommandService.withdrawStudy(studyId, String.valueOf(user.getUserId()));
+        studycommandService.withdrawStudy(studyId, user.getId());
         return  ApiResponse.onSuccess(null);
     }
 
