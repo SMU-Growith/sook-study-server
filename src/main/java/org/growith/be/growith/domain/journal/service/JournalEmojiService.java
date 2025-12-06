@@ -18,6 +18,8 @@ import java.util.Optional;
 public class JournalEmojiService {
     
     private final JournalEmojiRepository journalEmojiRepository;
+    private final org.growith.be.growith.domain.journal.repository.StudyJournalRepository studyJournalRepository;
+    private final org.growith.be.growith.domain.stamp.service.StampUpdateHelper stampUpdateHelper;
 
     @Transactional
     public StudyJournalDto.EmojiCounts toggleEmoji(Long studyJournalId, Long userId, String emojiTypeStr) {
@@ -59,7 +61,22 @@ public class JournalEmojiService {
         }
 
         // 업데이트된 이모티콘 카운트 반환
+        updateStamps(userId, studyJournalId);
         return getEmojiCounts(studyJournalId);
+    }
+
+    private void updateStamps(Long userId, Long studyJournalId) {
+        // 1. 응원 고숙 (내가 응원한 사람 수)
+        long cheerGivenCount = journalEmojiRepository.countDistinctCheeredUsers(userId);
+        stampUpdateHelper.updateCheerStamp(userId, (int) cheerGivenCount);
+
+        // 2. 슈퍼숙타 (내 일지가 받은 응원 수) -> 일지 주인의 스탬프 업데이트
+        org.growith.be.growith.domain.journal.entity.StudyJournal journal = studyJournalRepository.findById(studyJournalId).orElse(null);
+        if (journal != null) {
+            Long journalOwnerId = journal.getUserId();
+            long cheerReceivedCount = journalEmojiRepository.countReceivedCheersByUserId(journalOwnerId);
+            stampUpdateHelper.updateSuperstarStamp(journalOwnerId, (int) cheerReceivedCount);
+        }
     }
 
         @Transactional(readOnly = true)

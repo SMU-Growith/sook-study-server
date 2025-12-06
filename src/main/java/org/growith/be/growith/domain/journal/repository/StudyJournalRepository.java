@@ -15,4 +15,5 @@ public interface StudyJournalRepository extends JpaRepository<StudyJournal, Long
     @Query("SELECT COUNT(sj) FROM StudyJournal sj WHERE sj.id = :journalId")
     Integer countByJournalId(@Param("journalId") Long journalId);
 
+    long countByUserId(Long userId);
 }

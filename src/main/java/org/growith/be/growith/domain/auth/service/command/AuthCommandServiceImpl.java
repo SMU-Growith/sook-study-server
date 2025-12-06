@@ -33,6 +33,7 @@ public class AuthCommandServiceImpl implements AuthCommandService {
     private final TokenStorageQueryService tokenStorageQueryService;
     private final TokenStorageCommandService tokenStorageCommandService;
     private final JwtUtil jwtUtil;
+    private final org.growith.be.growith.domain.stamp.service.StampUpdateHelper stampUpdateHelper;
 
 
     @Override
@@ -42,6 +43,9 @@ public class AuthCommandServiceImpl implements AuthCommandService {
         User user = AuthConverter.toLocalUser(request);
         user.encodePassword(passwordEncoder.encode(request.password()));
         User savedUser = userRepository.save(user);
+
+        // 웰컴숙 스탬프 발급
+        stampUpdateHelper.updateWelcomeStamp(savedUser.getId());
 
         CustomUserDetails customUserDetails = new CustomUserDetails(savedUser);
         return tokenCommandService.createLoginToken(customUserDetails);

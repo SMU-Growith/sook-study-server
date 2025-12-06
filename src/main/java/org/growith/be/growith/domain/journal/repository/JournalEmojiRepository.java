@@ -16,4 +16,10 @@ public interface JournalEmojiRepository extends JpaRepository<JournalEmoji, Long
     List<Object[]> countEmojisByJournalId(@Param("studyJournalId") Long studyJournalId);
 
     void deleteByStudyJournalIdAndUserId(Long studyJournalId, Long userId);
+
+    @Query("SELECT COUNT(je) FROM JournalEmoji je JOIN StudyJournal sj ON je.studyJournalId = sj.id WHERE sj.userId = :userId")
+    Long countReceivedCheersByUserId(@Param("userId") Long userId);
+
+    @Query("SELECT COUNT(DISTINCT sj.userId) FROM JournalEmoji je JOIN StudyJournal sj ON je.studyJournalId = sj.id WHERE je.userId = :userId")
+    Long countDistinctCheeredUsers(@Param("userId") Long userId);
 }

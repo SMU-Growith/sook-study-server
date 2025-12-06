@@ -27,6 +27,7 @@ public class StudyJournalCommandServiceImpl implements StudyJournalCommandServic
     private final UserRepository userRepository;
     private final StudyRepository studyRepository;
     private final org.growith.be.growith.domain.study.repository.UserStudyRepository userStudyRepository;
+    private final org.growith.be.growith.domain.stamp.service.StampUpdateHelper stampUpdateHelper;
 
     public StudyJournalDto createStudyJournal(Long sessionId, Long userId, StudyJournalDto dto) {
         // 세션 존재 확인
@@ -62,6 +63,10 @@ public class StudyJournalCommandServiceImpl implements StudyJournalCommandServic
             }
             studyJournalRepository.save(savedJournal);
         }
+
+        // 기록숙 스탬프 업데이트
+        long journalCount = studyJournalRepository.countByUserId(userId);
+        stampUpdateHelper.updateRecordStamp(userId, (int) journalCount);
 
         // DTO 변환
         List<StudyJournalDto.AttachmentDto> attachmentDtos = savedJournal.getAttachments().stream()
