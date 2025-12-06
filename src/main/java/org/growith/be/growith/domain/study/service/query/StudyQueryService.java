@@ -11,6 +11,7 @@ public interface StudyQueryService {
     // 리팩토링 완료
     StudyResponseDto.StudyDetail getStudyDetail(Long studyId);
     List<Study> searchStudies(StudyRequestDto.SearchStudyCondition request, Pageable pageable);
+    List<Study> getStudiesByPopularOrNew(Pageable pageable);
 
 
     // 리팩토링 전

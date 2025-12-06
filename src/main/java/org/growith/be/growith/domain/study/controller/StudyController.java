@@ -31,7 +31,7 @@ public class StudyController {
     private final StudyQueryService studyQueryService;
 
     @Operation(summary = "스터디 검색 API", description = "태그를 통해 스터디를 검색하는 API")
-    @GetMapping
+    @GetMapping("/search")
     public ApiResponse<StudyResponseDto.StudyPreviewDTOList> getStudies(
             StudyRequestDto.SearchStudyCondition request,
             @PageableDefault(page = 0, size = 12,
@@ -54,20 +54,14 @@ public class StudyController {
         return ApiResponse.onSuccess(myStudies);
     }
 
-    @GetMapping("/popular")
-    public ApiResponse<List<StudyCardDto>> getPopularStudies(
-            @PageableDefault(page = 0, size = 4) Pageable pageable
+    @Operation(summary = "인기/최근 스터디 조회 API", description = "홈에서 인기 혹은 최근 스터디 조회하는 API")
+    @GetMapping
+    public ApiResponse<StudyResponseDto.StudyPreviewDTOList> getPopularStudies(
+            @PageableDefault(page = 0, size = 3) Pageable pageable
     ) {
-//        studyQueryService.getPopularStudies(page, size);
-        return ApiResponse.onSuccess(null);
-    }
-
-    @GetMapping("/new")
-    public ApiResponse<List<StudyCardDto>> getNewStudies(
-            @PageableDefault(page = 0, size = 4) Pageable pageable
-    ) {
-//        studyQueryService.getNewStudies(page, size);
-        return  ApiResponse.onSuccess(null);
+        List<Study> studies = studyQueryService.getStudiesByPopularOrNew(pageable);
+        StudyResponseDto.StudyPreviewDTOList studyPreviewDTOList = StudyConverter.toStudyPreviewDTOList(studies);
+        return ApiResponse.onSuccess(studyPreviewDTOList);
     }
 
     @Operation(

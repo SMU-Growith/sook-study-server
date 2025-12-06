@@ -1,5 +1,7 @@
 package org.growith.be.growith.domain.study.repository;
 
+import com.querydsl.core.types.Order;
+import com.querydsl.core.types.OrderSpecifier;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -9,6 +11,8 @@ import org.growith.be.growith.domain.study.entity.enums.StudyFormat;
 import org.growith.be.growith.domain.study.entity.enums.StudyStatus;
 import org.growith.be.growith.domain.study.entity.enums.StudyStyleCategory;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -37,6 +41,15 @@ public class StudyQueryDslImpl implements StudyQueryDsl {
                 .fetch();
     }
 
+    public List<Study> getStudySortByPopularOrNew(Pageable pageable){
+        return queryFactory.selectFrom(study)
+                .offset(pageable.getOffset())
+                .limit(pageable.getPageSize())
+                .orderBy(getOrderSpecifier(pageable.getSort()))
+                .fetch();
+    }
+
+
     private BooleanExpression studyStyleIn(List<StudyStyleCategory> studyStyleCategories){
         if (studyStyleCategories == null || studyStyleCategories.isEmpty()){
             return null;
@@ -64,5 +77,23 @@ public class StudyQueryDslImpl implements StudyQueryDsl {
         }
         return study.title.containsIgnoreCase(searchContent);
     }
+
+    private OrderSpecifier<?> getOrderSpecifier(Sort sort) {
+        // sort=createdAt,desc 또는 sort=scrapCount,asc 이런 식으로 온다고 가정
+        if (sort.isUnsorted()) {
+            // 기본 정렬: 최신순
+            return new OrderSpecifier<>(Order.DESC, study.createdAt);
+        }
+
+        Sort.Order order = sort.iterator().next(); // 첫 번째 것만 사용
+        Order direction = order.isAscending() ? Order.ASC : Order.DESC;
+
+        return switch (order.getProperty()) {
+            case "createdAt" -> new OrderSpecifier<>(direction, study.createdAt);
+            case "scrapCount" -> new OrderSpecifier<>(direction, study.scrapCount);
+            default -> new OrderSpecifier<>(Order.DESC, study.createdAt); // 안전장치
+        };
+    }
+
 
 }

@@ -6,6 +6,7 @@ import org.growith.be.growith.domain.study.entity.enums.*;
 import org.growith.be.growith.domain.user.entity.enums.Major;
 import org.growith.be.growith.domain.user.entity.enums.StudentStatus;
 
+import java.time.LocalDate;
 import java.util.List;
 
 public record StudyResponseDto() {
@@ -22,7 +23,8 @@ public record StudyResponseDto() {
             String studyFieldName,
             StudyFormat studyFormat,
             StudyStyleCategory studyStyleCategory,
-            List<StudyResponseDto.RuleDetailDTO> ruleDTO
+            List<StudyResponseDto.RuleDetailDTO> ruleDTO,
+            LocalDate createdAt
     ){}
 
     @Builder

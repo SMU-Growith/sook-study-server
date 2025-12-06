@@ -56,6 +56,7 @@ public class StudyConverter {
                 .studyFormat(study.getStudyFormat())
                 .studyStyleCategory(study.getStudyStyleCategory())
                 .ruleDTO(ruleList)
+                .createdAt(study.getCreatedAt().toLocalDate())
                 .build();
     }
 

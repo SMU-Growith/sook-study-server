@@ -2,11 +2,10 @@ package org.growith.be.growith.domain.study.service.query;
 
 import lombok.RequiredArgsConstructor;
 import org.growith.be.growith.domain.journal.dto.StudySession;
+import org.growith.be.growith.domain.journal.dto.StudySessionCardDto;
 import org.growith.be.growith.domain.journal.repository.StudyJournalRepository;
 import org.growith.be.growith.domain.journal.service.JournalEmojiService;
 import org.growith.be.growith.domain.study.converter.StudyConverter;
-import org.growith.be.growith.domain.study.dto.StudyCardDto;
-import org.growith.be.growith.domain.journal.dto.StudySessionCardDto;
 import org.growith.be.growith.domain.study.dto.request.StudyRequestDto;
 import org.growith.be.growith.domain.study.dto.response.StudyResponseDto;
 import org.growith.be.growith.domain.study.entity.Rule;
@@ -18,14 +17,10 @@ import org.growith.be.growith.global.error.code.status.StudyErrorCode;
 import org.growith.be.growith.global.error.exception.handler.StudyException;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
-import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -68,34 +63,9 @@ public class StudyQueryServiceImpl implements StudyQueryService {
         return null;
     }
 
-    public List<StudyCardDto> getPopularStudies(int page, int size) {
-        LocalDateTime oneMonthAgo = LocalDateTime.now().minusMonths(1);
-        List<Study> studies = studyRepository.findPopularStudies(oneMonthAgo, PageRequest.of(page, size));
-        return studies.stream().map(study -> StudyCardDto.builder()
-                .studyId(study.getId())
-                .studyStatus(study.getStudyStatus())
-                .title(study.getTitle())
-                .authorId(study.getUser().getId() != null ? study.getUser().getId().toString() : null)
-                .scrapCount(study.getScrapCount())
-                .format(study.getStudyFormat() != null ? study.getStudyFormat().name() : null)
-                .fieldName(study.getStudyField().getName())
-                .styleNames(study.getStudyStyleCategory())
-                .build()).toList();
-    }
-
-    public List<StudyCardDto> getNewStudies(int page, int size) {
-        LocalDateTime oneMonthAgo = LocalDateTime.now().minusMonths(1);
-        List<Study> studies = studyRepository.findNewStudies(oneMonthAgo, PageRequest.of(page, size));
-        return studies.stream().map(study -> StudyCardDto.builder()
-                .studyId(study.getId())
-                .studyStatus(study.getStudyStatus())
-                .title(study.getTitle())
-                .authorId(study.getUser().getId() != null ? study.getUser().getId().toString() : null)
-                .scrapCount(study.getScrapCount())
-                .format(study.getStudyFormat() != null ? study.getStudyFormat().name() : null)
-                .fieldName(study.getStudyField().getName())
-                .styleNames(study.getStudyStyleCategory())
-                .build()).toList();
+    // 인기/새로운 스터디 조회
+    public List<Study> getStudiesByPopularOrNew(Pageable pageable) {
+        return studyRepository.getStudySortByPopularOrNew(pageable);
     }
 
     // 스터디 상세 조회
