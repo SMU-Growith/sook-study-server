@@ -23,21 +23,21 @@ public class AuthController {
 
     private final AuthCommandService authCommandService;
 
-    @Operation(summary = "회원가입 API", description = "최초 회원가입 시 필요한 정보를 포함하여 회원가입 진행")
+    @Operation(summary = "회원가입 API by 윶", description = "최초 회원가입 시 필요한 정보를 포함하여 회원가입 진행")
     @PostMapping("/sign-up")
     public ApiResponse<AuthResponseDTO.TokenResult> signUp(@RequestBody @Valid AuthRequestDTO.SignUp request){
         AuthResponseDTO.TokenResult tokenResult = authCommandService.signUp(request);
         return ApiResponse.onSuccess(tokenResult);
     }
 
-    @Operation(summary = "로그인 API", description = "로그인 API")
+    @Operation(summary = "로그인 API by 윶", description = "로그인 API")
     @PostMapping("/login")
     public ApiResponse<AuthResponseDTO.TokenResult> login(@RequestBody @Valid AuthRequestDTO.Login request){
         AuthResponseDTO.TokenResult login = authCommandService.login(request);
         return ApiResponse.onSuccess(login);
     }
 
-    @Operation(summary = "Access Token 재발급 API", description = "토큰 재발급 API")
+    @Operation(summary = "Access Token 재발급 API by 윶", description = "토큰 재발급 API")
     @PostMapping("/reissue")
     public ApiResponse<AuthResponseDTO.AccessTokenResult> reissueToken(HttpServletRequest request, HttpServletResponse response){
         AuthResponseDTO.AccessTokenResult accessTokenResult = authCommandService.reissueToken(request, response);
@@ -45,7 +45,7 @@ public class AuthController {
     }
 
 
-    @Operation(summary = "로그아웃 API", description = "로그아웃 API")
+    @Operation(summary = "로그아웃 API by 윶", description = "로그아웃 API")
     @PostMapping("/logout")
     public ApiResponse<String> logout(HttpServletRequest request, HttpServletResponse response){
         authCommandService.logout(request, response);

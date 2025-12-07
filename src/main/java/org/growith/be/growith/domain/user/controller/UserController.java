@@ -24,7 +24,7 @@ public class UserController {
     private final UserCommandService userCommandService;
     private final UserQueryService userQueryService;
 
-    @Operation(summary = "사용자 정보 수정 API", description = "마이페이지에서 볼 수 있는 사용자 정보 수정 API")
+    @Operation(summary = "사용자 정보 수정 API by 윶", description = "마이페이지에서 볼 수 있는 사용자 정보 수정 API")
     @PatchMapping("/profile")
     public ApiResponse<UserResponseDTO.ChangeInfo> updateUserProfile(
             @AuthenticatedUser User user,
@@ -34,7 +34,7 @@ public class UserController {
         return ApiResponse.onSuccess(UserConverter.toChangeInfo(updatedUser));
     }
 
-    @Operation(summary = "사용자 정보 조회 API", description = "마이페이지에서 볼 수 있는 사용자 정보 조회 API")
+    @Operation(summary = "사용자 정보 조회 API by 윶", description = "마이페이지에서 볼 수 있는 사용자 정보 조회 API")
     @GetMapping("/profile")
     public ApiResponse<UserResponseDTO.UserProfileDTO> getUserProfile(@AuthenticatedUser User user) {
         User userProfile = userQueryService.getUserProfile(user.getId());

@@ -29,7 +29,7 @@ public class StudyController {
     private final StudyCommandService studycommandService;
     private final StudyQueryService studyQueryService;
 
-    @Operation(summary = "스터디 검색 API", description = "태그를 통해 스터디를 검색하는 API")
+    @Operation(summary = "스터디 검색 API by 윶", description = "태그를 통해 스터디를 검색하는 API")
     @GetMapping("/search")
     public ApiResponse<StudyResponseDto.StudyPreviewDTOList> getStudies(
             StudyRequestDto.SearchStudyCondition request,
@@ -42,7 +42,7 @@ public class StudyController {
         return ApiResponse.onSuccess(studyPreviewDTOList);
     }
 
-    @Operation(summary = "사용자 스터디 리스트 조회 API", description = "사용자의 참여 이력이 있는 스터디를 리스트로 조회하는 API")
+    @Operation(summary = "사용자 스터디 리스트 조회 API by 윶", description = "사용자의 참여 이력이 있는 스터디를 리스트로 조회하는 API")
     @GetMapping("/my-studies")
     public ApiResponse<List<StudyResponseDto.UserStudyPreviewDto>> getMyStudies(
             @AuthenticatedUser User user,
@@ -53,7 +53,7 @@ public class StudyController {
         return ApiResponse.onSuccess(myStudies);
     }
 
-    @Operation(summary = "인기/최근 스터디 조회 API", description = "홈에서 인기 혹은 최근 스터디 조회하는 API")
+    @Operation(summary = "인기/최근 스터디 조회 API by 윶", description = "홈에서 인기 혹은 최근 스터디 조회하는 API")
     @GetMapping
     public ApiResponse<StudyResponseDto.StudyPreviewDTOList> getPopularStudies(
             @PageableDefault(page = 0, size = 3) Pageable pageable
@@ -64,7 +64,7 @@ public class StudyController {
     }
 
     @Operation(
-            summary = "스터디 생성 API"
+            summary = "스터디 생성 API by 윶"
             , description = "스터디 생성 API, 스터디를 생성한 사용자는 팀장 권한을 갖는다"
     )
     @PostMapping
@@ -77,16 +77,16 @@ public class StudyController {
     }
 
     @Operation(
-            summary = "스터디 상세 조회 API"
+            summary = "스터디 상세 조회 API by 윶"
             , description = "스터디의 상세 조회 API"
     )
     @GetMapping("/{studyId}")
     public ApiResponse<StudyResponseDto.StudyDetail> getStudyDetail(@PathVariable Long studyId, @AuthenticatedUser User user) {
-        return ApiResponse.onSuccess(studyQueryService.getStudyDetail(studyId, user));
+        return ApiResponse.onSuccess(studyQueryService.getStudyDetail(studyId, user.getId()));
     }
 
     @Operation(
-            summary = "스터디 상태 토글 API"
+            summary = "스터디 상태 토글 API by 서연"
             , description = "스터디 상태를 ACTIVE ↔ CLOSED로 토글. 팀장 권한을 갖는 사용자만 실행할 수 있다."
     )
     @PatchMapping("/{studyId}/toggle-status")
@@ -99,7 +99,7 @@ public class StudyController {
     }
 
     @Operation(
-            summary = "스터디 수정 API"
+            summary = "스터디 수정 API by 윶"
             , description = "스터디 수정 API,  팀장 권한을 갖는 사용자만 스터디를 수정할 수 있다"
     )
     @PutMapping("/{studyId}")
@@ -127,7 +127,7 @@ public class StudyController {
 //     }
     
     @Operation(
-            summary = "스터디 삭제 API"
+            summary = "스터디 삭제 API by 윶"
             , description = "스터디 삭제 API,  팀장 권한을 갖는 사용자만 스터디를 수정할 수 있다"
     )
     @DeleteMapping("/{studyId}")
@@ -137,7 +137,7 @@ public class StudyController {
     }
 
     // 스터디 나가기 - 팀원만 나갈 수 있다, 스터디 탈퇴
-    @Operation(summary = "스터디 탈퇴 API", description = "스터디를 탈퇴하는 API, 팀원만 나갈 수 있다")
+    @Operation(summary = "스터디 탈퇴 API by 윶", description = "스터디를 탈퇴하는 API, 팀원만 나갈 수 있다")
     @DeleteMapping("/{studyId}/withdraw")
     public ApiResponse<Void> withdrawStudy(
             @PathVariable Long studyId,
@@ -147,9 +147,20 @@ public class StudyController {
         return  ApiResponse.onSuccess(null);
     }
 
+    // 규칙 수정
+    @Operation(summary = "스터디 탈퇴 API by 윶", description = "스터디를 탈퇴하는 API, 팀원만 나갈 수 있다")
+    @PutMapping("/{studyId}/rules")
+    public ApiResponse<Void> updateRule(
+            @PathVariable Long studyId,
+            @AuthenticatedUser User user
+    ) {
+        studycommandService.withdrawStudy(studyId, user.getId());
+        return  ApiResponse.onSuccess(null);
+    }
+
 
     // 스터디 멤버 조회
-    @Operation(summary = "스터디 멤버 조회 API", description = "스터디에 참여한 사용자들을 조회하는 API")
+    @Operation(summary = "스터디 멤버 조회 API by 윶", description = "스터디에 참여한 사용자들을 조회하는 API")
     @GetMapping("/{studyId}/users")
     public ApiResponse<List<StudyResponseDto.StudyUsers>> getStudyMembers(@PathVariable Long studyId) {
         List<StudyResponseDto.StudyUsers> studyMembers = studyQueryService.getStudyMembers(studyId);
@@ -168,7 +179,7 @@ public class StudyController {
 
    
     // 스터디 분야 조회
-    @Operation(summary = "스터디 분야 목록 조회 API", description = "스터디 생성 시 선택할 수 있는 분야 목록을 조회합니다.")
+    @Operation(summary = "스터디 분야 목록 조회 API by 서연", description = "스터디 생성 시 선택할 수 있는 분야 목록을 조회합니다.")
     @GetMapping("/fields")
     public ApiResponse<List<StudyResponseDto.StudyFieldDto>> getStudyFields() {
         return ApiResponse.onSuccess(studyQueryService.getStudyFields());

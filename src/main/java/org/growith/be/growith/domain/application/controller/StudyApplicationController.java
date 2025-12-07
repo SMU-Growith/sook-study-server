@@ -19,14 +19,14 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/studies")
 @RequiredArgsConstructor
-@Tag(name = "스터디 지원서 API")
+@Tag(name = "스터디 지원서 API by 윶")
 public class StudyApplicationController {
 
     private final StudyApplicationCommandService studyApplicationCommandService;
     private final StudyApplicationQueryService studyApplicationQueryService;
 
     // 스터디 지원서 생성
-    @Operation(summary = "스터디 지원서 생성 API", description = "해당 스터디의 스터디 지원서를 생성하는 API")
+    @Operation(summary = "스터디 지원서 생성 API by 윶", description = "해당 스터디의 스터디 지원서를 생성하는 API")
     @PostMapping("/{studyId}/application")
     public ApiResponse<StudyApplicationResponseDTO.StudyApplicationDetailDTO> createApplication(
             @PathVariable Long studyId,
@@ -38,7 +38,7 @@ public class StudyApplicationController {
     }
 
     // 지원서 승인/거절
-    @Operation(summary = "스터디 지원서 승인/거절 API (팀장 권한)", description = "해당 스터디의 스터디 지원서를 승인/거절하는 API, 팀장 권한")
+    @Operation(summary = "스터디 지원서 승인/거절 API (팀장 권한) by 윶", description = "해당 스터디의 스터디 지원서를 승인/거절하는 API, 팀장 권한")
     @PatchMapping("/{applicationId}/status")
     public ApiResponse<StudyApplicationResponseDTO.UpdateApplicationResponseDTO> updateApplicationStatus(
             @PathVariable Long applicationId,
@@ -50,7 +50,7 @@ public class StudyApplicationController {
     }
 
     // 지원서 리스트 조회
-    @Operation(summary = "스터디 지원서 리스트 조회 API", description = "해당 스터디의 스터디 지원서 리스트를 조회하는 API")
+    @Operation(summary = "스터디 지원서 리스트 조회 API by 윶", description = "해당 스터디의 스터디 지원서 리스트를 조회하는 API")
     @GetMapping("/{studyId}/applications")
     public ApiResponse<List<StudyApplicationResponseDTO.StudyApplicationDetailDTO>> getApplications(@PathVariable Long studyId) {
         List<StudyApplication> studyApplications = studyApplicationQueryService.getStudyApplications(studyId);

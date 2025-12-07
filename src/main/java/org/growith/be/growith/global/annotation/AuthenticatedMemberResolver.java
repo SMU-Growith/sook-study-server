@@ -32,17 +32,21 @@ public class AuthenticatedMemberResolver implements HandlerMethodArgumentResolve
 
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
+        log.info("어노테이션에 들어옴");
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication == null || !authentication.isAuthenticated()) {
+            log.info("리턴값있음 -1");
             throw new AuthException(AuthErrorCode.UNAUTHORIZED);
         }
 
         Object principal = authentication.getPrincipal();
 
         if (principal instanceof CustomUserDetails customUserDetails) {
+            log.info("리턴값있음");
             return customUserDetails.getUser();
         }
+        log.info("리턴값없음 -2");
         throw new AuthException(AuthErrorCode.UNAUTHORIZED);
     }
 }
