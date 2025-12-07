@@ -14,10 +14,6 @@ import org.growith.be.growith.domain.study.entity.enums.StudyRole;
 public class StudyJournalListDto {
     private Long journalId;
     private String title;
-    private String content;
-    private String url;  // ✅ 추가
-    private Long userId;
+    private String nickName;
     private StudyRole studyRole;
-    private Integer submittedCount;  // ✅ 추가
-    private Integer totalCount;
 }
