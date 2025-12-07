@@ -112,4 +112,27 @@ public class JournalEmojiService {
                 .curiosity(curiosityCount)
                 .build();
     }
+
+    @Transactional(readOnly = true)
+    public StudyJournalDto.EmojiStatus getEmojiStatus(Long studyJournalId, Long userId) {
+        if (userId == null) {
+            return StudyJournalDto.EmojiStatus.builder().build(); // all 0
+        }
+
+        Optional<JournalEmoji> emojiOpt = journalEmojiRepository.findByStudyJournalIdAndUserId(studyJournalId, userId);
+
+        if (emojiOpt.isEmpty()) {
+            return StudyJournalDto.EmojiStatus.builder().build(); // all 0
+        }
+
+        EmojiType type = emojiOpt.get().getEmojiType();
+        
+        return StudyJournalDto.EmojiStatus.builder()
+                .heart(type == EmojiType.HEART)
+                .like(type == EmojiType.LIKE)
+                .laugh(type == EmojiType.LAUGH)
+                .surprise(type == EmojiType.SURPRISE)
+                .curiosity(type == EmojiType.CURIOSITY)
+                .build();
+    }
 }

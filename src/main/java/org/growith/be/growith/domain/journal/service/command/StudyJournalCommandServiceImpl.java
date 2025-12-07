@@ -11,6 +11,7 @@ import org.growith.be.growith.domain.journal.dto.UpdateStudySessionRequest;
 import org.growith.be.growith.domain.study.entity.Study;
 import org.growith.be.growith.domain.study.repository.StudyRepository;
 import org.growith.be.growith.domain.study.repository.StudySessionRepository;
+import org.growith.be.growith.domain.study.entity.enums.StudyRole;
 import org.growith.be.growith.domain.user.entity.User;
 import org.growith.be.growith.domain.user.repository.UserRepository;
 import org.growith.be.growith.global.error.code.status.StudyErrorCode;
@@ -80,13 +81,18 @@ public class StudyJournalCommandServiceImpl implements StudyJournalCommandServic
                         .build())
                 .toList();
 
+        // 역할 조회
+        String userRoleStr = studyRepository.findUserRoleInStudy(session.getStudy().getId(), user.getId());
+        StudyRole studyRole = (userRoleStr != null) ? StudyRole.valueOf(userRoleStr) : StudyRole.MEMBER;
+
         return StudyJournalDto.builder()
                 .journalId(savedJournal.getId())
                 .title(savedJournal.getTitle())
                 .content(savedJournal.getContent())
                 .url(savedJournal.getUrl())
-                .sessionId(savedJournal.getSessionId())
-                .userId(savedJournal.getUserId())
+                .nickName(user.getNickName())
+                .studyRole(studyRole)
+                .viewCount(savedJournal.getViewCount())
                 .attachments(attachmentDtos)
                 .build();
     }
@@ -150,13 +156,24 @@ public class StudyJournalCommandServiceImpl implements StudyJournalCommandServic
                         .build())
                 .toList();
 
+        // 사용자 및 세션 조회 (역할 확인용)
+        User user = userRepository.findById(updatedJournal.getUserId())
+                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없음"));
+
+        StudySession session = studySessionRepository.findById(updatedJournal.getSessionId())
+                .orElseThrow(() -> new IllegalArgumentException("세션을 찾을 수 없음"));
+
+        String userRoleStr = studyRepository.findUserRoleInStudy(session.getStudy().getId(), user.getId());
+        StudyRole studyRole = (userRoleStr != null) ? StudyRole.valueOf(userRoleStr) : StudyRole.MEMBER;
+
         return StudyJournalDto.builder()
                 .journalId(updatedJournal.getId())
                 .title(updatedJournal.getTitle())
                 .content(updatedJournal.getContent())
                 .url(updatedJournal.getUrl())
-                .sessionId(updatedJournal.getSessionId())
-                .userId(updatedJournal.getUserId())
+                .nickName(user.getNickName())
+                .studyRole(studyRole)
+                .viewCount(updatedJournal.getViewCount())
                 .attachments(attachmentDtos)
                 .build();
     }
