@@ -11,6 +11,7 @@ import org.growith.be.growith.domain.journal.dto.StudySessionListDto;
 import org.growith.be.growith.domain.journal.dto.CreateStudySessionRequest;
 import org.growith.be.growith.domain.journal.dto.UpdateStudySessionRequest;
 import org.growith.be.growith.domain.journal.dto.StudyJournalListResponse;
+import org.growith.be.growith.domain.journal.dto.UpdateStudyJournalRequest;
 import org.growith.be.growith.domain.journal.service.command.StudyJournalCommandService;
 import org.growith.be.growith.domain.journal.service.query.StudyJournalQueryService;
 import org.growith.be.growith.domain.study.service.command.StudyCommandService;
@@ -140,8 +141,8 @@ public class StudySessionController {
     @PutMapping("/journal/{journalId}")
     public ApiResponse<StudyJournalDto> updateStudyJournal(
             @PathVariable Long journalId,
-            @RequestBody StudyJournalDto studyJournalDto) {
-        StudyJournalDto updatedJournal = studyJournalCommandService.updateStudyJournal(journalId, studyJournalDto);
+            @RequestBody UpdateStudyJournalRequest request) {
+        StudyJournalDto updatedJournal = studyJournalCommandService.updateStudyJournal(journalId, request);
         return  ApiResponse.onSuccess(updatedJournal);
     }
 

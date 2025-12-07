@@ -7,6 +7,7 @@ import org.growith.be.growith.domain.journal.dto.StudySession;
 import org.growith.be.growith.domain.journal.entity.StudyJournal;
 import org.growith.be.growith.domain.journal.repository.StudyJournalRepository;
 import org.growith.be.growith.domain.journal.dto.StudySessionCardDto;
+import org.growith.be.growith.domain.journal.dto.UpdateStudyJournalRequest;
 import org.growith.be.growith.domain.journal.dto.UpdateStudySessionRequest;
 import org.growith.be.growith.domain.study.entity.Study;
 import org.growith.be.growith.domain.study.repository.StudyRepository;
@@ -117,28 +118,28 @@ public class StudyJournalCommandServiceImpl implements StudyJournalCommandServic
     }
 
 
-    public StudyJournalDto updateStudyJournal(Long journalId, StudyJournalDto dto) {
+    public StudyJournalDto updateStudyJournal(Long journalId, UpdateStudyJournalRequest request) {
         StudyJournal journal = studyJournalRepository.findById(journalId)
                 .orElseThrow(() -> new IllegalArgumentException("일지를 찾을 수 없음"));
 
         // 일지 기본 정보 수정
         journal.updateJournal(
-                dto.getTitle(),
-                dto.getContent(),
-                dto.getUrl()
+                request.getTitle(),
+                request.getContent(),
+                request.getUrl()
         );
 
         // 첨부파일 전체 교체 (기존 파일 삭제 후 새로 추가)
         journal.getAttachments().clear();  // orphanRemoval=true로 자동 삭제됨
         
-        if (dto.getAttachments() != null && !dto.getAttachments().isEmpty()) {
-            for (StudyJournalDto.AttachmentDto attachmentDto : dto.getAttachments()) {
+        if (request.getAttachments() != null && !request.getAttachments().isEmpty()) {
+            for (UpdateStudyJournalRequest.AttachmentRequest attachmentRequest : request.getAttachments()) {
                 org.growith.be.growith.domain.journal.entity.JournalAttachment attachment = 
                     org.growith.be.growith.domain.journal.entity.JournalAttachment.create(
                         journal,
-                        attachmentDto.getFileUrl(),
-                        attachmentDto.getFileName(),
-                        attachmentDto.getFileSize()
+                        attachmentRequest.getFileUrl(),
+                        attachmentRequest.getFileName(),
+                        attachmentRequest.getFileSize()
                     );
                 journal.addAttachment(attachment);
             }
