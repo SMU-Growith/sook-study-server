@@ -24,6 +24,7 @@ public class AuthConverter {
                 .nickName(request.nickname())
                 .major(request.major())
                 .studentStatus(request.studentStatus())
+                .phoneNumber(request.phoneNumber())
                 .userRole(UserRole.USER)
                 .build();
     }
