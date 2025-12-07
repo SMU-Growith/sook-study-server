@@ -35,7 +35,7 @@ public record StudyRequestDto() {
             String description,
             ContactType contactType,
             String url,
-            Long studyFieldId,
+            String studyFieldName,
             StudyFormat studyFormat,
             StudyStyleCategory studyStyleCategory,
             StudyStatus studyStatus,
