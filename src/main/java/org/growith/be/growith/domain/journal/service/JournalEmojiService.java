@@ -116,13 +116,17 @@ public class JournalEmojiService {
     @Transactional(readOnly = true)
     public StudyJournalDto.EmojiStatus getEmojiStatus(Long studyJournalId, Long userId) {
         if (userId == null) {
-            return StudyJournalDto.EmojiStatus.builder().build(); // all 0
+            return StudyJournalDto.EmojiStatus.builder()
+                    .heart(false).like(false).laugh(false).surprise(false).curiosity(false)
+                    .build();
         }
 
         Optional<JournalEmoji> emojiOpt = journalEmojiRepository.findByStudyJournalIdAndUserId(studyJournalId, userId);
 
         if (emojiOpt.isEmpty()) {
-            return StudyJournalDto.EmojiStatus.builder().build(); // all 0
+            return StudyJournalDto.EmojiStatus.builder()
+                    .heart(false).like(false).laugh(false).surprise(false).curiosity(false)
+                    .build();
         }
 
         EmojiType type = emojiOpt.get().getEmojiType();
