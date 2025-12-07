@@ -42,8 +42,6 @@ public class StudyQueryServiceImpl implements StudyQueryService {
     private final RuleRepository ruleRepository;
     private final StudySessionRepository studySessionRepository;
     private final UserStudyRepository userStudyRepository;
-    private final StudyJournalRepository studyJournalRepository;
-    private final JournalEmojiService journalEmojiService;
     private final StudyApplicationRepository studyApplicationRepository;
     private final StudyScrapRepository studyScrapRepository;
 
@@ -84,7 +82,7 @@ public class StudyQueryServiceImpl implements StudyQueryService {
             isScraped = studyScrapRepository.findByUserAndStudy(user, study).isPresent();
         }
 
-        return StudyConverter.  toStudyDetail(study, rules, isScraped);
+        return StudyConverter.toStudyDetail(study, rules, isScraped);
     }
 
     // 스터디 검색
