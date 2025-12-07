@@ -71,7 +71,7 @@ public class StudyCommandServiceImpl implements StudyCommandService{
             throw new StudyException(StudyErrorCode.STUDY_UPDATE_FORBIDDEN);
         }
 
-        StudyField studyField = studyFieldRepository.findById(request.studyFieldId())
+        StudyField studyField = studyFieldRepository.findByName(request.studyFieldName())
                 .orElseThrow(() -> new StudyException(StudyErrorCode.STUDY_NOT_FOUND));
 
         // 스터디 정보 업데이트
