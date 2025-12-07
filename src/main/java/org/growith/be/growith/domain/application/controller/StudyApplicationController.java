@@ -19,7 +19,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/api/v1/studies")
 @RequiredArgsConstructor
-@Tag(name = "스터디 지원서 API by 윶")
+@Tag(name = "스터디 지원서 API")
 public class StudyApplicationController {
 
     private final StudyApplicationCommandService studyApplicationCommandService;
