@@ -66,7 +66,7 @@ public class StudyJournalQueryServiceImpl implements StudyJournalQueryService {
 
         return StudyJournalDto.builder()
                 .journalId(journal.getId())
-                .title(journal.getTitle())
+                .title(session.getTitle())
                 .content(journal.getContent())
                 .url(journal.getUrl())
                 .nickName(user.getNickName())
@@ -101,7 +101,7 @@ public class StudyJournalQueryServiceImpl implements StudyJournalQueryService {
 
             return StudyJournalListDto.builder()
                     .journalId(journal.getId())
-                    .title(journal.getTitle())
+                    .title(session.getTitle())
                     .nickName(user.getNickName())
                     .studyRole(studyRole)
                     .viewCount(journal.getViewCount())

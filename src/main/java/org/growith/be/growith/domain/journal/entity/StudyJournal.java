@@ -25,8 +25,6 @@ public class StudyJournal extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private String title;
-
     private String content;
 
     private String url;
@@ -43,14 +41,12 @@ public class StudyJournal extends BaseEntity {
     private List<JournalAttachment> attachments = new ArrayList<>();
 
     public static StudyJournal createJournal(
-            String title,
             String content,
             String url,
             Long sessionId,
             Long userId
     ) {
         return StudyJournal.builder()
-                .title(title)
                 .content(content)
                 .url(url)
                 .sessionId(sessionId)
@@ -60,8 +56,7 @@ public class StudyJournal extends BaseEntity {
                 .build();
     }
 
-    public void updateJournal(String title, String content, String url) {
-        this.title = title;
+    public void updateJournal(String content, String url) {
         this.content = content;
         this.url = url;
     }

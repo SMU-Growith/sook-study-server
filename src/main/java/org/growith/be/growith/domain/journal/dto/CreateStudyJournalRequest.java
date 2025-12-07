@@ -11,7 +11,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UpdateStudyJournalRequest {
+public class CreateStudyJournalRequest {
     private String content;
     private String url;
     private List<AttachmentRequest> attachments;
