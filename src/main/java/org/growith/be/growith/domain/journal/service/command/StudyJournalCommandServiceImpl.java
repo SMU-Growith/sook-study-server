@@ -2,6 +2,7 @@ package org.growith.be.growith.domain.journal.service.command;
 
 import lombok.RequiredArgsConstructor;
 import org.growith.be.growith.domain.journal.dto.CreateStudySessionRequest;
+import org.growith.be.growith.domain.journal.dto.CreateStudyJournalRequest;
 import org.growith.be.growith.domain.journal.dto.StudyJournalDto;
 import org.growith.be.growith.domain.journal.dto.StudySession;
 import org.growith.be.growith.domain.journal.entity.StudyJournal;
@@ -33,7 +34,7 @@ public class StudyJournalCommandServiceImpl implements StudyJournalCommandServic
     private final org.growith.be.growith.domain.study.repository.UserStudyRepository userStudyRepository;
     private final org.growith.be.growith.domain.stamp.service.StampUpdateHelper stampUpdateHelper;
 
-    public StudyJournalDto createStudyJournal(Long sessionId, Long userId, StudyJournalDto dto) {
+    public StudyJournalDto createStudyJournal(Long sessionId, Long userId, CreateStudyJournalRequest request) {
         // 세션 존재 확인
         StudySession session = studySessionRepository.findById(sessionId)
                 .orElseThrow(() -> new IllegalArgumentException("세션을 찾을 수 없음"));
@@ -44,9 +45,8 @@ public class StudyJournalCommandServiceImpl implements StudyJournalCommandServic
 
         // 일지 생성 (첨부파일 제외)
         StudyJournal journal = StudyJournal.createJournal(
-                dto.getTitle(),
-                dto.getContent(),
-                dto.getUrl(),
+                request.getContent(),
+                request.getUrl(),
                 sessionId,
                 userId
         );
@@ -54,14 +54,14 @@ public class StudyJournalCommandServiceImpl implements StudyJournalCommandServic
         StudyJournal savedJournal = studyJournalRepository.save(journal);
 
         // 첨부파일 처리
-        if (dto.getAttachments() != null && !dto.getAttachments().isEmpty()) {
-            for (StudyJournalDto.AttachmentDto attachmentDto : dto.getAttachments()) {
+        if (request.getAttachments() != null && !request.getAttachments().isEmpty()) {
+            for (CreateStudyJournalRequest.AttachmentRequest attachmentRequest : request.getAttachments()) {
                 org.growith.be.growith.domain.journal.entity.JournalAttachment attachment = 
                     org.growith.be.growith.domain.journal.entity.JournalAttachment.create(
                         savedJournal,
-                        attachmentDto.getFileUrl(),
-                        attachmentDto.getFileName(),
-                        attachmentDto.getFileSize()
+                        attachmentRequest.getFileUrl(),
+                        attachmentRequest.getFileName(),
+                        attachmentRequest.getFileSize()
                     );
                 savedJournal.addAttachment(attachment);
             }
@@ -88,7 +88,7 @@ public class StudyJournalCommandServiceImpl implements StudyJournalCommandServic
 
         return StudyJournalDto.builder()
                 .journalId(savedJournal.getId())
-                .title(savedJournal.getTitle())
+                .title(session.getTitle())
                 .content(savedJournal.getContent())
                 .url(savedJournal.getUrl())
                 .nickName(user.getNickName())
@@ -124,7 +124,6 @@ public class StudyJournalCommandServiceImpl implements StudyJournalCommandServic
 
         // 일지 기본 정보 수정
         journal.updateJournal(
-                request.getTitle(),
                 request.getContent(),
                 request.getUrl()
         );
@@ -169,7 +168,7 @@ public class StudyJournalCommandServiceImpl implements StudyJournalCommandServic
 
         return StudyJournalDto.builder()
                 .journalId(updatedJournal.getId())
-                .title(updatedJournal.getTitle())
+                .title(session.getTitle())
                 .content(updatedJournal.getContent())
                 .url(updatedJournal.getUrl())
                 .nickName(user.getNickName())

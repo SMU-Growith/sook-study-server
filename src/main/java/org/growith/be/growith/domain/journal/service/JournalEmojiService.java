@@ -26,29 +26,18 @@ public class JournalEmojiService {
         // String을 EmojiType enum으로 변환
         EmojiType requestedEmojiType = EmojiType.valueOf(emojiTypeStr.toUpperCase());
         
-        // 사용자가 이미 이 저널에 이모티콘을 눌렀는지 확인
-        Optional<JournalEmoji> existingEmoji = journalEmojiRepository.findByStudyJournalIdAndUserId(
-                studyJournalId, userId
+        // 사용자가 이미 해당 타입의 이모티콘을 눌렀는지 확인
+        Optional<JournalEmoji> existingEmoji = journalEmojiRepository.findByStudyJournalIdAndUserIdAndEmojiType(
+                studyJournalId, userId, requestedEmojiType
         );
 
         if (existingEmoji.isPresent()) {
-            JournalEmoji emoji = existingEmoji.get();
-            
-            // 같은 이모티콘을 다시 클릭 -> 삭제 (토글 off)
-            if (emoji.getEmojiType() == requestedEmojiType) {
-                journalEmojiRepository.delete(emoji);
-                log.info("이모티콘 삭제: journalId={}, userId={}, emojiType={}", 
-                        studyJournalId, userId, requestedEmojiType);
-            } 
-            // 다른 이모티콘 클릭 -> 변경
-            else {
-                emoji.updateEmojiType(requestedEmojiType);
-                journalEmojiRepository.save(emoji);
-                log.info("이모티콘 변경: journalId={}, userId={}, {} -> {}", 
-                        studyJournalId, userId, emoji.getEmojiType(), requestedEmojiType);
-            }
+            // 이미 누른 이모티콘이면 삭제 (토글 off)
+            journalEmojiRepository.delete(existingEmoji.get());
+            log.info("이모티콘 삭제: journalId={}, userId={}, emojiType={}", 
+                    studyJournalId, userId, requestedEmojiType);
         } else {
-            // 새로운 이모티콘 추가
+            // 누르지 않은 이모티콘이면 추가 (토글 on)
             JournalEmoji newEmoji = JournalEmoji.builder()
                     .studyJournalId(studyJournalId)
                     .userId(userId)
@@ -121,22 +110,36 @@ public class JournalEmojiService {
                     .build();
         }
 
-        Optional<JournalEmoji> emojiOpt = journalEmojiRepository.findByStudyJournalIdAndUserId(studyJournalId, userId);
+        List<JournalEmoji> emojis = journalEmojiRepository.findAllByStudyJournalIdAndUserId(studyJournalId, userId);
 
-        if (emojiOpt.isEmpty()) {
+        if (emojis.isEmpty()) {
             return StudyJournalDto.EmojiStatus.builder()
                     .heart(false).like(false).laugh(false).surprise(false).curiosity(false)
                     .build();
         }
 
-        EmojiType type = emojiOpt.get().getEmojiType();
+        boolean heart = false;
+        boolean like = false;
+        boolean laugh = false;
+        boolean surprise = false;
+        boolean curiosity = false;
+
+        for (JournalEmoji emoji : emojis) {
+            switch (emoji.getEmojiType()) {
+                case HEART -> heart = true;
+                case LIKE -> like = true;
+                case LAUGH -> laugh = true;
+                case SURPRISE -> surprise = true;
+                case CURIOSITY -> curiosity = true;
+            }
+        }
         
         return StudyJournalDto.EmojiStatus.builder()
-                .heart(type == EmojiType.HEART)
-                .like(type == EmojiType.LIKE)
-                .laugh(type == EmojiType.LAUGH)
-                .surprise(type == EmojiType.SURPRISE)
-                .curiosity(type == EmojiType.CURIOSITY)
+                .heart(heart)
+                .like(like)
+                .laugh(laugh)
+                .surprise(surprise)
+                .curiosity(curiosity)
                 .build();
     }
 }

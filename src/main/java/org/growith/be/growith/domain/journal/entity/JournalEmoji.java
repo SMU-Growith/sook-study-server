@@ -6,7 +6,7 @@ import org.growith.be.growith.global.common.BaseEntity;
 
 @Entity
 @Table(name = "journal_emoji",
-        uniqueConstraints = @UniqueConstraint(columnNames = {"study_journal_id", "user_id"}))
+        uniqueConstraints = @UniqueConstraint(columnNames = {"study_journal_id", "user_id", "emoji_type"}))
 @Getter
 @Builder
 @AllArgsConstructor(access = AccessLevel.PRIVATE)

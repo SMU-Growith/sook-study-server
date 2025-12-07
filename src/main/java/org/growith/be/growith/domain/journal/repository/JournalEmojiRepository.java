@@ -10,7 +10,9 @@ import java.util.Optional;
 
 public interface JournalEmojiRepository extends JpaRepository<JournalEmoji, Long> {
 
-    Optional<JournalEmoji> findByStudyJournalIdAndUserId(Long studyJournalId, Long userId);
+    Optional<JournalEmoji> findByStudyJournalIdAndUserIdAndEmojiType(Long studyJournalId, Long userId, JournalEmoji.EmojiType emojiType);
+
+    List<JournalEmoji> findAllByStudyJournalIdAndUserId(Long studyJournalId, Long userId);
 
     @Query("SELECT je.emojiType, COUNT(je) FROM JournalEmoji je WHERE je.studyJournalId = :studyJournalId GROUP BY je.emojiType")
     List<Object[]> countEmojisByJournalId(@Param("studyJournalId") Long studyJournalId);
