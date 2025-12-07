@@ -46,7 +46,7 @@ public class StudyController {
     @GetMapping("/my-studies")
     public ApiResponse<List<StudyResponseDto.UserStudyPreviewDto>> getMyStudies(
             @AuthenticatedUser User user,
-            @RequestParam(defaultValue = "ACTIVE") String studyStatus,
+            @RequestParam(defaultValue = "ACTIVE") StudyStatus studyStatus,
             @PageableDefault(page = 0, size = 6) Pageable pageable
     ) {
         List<StudyResponseDto.UserStudyPreviewDto> myStudies = studyQueryService.getMyStudies(user.getId(), studyStatus, pageable);
