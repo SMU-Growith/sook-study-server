@@ -36,6 +36,9 @@ public class StudyJournalQueryServiceImpl implements StudyJournalQueryService {
         StudyJournal journal = studyJournalRepository.findById(journalId)
                 .orElseThrow(() -> new IllegalArgumentException("일지를 찾을 수 없음"));
 
+        // 조회수 증가
+        journal.increaseViewCount();
+
         StudyJournalDto.EmojiCounts emojiCounts = journalEmojiService.getEmojiCounts(journalId);
 
         // 첨부파일 DTO 변환
@@ -55,6 +58,7 @@ public class StudyJournalQueryServiceImpl implements StudyJournalQueryService {
                 .url(journal.getUrl())
                 .sessionId(journal.getSessionId())
                 .userId(journal.getUserId())
+                .viewCount(journal.getViewCount())
                 .attachments(attachmentDtos)
                 .emojiCounts(emojiCounts)
                 .build();
@@ -86,6 +90,7 @@ public class StudyJournalQueryServiceImpl implements StudyJournalQueryService {
                     .title(journal.getTitle())
                     .nickName(user.getNickName())
                     .studyRole(studyRole)
+                    .viewCount(journal.getViewCount())
                     .build();
         }).toList();
 

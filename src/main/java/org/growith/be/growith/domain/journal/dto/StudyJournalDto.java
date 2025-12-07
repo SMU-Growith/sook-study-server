@@ -19,6 +19,7 @@ public class StudyJournalDto {
     private Long sessionId;
     private Long userId;
     private Integer submittedCount;
+    private Long viewCount;
     private List<AttachmentDto> attachments;  // 여러 파일
     private EmojiCounts emojiCounts;
 

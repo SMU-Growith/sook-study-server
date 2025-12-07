@@ -16,4 +16,5 @@ public class StudyJournalListDto {
     private String title;
     private String nickName;
     private StudyRole studyRole;
+    private Long viewCount;
 }
