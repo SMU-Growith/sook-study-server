@@ -3,6 +3,7 @@ package org.growith.be.growith.domain.journal.service.query;
 import lombok.RequiredArgsConstructor;
 import org.growith.be.growith.domain.journal.dto.StudyJournalDto;
 import org.growith.be.growith.domain.journal.dto.StudyJournalListDto;
+import org.growith.be.growith.domain.journal.dto.StudyJournalListResponse;
 import org.growith.be.growith.domain.journal.dto.StudySessionListDto;
 import org.growith.be.growith.domain.journal.dto.StudySession;
 import org.growith.be.growith.domain.journal.dto.StudySessionCardDto;
@@ -59,7 +60,10 @@ public class StudyJournalQueryServiceImpl implements StudyJournalQueryService {
                 .build();
     }
 
-    public List<StudyJournalListDto> getStudyJournalsBySession(Long sessionId, int page, int size) {
+    public StudyJournalListResponse getStudyJournalsBySession(Long sessionId, int page, int size) {
+        StudySession session = studySessionRepository.findById(sessionId)
+                .orElseThrow(() -> new IllegalArgumentException("세션을 찾을 수 없음"));
+
         List<StudyJournal> allJournals = studyJournalRepository.findBySessionId(sessionId);
         Integer totalCount = allJournals.size();
 
@@ -69,32 +73,28 @@ public class StudyJournalQueryServiceImpl implements StudyJournalQueryService {
                 .limit(size)
                 .toList();
 
-        return journals.stream().map(journal -> {
+        List<StudyJournalListDto> journalDtos = journals.stream().map(journal -> {
             // 사용자 정보 조회
             User user = userRepository.findById(journal.getUserId())
                     .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없음"));
 
-            // 사용자의 스터디 역할 조회
-            StudySession session = studySessionRepository.findById(sessionId)
-                    .orElseThrow(() -> new IllegalArgumentException("세션을 찾을 수 없음"));
-
-            String userRole = studyRepository.findUserRoleInStudy(journal.getUserId(), session.getStudy().getId());
-            StudyRole studyRole = StudyRole.valueOf(userRole);
-
-            // 해당 일지의 제출자 수 조회
-            Integer submittedCount = studyJournalRepository.countByJournalId(journal.getId());
+            String userRoleStr = studyRepository.findUserRoleInStudy(session.getStudy().getId(), journal.getUserId());
+            StudyRole studyRole = (userRoleStr != null) ? StudyRole.valueOf(userRoleStr) : StudyRole.MEMBER;
 
             return StudyJournalListDto.builder()
                     .journalId(journal.getId())
                     .title(journal.getTitle())
-                    .content(journal.getContent())
-                    .url(journal.getUrl())
-                    .userId(journal.getUserId())
+                    .nickName(user.getNickName())
                     .studyRole(studyRole)
-                    .submittedCount(submittedCount)
-                    .totalCount(totalCount)
                     .build();
         }).toList();
+
+        return StudyJournalListResponse.builder()
+                .totalCount(totalCount)
+                .sessionNumber(session.getNumber())
+                .title(session.getTitle())
+                .journals(journalDtos)
+                .build();
     }
 
     public StudySessionListDto getStudySessions(Long studyId, int page, int size) {
@@ -138,4 +138,5 @@ public class StudyJournalQueryServiceImpl implements StudyJournalQueryService {
                 .submittedCount(submittedCount)
                 .build();
     }
+
 }

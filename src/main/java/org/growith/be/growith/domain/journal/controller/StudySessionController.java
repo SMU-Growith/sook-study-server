@@ -10,6 +10,7 @@ import org.growith.be.growith.domain.journal.dto.StudySessionCardDto;
 import org.growith.be.growith.domain.journal.dto.StudySessionListDto;
 import org.growith.be.growith.domain.journal.dto.CreateStudySessionRequest;
 import org.growith.be.growith.domain.journal.dto.UpdateStudySessionRequest;
+import org.growith.be.growith.domain.journal.dto.StudyJournalListResponse;
 import org.growith.be.growith.domain.journal.service.command.StudyJournalCommandService;
 import org.growith.be.growith.domain.journal.service.query.StudyJournalQueryService;
 import org.growith.be.growith.domain.study.service.command.StudyCommandService;
@@ -35,10 +36,10 @@ public class StudySessionController {
     private final JournalEmojiService journalEmojiService;
 
 
-    //스터디 세션 리스트 조회
+    //스터디 세션 목록 조회
     @Operation(
-            summary = "스터디 세션 리스트 조회 API",
-            description = "스터디 세션 리스트를 조회할 수 있습니다."
+            summary = "스터디 세션 목록 조회 API",
+            description = "스터디 세션 목록을 조회할 수 있습니다."
     )
     @GetMapping("/{studyId}/sessions")
     public ApiResponse<StudySessionListDto> getStudySessions(
@@ -76,10 +77,10 @@ public class StudySessionController {
         return  ApiResponse.onSuccess(null);
     }
 
-    // 스터디 세션 조회
+    // 스터디 세션 상세 조회
     @Operation(
-            summary = "스터디 세션 조회 API",
-            description = "스터디 세션을 조회할 수 있습니다."
+            summary = "스터디 세션 상세 조회 API",
+            description = "스터디 세션을 상세 조회할 수 있습니다."
     )
     @GetMapping("/session/{sessionId}")
     public ApiResponse<StudySessionCardDto> getStudySession(
@@ -103,10 +104,10 @@ public class StudySessionController {
         return ApiResponse.onSuccess(null);
     }
 
-    // 스터디 일지 제출
+    // 스터디 일지 제출(생성)
     @Operation(
-            summary = "스터디 일지 제출 API",
-            description = "스터디 일지를 제출할 수 있습니다."
+            summary = "스터디 일지 제출(생성) API",
+            description = "스터디 일지를 제출(생성)할 수 있습니다."
     )
     @PostMapping("/session/{sessionId}/journal")
     public ApiResponse<StudyJournalDto> createStudyJournal(
@@ -117,10 +118,10 @@ public class StudySessionController {
         return  ApiResponse.onSuccess(createdJournal);
     }
 
-    // 스터디 일지 조회
+    // 스터디 일지 상세 조회
     @Operation(
-            summary = "스터디 일지 조회 API",
-            description = "스터디 일지를 조회할 수 있습니다."
+            summary = "스터디 일지 상세 조회 API",
+            description = "스터디 일지를 상세 조회할 수 있습니다."
     )
     @GetMapping("/journal/{journalId}")
     public ApiResponse<StudyJournalDto> getStudyJournal(@PathVariable Long journalId) {
@@ -152,18 +153,18 @@ public class StudySessionController {
         return  ApiResponse.onSuccess(null);
     }
 
-    // 세션별 스터디 일지 목록 조회
+    // 세션별 일지 목록 조회
     @Operation(
-            summary = "세션별 스터디 일지 목록 조회 API",
-            description = "세션별 스터디 일지 목록을 조회할 수 있습니다."
+            summary = "세션별 일지 목록 조회 API",
+            description = "세션별 일지 목록을 조회할 수 있습니다."
     )
     @GetMapping("/session/{sessionId}/journals")
-    public ApiResponse<List<StudyJournalListDto>> getStudyJournalsBySession(
+    public ApiResponse<StudyJournalListResponse> getStudyJournalsBySession(
             @PathVariable Long sessionId,
             @PageableDefault(page = 0, size = 6) Pageable pageable
     ) {
-        List<StudyJournalListDto> journals = studyJournalQueryService.getStudyJournalsBySession(sessionId, pageable.getPageNumber(), pageable.getPageSize());
-        return  ApiResponse.onSuccess(journals);
+        StudyJournalListResponse response = studyJournalQueryService.getStudyJournalsBySession(sessionId, pageable.getPageNumber(), pageable.getPageSize());
+        return  ApiResponse.onSuccess(response);
     }
 
     // 스터디일지 이모티콘 토글
