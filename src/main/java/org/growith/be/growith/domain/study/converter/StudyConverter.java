@@ -60,6 +60,7 @@ public class StudyConverter {
                 .studyStyleCategory(study.getStudyStyleCategory())
                 .ruleDTO(ruleList)
                 .userId(study.getUser().getId())
+                .nickname(study.getUser().getNickName())
                 .isScraped(isScraped)
                 .createdAt(study.getCreatedAt().toLocalDate())
                 .build();
@@ -172,6 +173,9 @@ public class StudyConverter {
 
     // StudyResponseDto.UserStudyPreviewDto
     public static StudyResponseDto.UserStudyPreviewDto toUserStudyPreviewDto(UserStudy dto, Long memberCount, Long studySessionCount){
+        Long studyFieldId = dto.getStudy().getStudyField() == null ? null : dto.getStudy().getStudyField().getId();
+        String studyFieldName = dto.getStudy().getStudyField() == null ? null : dto.getStudy().getStudyField().getName();
+
         return StudyResponseDto.UserStudyPreviewDto.builder()
                 .studyId(dto.getStudy().getId())
                 .studyRole(dto.getStudyRole())
@@ -182,8 +186,8 @@ public class StudyConverter {
                 .memberCount(memberCount)
                 .studySessionCount(studySessionCount)
                 .studyFormat(dto.getStudy().getStudyFormat())
-                .studyFieldId(dto.getStudy().getStudyField().getId())
-                .studyFieldName(dto.getStudy().getStudyField().getName())
+                .studyFieldId(studyFieldId)
+                .studyFieldName(studyFieldName)
                 .studyStyleCategory(dto.getStudy().getStudyStyleCategory())
                 .build();
     }

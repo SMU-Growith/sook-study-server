@@ -25,6 +25,7 @@ public record StudyResponseDto() {
             StudyStyleCategory studyStyleCategory,
             List<StudyResponseDto.RuleDetailDTO> ruleDTO,
             Long userId,
+            String nickname,
             Boolean isScraped,
             LocalDate createdAt
     ){}
