@@ -100,7 +100,6 @@ public record StudyResponseDto() {
              String nickName,
              StudentStatus studentStatus,
              Major major,
-             String majorName,
              String phoneNumber,
              String motivation
      ){}
