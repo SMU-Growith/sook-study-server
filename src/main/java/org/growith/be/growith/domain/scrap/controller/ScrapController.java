@@ -26,7 +26,7 @@ public class ScrapController {
     private final ScrapService scrapService;
 
     // 스크랩 토글 (생성/삭제)
-    @Operation(summary = "스터디 스크랩 생성/삭제 API", description = "스터디를 생성 혹은 삭제하는 API")
+    @Operation(summary = "스터디 스크랩 생성/삭제 API by 윶", description = "스터디를 생성 혹은 삭제하는 API")
     @PostMapping("/studies/{studyId}/scrap/toggle")
     public ApiResponse<StudyResponseDto.ToggleScrapResponseDto> toggleScrap(
             @PathVariable Long studyId,
@@ -37,7 +37,7 @@ public class ScrapController {
     }
 
     // 스크랩 목록 조회
-    @Operation(summary = "스터디 스크랩 조회 API", description = "사용자가 스크랩한 스터디를 조회하는 API")
+    @Operation(summary = "스터디 스크랩 조회 API by 윶", description = "사용자가 스크랩한 스터디를 조회하는 API")
     @GetMapping("/users/scraps")
     public ApiResponse<StudyResponseDto.StudyPreviewDTOList> getUserScraps(
             @AuthenticatedUser User user,
