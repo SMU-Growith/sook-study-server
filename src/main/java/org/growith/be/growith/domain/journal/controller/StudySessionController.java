@@ -9,6 +9,7 @@ import org.growith.be.growith.domain.journal.service.JournalEmojiService;
 import org.growith.be.growith.domain.journal.dto.StudySessionCardDto;
 import org.growith.be.growith.domain.journal.dto.StudySessionListDto;
 import org.growith.be.growith.domain.journal.dto.CreateStudySessionRequest;
+import org.growith.be.growith.domain.journal.dto.UpdateStudySessionRequest;
 import org.growith.be.growith.domain.journal.service.command.StudyJournalCommandService;
 import org.growith.be.growith.domain.journal.service.query.StudyJournalQueryService;
 import org.growith.be.growith.domain.study.service.command.StudyCommandService;
@@ -70,8 +71,8 @@ public class StudySessionController {
     @PutMapping("/session/{sessionId}")
     public ApiResponse<Void> updateStudySession(
             @PathVariable Long sessionId,
-            @RequestBody StudySessionCardDto studySessionCardDto) {
-        studyJournalCommandService.updateStudySession(sessionId, studySessionCardDto);
+            @RequestBody UpdateStudySessionRequest request) {
+        studyJournalCommandService.updateStudySession(sessionId, request);
         return  ApiResponse.onSuccess(null);
     }
 

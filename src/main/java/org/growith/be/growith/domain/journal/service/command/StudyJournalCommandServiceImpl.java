@@ -7,6 +7,7 @@ import org.growith.be.growith.domain.journal.dto.StudySession;
 import org.growith.be.growith.domain.journal.entity.StudyJournal;
 import org.growith.be.growith.domain.journal.repository.StudyJournalRepository;
 import org.growith.be.growith.domain.journal.dto.StudySessionCardDto;
+import org.growith.be.growith.domain.journal.dto.UpdateStudySessionRequest;
 import org.growith.be.growith.domain.study.entity.Study;
 import org.growith.be.growith.domain.study.repository.StudyRepository;
 import org.growith.be.growith.domain.study.repository.StudySessionRepository;
@@ -90,11 +91,11 @@ public class StudyJournalCommandServiceImpl implements StudyJournalCommandServic
                 .build();
     }
 
-    public void updateStudySession(Long sessionId, StudySessionCardDto dto) {
+    public void updateStudySession(Long sessionId, UpdateStudySessionRequest request) {
         StudySession session = studySessionRepository.findById(sessionId)
                 .orElseThrow(() -> new IllegalArgumentException("세션을 찾을 수 없음"));
 
-        session.updateTitle(dto.getTitle());
+        session.updateTitle(request.getTitle());
         studySessionRepository.save(session);
     }
 
