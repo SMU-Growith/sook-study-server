@@ -3,15 +3,18 @@ package org.growith.be.growith.domain.user.controller;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.growith.be.growith.domain.user.converter.UserConverter;
 import org.growith.be.growith.domain.user.dto.request.UserRequestDTO;
 import org.growith.be.growith.domain.user.dto.response.UserResponseDTO;
 import org.growith.be.growith.domain.user.entity.User;
 import org.growith.be.growith.domain.user.service.command.UserCommandService;
+import org.growith.be.growith.domain.user.service.query.UserQueryService;
 import org.growith.be.growith.global.annotation.AuthenticatedUser;
 import org.growith.be.growith.global.error.ApiResponse;
 import org.springframework.web.bind.annotation.*;
 
+@Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api/v1/users")
@@ -19,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
 
     private final UserCommandService userCommandService;
+    private final UserQueryService userQueryService;
 
     @Operation(summary = "사용자 정보 수정 API", description = "마이페이지에서 볼 수 있는 사용자 정보 수정 API")
     @PatchMapping("/profile")
@@ -33,7 +37,8 @@ public class UserController {
     @Operation(summary = "사용자 정보 조회 API", description = "마이페이지에서 볼 수 있는 사용자 정보 조회 API")
     @GetMapping("/profile")
     public ApiResponse<UserResponseDTO.UserProfileDTO> getUserProfile(@AuthenticatedUser User user) {
-        return ApiResponse.onSuccess(UserConverter.toUserProfileDTO(user));
+        User userProfile = userQueryService.getUserProfile(user.getId());
+        return ApiResponse.onSuccess(UserConverter.toUserProfileDTO(userProfile));
     }
 
 }

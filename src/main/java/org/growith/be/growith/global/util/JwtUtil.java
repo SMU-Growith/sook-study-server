@@ -91,6 +91,8 @@ public class JwtUtil {
 
         String loginId = claims.getSubject();
         String role = claims.get("role", String.class);
+        Long id = claims.get("userId", Long.class);
+
 
         User principal = new User(loginId, "", Collections.singleton(() -> role));
         return new UsernamePasswordAuthenticationToken(principal, token, principal.getAuthorities());

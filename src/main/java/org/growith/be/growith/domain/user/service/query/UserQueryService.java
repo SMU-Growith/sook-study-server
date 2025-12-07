@@ -4,4 +4,5 @@ import org.growith.be.growith.domain.user.entity.User;
 
 public interface UserQueryService {
     User findById(Long id);
+    User getUserProfile(Long userId);
 }
