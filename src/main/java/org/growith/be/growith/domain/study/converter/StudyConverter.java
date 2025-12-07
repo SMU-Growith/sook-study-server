@@ -40,6 +40,9 @@ public class StudyConverter {
     }
 
     public static StudyResponseDto.StudyDetail toStudyDetail(Study study, List<Rule> rules, Boolean isScraped){
+        Long studyFieldId = study.getStudyField() == null ? null : study.getStudyField().getId();
+        String studyFieldName = study.getStudyField() == null ? null : study.getStudyField().getName();
+
         List<StudyResponseDto.RuleDetailDTO> ruleList = rules.stream()
                 .map(StudyConverter::toRuleDetailDTO)
                 .toList();
@@ -51,8 +54,8 @@ public class StudyConverter {
                 .contactType(study.getContactType())
                 .url(study.getUrl())
                 .isRecruiting(study.getIsRecruiting())
-                .studyFieldId(study.getStudyField().getId())
-                .studyFieldName(study.getStudyField().getName())
+                .studyFieldId(studyFieldId)
+                .studyFieldName(studyFieldName)
                 .studyFormat(study.getStudyFormat())
                 .studyStyleCategory(study.getStudyStyleCategory())
                 .ruleDTO(ruleList)
@@ -134,6 +137,9 @@ public class StudyConverter {
 
     //  Study  -> StudyResponseDto.StudyPreviewDTO
     public static StudyResponseDto.StudyPreviewDTO toStudyPreviewDTO(Study study){
+        Long studyFieldId = study.getStudyField() == null ? null : study.getStudyField().getId();
+        String studyFieldName = study.getStudyField() == null ? null : study.getStudyField().getName();
+
         Boolean isScraped = study.getScrapCount() != 0;
 
         return StudyResponseDto.StudyPreviewDTO.builder()
@@ -144,8 +150,8 @@ public class StudyConverter {
                 .scrapCount(study.getScrapCount())
                 .isScraped(isScraped)
                 .studyFormat(study.getStudyFormat())
-                .studyFieldId(study.getStudyField().getId())
-                .studyFieldName(study.getStudyField().getName())
+                .studyFieldId(studyFieldId)
+                .studyFieldName(studyFieldName)
                 .studyStyleCategory(study.getStudyStyleCategory())
                 .build();
     }
