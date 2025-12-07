@@ -190,7 +190,6 @@ public class StudyConverter {
                 .nickName(userStudy.getUser().getNickName())
                 .studentStatus(userStudy.getUser().getStudentStatus())
                 .major(userStudy.getUser().getMajor())
-                .majorName(userStudy.getUser().getMajor().getDescription())
                 .phoneNumber(userStudy.getUser().getPhoneNumber())
                 .motivation(motivation)
                 .build();
