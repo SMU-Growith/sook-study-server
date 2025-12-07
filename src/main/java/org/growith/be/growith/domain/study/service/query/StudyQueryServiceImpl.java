@@ -21,7 +21,9 @@ import org.growith.be.growith.domain.study.repository.*;
 import org.growith.be.growith.domain.user.entity.User;
 import org.growith.be.growith.domain.user.repository.UserRepository;
 import org.growith.be.growith.global.error.code.status.StudyErrorCode;
+import org.growith.be.growith.global.error.code.status.UserErrorCode;
 import org.growith.be.growith.global.error.exception.handler.StudyException;
+import org.growith.be.growith.global.error.exception.handler.UserException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -69,7 +71,10 @@ public class StudyQueryServiceImpl implements StudyQueryService {
     }
 
     // 스터디 상세 조회
-    public StudyResponseDto.StudyDetail getStudyDetail(Long studyId, User user) {
+    public StudyResponseDto.StudyDetail getStudyDetail(Long studyId, Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserException(UserErrorCode.NOT_FOUND));
+
         Study study = studyRepository.findById(studyId)
                 .orElseThrow(() -> new StudyException(StudyErrorCode.STUDY_NOT_FOUND));
         List<Rule> rules = ruleRepository.findByStudy(study);
@@ -79,7 +84,7 @@ public class StudyQueryServiceImpl implements StudyQueryService {
             isScraped = studyScrapRepository.findByUserAndStudy(user, study).isPresent();
         }
 
-        return StudyConverter.toStudyDetail(study, rules, isScraped);
+        return StudyConverter.  toStudyDetail(study, rules, isScraped);
     }
 
     // 스터디 검색

@@ -24,7 +24,7 @@ import static org.growith.be.growith.domain.study.entity.QStudy.study;
 @RequiredArgsConstructor
 public class StudyQueryDslImpl implements StudyQueryDsl {
 
-    private JPAQueryFactory queryFactory;
+    private final JPAQueryFactory queryFactory;
 
     public List<Study> searchStudy(StudyRequestDto.SearchStudyCondition request, List<StudyField> studyFields, PageRequest pageRequest){
         return queryFactory.selectFrom(study)

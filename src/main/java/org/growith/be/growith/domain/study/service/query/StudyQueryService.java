@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface StudyQueryService {
     // 리팩토링 완료
-    StudyResponseDto.StudyDetail getStudyDetail(Long studyId, User user);
+    StudyResponseDto.StudyDetail getStudyDetail(Long studyId, Long userId);
     List<Study> searchStudies(StudyRequestDto.SearchStudyCondition request, Pageable pageable);
     List<Study> getStudiesByPopularOrNew(Pageable pageable);
     List<StudyResponseDto.UserStudyPreviewDto> getMyStudies(Long userId, String studyStatus, Pageable pageable);
