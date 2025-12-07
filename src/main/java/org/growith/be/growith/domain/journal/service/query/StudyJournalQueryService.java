@@ -12,5 +12,6 @@ public interface StudyJournalQueryService {
     StudyJournalDto getStudyJournal(Long journalId);
     List<StudyJournalListDto> getStudyJournalsBySession(Long sessionId, int page, int size);
     StudySessionListDto getStudySessions(Long studyId, int page, int size);
+    StudySessionCardDto getStudySessionById(Long sessionId);
 
 }

@@ -74,18 +74,17 @@ public class StudySessionController {
         return  ApiResponse.onSuccess(null);
     }
 
-    // 스터디 세션 조회 (팀장권한)
+    // 스터디 세션 조회
     @Operation(
             summary = "스터디 세션 조회 API",
             description = "스터디 세션을 조회할 수 있습니다."
     )
     @GetMapping("/session/{sessionId}")
-    public ApiResponse<List<StudySessionCardDto>> getStudySession(
-            @PathVariable Long sessionId,
-            @PageableDefault(page = 0, size = 6) Pageable pageable
+    public ApiResponse<StudySessionCardDto> getStudySession(
+            @PathVariable Long sessionId
     ) {
-        StudySessionListDto studySessions = studyJournalQueryService.getStudySessions(sessionId, pageable.getPageNumber(), pageable.getPageSize());
-        return  ApiResponse.onSuccess(studySessions.getStudySessions());
+        StudySessionCardDto studySession = studyJournalQueryService.getStudySessionById(sessionId);
+        return  ApiResponse.onSuccess(studySession);
     }
 
     // 스터디 세션 삭제 (팀장권한)

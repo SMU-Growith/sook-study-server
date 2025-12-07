@@ -124,4 +124,18 @@ public class StudyJournalQueryServiceImpl implements StudyJournalQueryService {
                 .totalCount(totalCount)
                 .build();
     }
+
+    public StudySessionCardDto getStudySessionById(Long sessionId) {
+        StudySession session = studySessionRepository.findById(sessionId)
+                .orElseThrow(() -> new IllegalArgumentException("sessionId에 해당하는 세션 없음"));
+
+        Integer submittedCount = studySessionRepository.countSubmittedBySessionId(session.getId());
+
+        return StudySessionCardDto.builder()
+                .sessionId(session.getId())
+                .sessionNumber(session.getNumber())
+                .title(session.getTitle())
+                .submittedCount(submittedCount)
+                .build();
+    }
 }
