@@ -63,7 +63,7 @@ public class AuthCommandServiceImpl implements AuthCommandService {
 
         CustomUserDetails customUserDetails = new CustomUserDetails(user);
         AuthResponseDTO.TokenResult loginToken = tokenCommandService.createLoginToken(customUserDetails);
-//        tokenStorageCommandService.addRefreshToken(user.getId(), loginToken.refreshToken());
+        tokenStorageCommandService.addRefreshToken(user.getId(), loginToken.refreshToken());
         return loginToken;
     }
 

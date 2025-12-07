@@ -43,7 +43,7 @@ public class JwtFilter extends OncePerRequestFilter {
         }
 
         // 토큰이 있을 때만 검증 시도
-        if (jwtUtil.validateToken(token) ) {
+        if (jwtUtil.validateToken(token) && !tokenStorageQueryService.isBlackList(token)) {
             try {
                 Long userId = jwtUtil.getUserId(token);
                 User user = userQueryService.findById(userId);
