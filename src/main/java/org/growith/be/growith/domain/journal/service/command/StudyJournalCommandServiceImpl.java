@@ -1,6 +1,7 @@
 package org.growith.be.growith.domain.journal.service.command;
 
 import lombok.RequiredArgsConstructor;
+import org.growith.be.growith.domain.journal.dto.CreateStudySessionRequest;
 import org.growith.be.growith.domain.journal.dto.StudyJournalDto;
 import org.growith.be.growith.domain.journal.dto.StudySession;
 import org.growith.be.growith.domain.journal.entity.StudyJournal;
@@ -166,7 +167,7 @@ public class StudyJournalCommandServiceImpl implements StudyJournalCommandServic
         studyJournalRepository.delete(journal);
     }
 
-    public StudySessionCardDto createStudySession(Long studyId, StudySessionCardDto dto) {
+    public StudySessionCardDto createStudySession(Long studyId, CreateStudySessionRequest request) {
         Study study = studyRepository.findById(studyId)
                 .orElseThrow(() -> new StudyException(StudyErrorCode.STUDY_NOT_FOUND));
 
@@ -178,7 +179,7 @@ public class StudyJournalCommandServiceImpl implements StudyJournalCommandServic
 
         StudySession newSession = StudySession.createSession(
                 maxNumber + 1,
-                dto.getTitle(),
+                request.getTitle(),
                 study
         );
 
@@ -189,6 +190,7 @@ public class StudyJournalCommandServiceImpl implements StudyJournalCommandServic
                 .sessionId(savedSession.getId())
                 .sessionNumber(savedSession.getNumber())
                 .title(savedSession.getTitle())
+                .submittedCount(0)
                 .build();
     }
 
