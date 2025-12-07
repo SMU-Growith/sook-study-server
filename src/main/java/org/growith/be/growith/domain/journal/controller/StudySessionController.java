@@ -124,8 +124,11 @@ public class StudySessionController {
             description = "스터디 일지를 상세 조회할 수 있습니다."
     )
     @GetMapping("/journal/{journalId}")
-    public ApiResponse<StudyJournalDto> getStudyJournal(@PathVariable Long journalId) {
-        StudyJournalDto journal = studyJournalQueryService.getStudyJournal(journalId);
+    public ApiResponse<StudyJournalDto> getStudyJournal(
+            @AuthenticatedUser User user,
+            @PathVariable Long journalId
+    ) {
+        StudyJournalDto journal = studyJournalQueryService.getStudyJournal(journalId, user.getId());
         return  ApiResponse.onSuccess(journal);
     }
 
@@ -161,7 +164,7 @@ public class StudySessionController {
     @GetMapping("/session/{sessionId}/journals")
     public ApiResponse<StudyJournalListResponse> getStudyJournalsBySession(
             @PathVariable Long sessionId,
-            @PageableDefault(page = 0, size = 6) Pageable pageable
+            @PageableDefault(page = 0, size = 10) Pageable pageable
     ) {
         StudyJournalListResponse response = studyJournalQueryService.getStudyJournalsBySession(sessionId, pageable.getPageNumber(), pageable.getPageSize());
         return  ApiResponse.onSuccess(response);

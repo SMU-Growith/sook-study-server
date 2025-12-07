@@ -32,7 +32,7 @@ public class StudyJournalQueryServiceImpl implements StudyJournalQueryService {
     private final StudyRepository studyRepository;
     private final JournalEmojiService journalEmojiService;
 
-    public StudyJournalDto getStudyJournal(Long journalId) {
+    public StudyJournalDto getStudyJournal(Long journalId, Long userId) {
         StudyJournal journal = studyJournalRepository.findById(journalId)
                 .orElseThrow(() -> new IllegalArgumentException("일지를 찾을 수 없음"));
 
@@ -40,6 +40,7 @@ public class StudyJournalQueryServiceImpl implements StudyJournalQueryService {
         journal.increaseViewCount();
 
         StudyJournalDto.EmojiCounts emojiCounts = journalEmojiService.getEmojiCounts(journalId);
+        StudyJournalDto.EmojiStatus emojiStatus = journalEmojiService.getEmojiStatus(journalId, userId);
 
         // 첨부파일 DTO 변환
         List<StudyJournalDto.AttachmentDto> attachmentDtos = journal.getAttachments().stream()
@@ -51,16 +52,29 @@ public class StudyJournalQueryServiceImpl implements StudyJournalQueryService {
                         .build())
                 .toList();
 
+        // 사용자 조회
+        User user = userRepository.findById(journal.getUserId())
+                .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없음"));
+
+        // 세션 조회
+        StudySession session = studySessionRepository.findById(journal.getSessionId())
+                .orElseThrow(() -> new IllegalArgumentException("세션을 찾을 수 없음"));
+
+        // 역할 조회
+        String userRoleStr = studyRepository.findUserRoleInStudy(session.getStudy().getId(), user.getId());
+        StudyRole studyRole = (userRoleStr != null) ? StudyRole.valueOf(userRoleStr) : StudyRole.MEMBER;
+
         return StudyJournalDto.builder()
                 .journalId(journal.getId())
                 .title(journal.getTitle())
                 .content(journal.getContent())
                 .url(journal.getUrl())
-                .sessionId(journal.getSessionId())
-                .userId(journal.getUserId())
+                .nickName(user.getNickName())
+                .studyRole(studyRole)
                 .viewCount(journal.getViewCount())
                 .attachments(attachmentDtos)
                 .emojiCounts(emojiCounts)
+                .emojiStatus(emojiStatus)
                 .build();
     }
 
