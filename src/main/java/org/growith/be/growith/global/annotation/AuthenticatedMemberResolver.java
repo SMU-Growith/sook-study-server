@@ -6,6 +6,8 @@ import lombok.RequiredArgsConstructor;
 import org.growith.be.growith.domain.user.entity.User;
 import org.growith.be.growith.global.security.domain.CustomUserDetails;
 import org.springframework.core.MethodParameter;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.web.context.SecurityContextRepository;
 import org.springframework.stereotype.Component;
@@ -28,14 +30,18 @@ public class AuthenticatedMemberResolver implements HandlerMethodArgumentResolve
 
     @Override
     public Object resolveArgument(MethodParameter parameter, ModelAndViewContainer mavContainer, NativeWebRequest webRequest, WebDataBinderFactory binderFactory) throws Exception {
-        try {
-            UserDetails userDetails = (UserDetails) securityContextRepository.loadDeferredContext(webRequest.getNativeRequest(HttpServletRequest.class)).get().getAuthentication().getPrincipal();
-            if (userDetails instanceof CustomUserDetails customUserDetails) {
-                return customUserDetails.getUser();
-            }
-            return null;
-        } catch (Exception e){
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (authentication == null || !authentication.isAuthenticated()) {
             return null;
         }
+
+        Object principal = authentication.getPrincipal();
+
+        if (principal instanceof CustomUserDetails customUserDetails) {
+            return customUserDetails.getUser();
+        }
+
+        return null;
     }
 }
