@@ -1,5 +1,6 @@
 package org.growith.be.growith.domain.journal.service.command;
 
+import org.growith.be.growith.domain.journal.dto.CreateStudySessionRequest;
 import org.growith.be.growith.domain.journal.dto.StudyJournalDto;
 import org.growith.be.growith.domain.journal.dto.StudySessionCardDto;
 
@@ -10,5 +11,5 @@ public interface StudyJournalCommandService {
     void updateStudySession(Long sessionId, StudySessionCardDto dto);
     StudyJournalDto updateStudyJournal(Long journalId, StudyJournalDto dto);
     void deleteStudyJournal(Long journalId);
-    StudySessionCardDto createStudySession(Long studyId, StudySessionCardDto dto);
+    StudySessionCardDto createStudySession(Long studyId, CreateStudySessionRequest request);
 }
