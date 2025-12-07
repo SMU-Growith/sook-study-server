@@ -20,7 +20,7 @@ public class StudyJournalDto {
     private String url;
     private String nickName;
     private StudyRole studyRole;
-    private Integer submittedCount;
+
     private Long viewCount;
     private List<AttachmentDto> attachments;  // 여러 파일
     private EmojiCounts emojiCounts;

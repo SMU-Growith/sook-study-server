@@ -18,10 +18,18 @@ import org.springframework.transaction.annotation.Transactional;
 public class StudyJournalDataInitializer implements CommandLineRunner {
 
     private final StudyJournalRepository studyJournalRepository;
+    private final org.springframework.jdbc.core.JdbcTemplate jdbcTemplate;
 
     @Override
-    @Transactional
     public void run(String... args) {
+        try {
+           
+            jdbcTemplate.execute("ALTER TABLE journal_emoji DROP INDEX UKmp73r8pnob27bi5kpfnpsmmcx");
+            System.out.println("Removed outdated unique constraint: UKmp73r8pnob27bi5kpfnpsmmcx");
+        } catch (Exception e) {
+
+        }
+
         if (studyJournalRepository.count() > 0) {
             return;
         }
