@@ -35,6 +35,9 @@ public class StudyJournal extends BaseEntity {
 
     private Long userId;
 
+    @Builder.Default
+    private Long viewCount = 0L;
+
     @OneToMany(mappedBy = "studyJournal", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<JournalAttachment> attachments = new ArrayList<>();
@@ -52,6 +55,7 @@ public class StudyJournal extends BaseEntity {
                 .url(url)
                 .sessionId(sessionId)
                 .userId(userId)
+                .viewCount(0L)
                 .attachments(new ArrayList<>())
                 .build();
     }
@@ -61,6 +65,11 @@ public class StudyJournal extends BaseEntity {
         this.content = content;
         this.url = url;
     }
+
+    public void increaseViewCount() {
+        this.viewCount++;
+    }
+
 
     // 첨부파일 추가
     public void addAttachment(JournalAttachment attachment) {
