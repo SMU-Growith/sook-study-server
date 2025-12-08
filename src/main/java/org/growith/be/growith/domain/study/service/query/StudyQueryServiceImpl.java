@@ -159,4 +159,16 @@ public class StudyQueryServiceImpl implements StudyQueryService {
                 .build();
     }
 
+    @Override
+    public List<StudyResponseDto.RuleDetailDTO> getStudyRules(Long studyId) {
+        if (!studyRepository.existsById(studyId)) {
+            throw new StudyException(StudyErrorCode.STUDY_NOT_FOUND);
+        }
+        return ruleRepository.findByStudy_Id(studyId).stream()
+                .map(rule -> StudyResponseDto.RuleDetailDTO.builder()
+                        .ruleCategory(rule.getRuleCategory())
+                        .description(rule.getDescription())
+                        .build())
+                .toList();
+    }
 }

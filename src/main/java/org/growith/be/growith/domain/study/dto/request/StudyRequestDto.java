@@ -55,4 +55,8 @@ public record StudyRequestDto() {
     ){}
 
 
+    public record UpdateRuleContentDTO(
+            String description
+    ){}
+
 }

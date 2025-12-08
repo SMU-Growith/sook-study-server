@@ -11,4 +11,5 @@ public interface StudyCommandService {
     StudyStatus changeStudyStatus(Long studyId, StudyStatus studyStatus, Long userId);
     StudyStatus toggleStudyStatus(Long studyId, Long userId);
     void withdrawStudy(Long studyId, Long userId);
+    void updateStudyRule(Long studyId, Long userId, org.growith.be.growith.domain.study.entity.enums.RuleCategory ruleCategory, StudyRequestDto.UpdateRuleContentDTO request);
 }

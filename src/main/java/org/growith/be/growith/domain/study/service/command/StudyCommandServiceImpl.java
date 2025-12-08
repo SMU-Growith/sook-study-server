@@ -6,6 +6,7 @@ import org.growith.be.growith.domain.study.converter.StudyConverter;
 import org.growith.be.growith.domain.study.dto.request.StudyRequestDto;
 import org.growith.be.growith.domain.study.dto.response.StudyResponseDto;
 import org.growith.be.growith.domain.study.entity.*;
+import org.growith.be.growith.domain.study.entity.enums.RuleCategory;
 import org.growith.be.growith.domain.study.entity.enums.StudyRole;
 import org.growith.be.growith.domain.study.entity.enums.StudyStatus;
 import org.growith.be.growith.domain.study.repository.*;
@@ -173,5 +174,20 @@ public class StudyCommandServiceImpl implements StudyCommandService{
         StudyStatus newStatus = study.getStudyStatus().toggle();
         study.changeStudyStatus(newStatus);
         return newStatus;
+    }
+
+    @Override
+    public void updateStudyRule(Long studyId, Long userId, org.growith.be.growith.domain.study.entity.enums.RuleCategory ruleCategory, StudyRequestDto.UpdateRuleContentDTO request) {
+        Study study = studyRepository.findById(studyId)
+                .orElseThrow(() -> new StudyException(StudyErrorCode.STUDY_NOT_FOUND));
+
+        if (!study.getUser().getId().equals(userId)) {
+            throw new StudyException(StudyErrorCode.STUDY_UPDATE_FORBIDDEN);
+        }
+
+        Rule rule = ruleRepository.findByStudy_IdAndRuleCategory(studyId, ruleCategory)
+                .orElseThrow(() -> new StudyException(StudyErrorCode.RULE_NOT_FOUND));
+
+        rule.update(ruleCategory, request.description());
     }
 }

@@ -8,6 +8,7 @@ import org.growith.be.growith.domain.study.converter.StudyConverter;
 import org.growith.be.growith.domain.study.dto.request.StudyRequestDto;
 import org.growith.be.growith.domain.study.dto.response.StudyResponseDto;
 import org.growith.be.growith.domain.study.entity.Study;
+import org.growith.be.growith.domain.study.entity.enums.RuleCategory;
 import org.growith.be.growith.domain.study.entity.enums.StudyStatus;
 import org.growith.be.growith.domain.study.service.command.StudyCommandService;
 import org.growith.be.growith.domain.study.service.query.StudyQueryService;
@@ -147,7 +148,26 @@ public class StudyController {
         return  ApiResponse.onSuccess(null);
     }
 
+    // 규칙 조회
+    @Operation(summary = "스터디 규칙 조회 API", description = "스터디 규칙을 조회하는 API")
+    @GetMapping("/{studyId}/rules")
+    public ApiResponse<List<StudyResponseDto.RuleDetailDTO>> getStudyRules(@PathVariable Long studyId) {
+        return ApiResponse.onSuccess(studyQueryService.getStudyRules(studyId));
+    }
+
     // 규칙 수정
+    @Operation(summary = "스터디 규칙 수정 API", description = "스터디 규칙을 수정하는 API, 팀장 권한을 갖는 사용자만 스터디 규칙을 수정할 수 있다")
+    @PutMapping("/{studyId}/rules/{ruleCategory}")
+    public ApiResponse<Void> updateRule(
+            @PathVariable Long studyId,
+            @PathVariable RuleCategory ruleCategory,
+            @RequestBody StudyRequestDto.UpdateRuleContentDTO request,
+            @AuthenticatedUser User user
+    ) {
+        studycommandService.updateStudyRule(studyId, user.getId(), ruleCategory, request);
+        return ApiResponse.onSuccess(null);
+    }
+
     @Operation(summary = "스터디 탈퇴 API by 윶", description = "스터디를 탈퇴하는 API, 팀원만 나갈 수 있다")
     @PutMapping("/{studyId}/rules")
     public ApiResponse<Void> updateRule(
@@ -157,7 +177,8 @@ public class StudyController {
         studycommandService.withdrawStudy(studyId, user.getId());
         return  ApiResponse.onSuccess(null);
     }
-
+    
+    
 
     // 스터디 멤버 조회
     @Operation(summary = "스터디 멤버 조회 API by 윶", description = "스터디에 참여한 사용자들을 조회하는 API")
