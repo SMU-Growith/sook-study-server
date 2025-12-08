@@ -1,6 +1,7 @@
 package org.growith.be.growith.domain.study.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import org.growith.be.growith.domain.study.entity.StudyField;
 import org.growith.be.growith.domain.study.entity.enums.*;
 
@@ -9,18 +10,12 @@ import java.util.List;
 public record StudyRequestDto() {
 
     public record CreateStudyDTO(
-            @NotBlank
             String title,
             String description,
-            @NotBlank
             ContactType contactType,
-            @NotBlank
             String url,
-            @NotBlank
             Long studyFieldId,
-            @NotBlank
             StudyFormat studyFormat,
-            @NotBlank
             StudyStyleCategory studyStyleCategory
     ){}
 
