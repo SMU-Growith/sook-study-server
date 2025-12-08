@@ -107,8 +107,10 @@ public class StudyCommandServiceImpl implements StudyCommandService{
             throw new StudyException(StudyErrorCode.STUDY_UPDATE_FORBIDDEN);
         }
 
-        ruleRepository.deleteByStudy(study);
-        studyRepository.deleteById(studyId);
+        // FK 제약조건 때문에 순서대로 삭제
+        ruleRepository.deleteByStudy(study);           // 1. rule 삭제
+        userStudyRepository.deleteByStudyId(studyId);  // 2. user_study 삭제
+        studyRepository.deleteById(studyId);           // 3. study 삭제
     }
 
     public void withdrawStudy(Long studyId, Long userId) {
