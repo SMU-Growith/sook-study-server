@@ -28,4 +28,7 @@ public interface UserStudyRepository extends JpaRepository<UserStudy, Long> {
     boolean existsByStudyIdAndUserIdAndStudyRole(Long studyId, Long userId, StudyRole studyRole);
 
     void deleteByStudyIdAndUserId(Long studyId, Long userId);
+    
+    // 스터디 삭제 시 모든 user_study 삭제
+    void deleteByStudyId(Long studyId);
 }
