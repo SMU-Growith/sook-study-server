@@ -48,10 +48,14 @@ public class StudyCommandServiceImpl implements StudyCommandService{
         Study savedStudy = studyRepository.save(studyEntity);
         userStudyRepository.save(StudyConverter.toUserStudyEntity(user, savedStudy, StudyRole.LEADER));
 
-        // Rule 엔티티 생성 후 저장
-        List<Rule> rules = request.ruleDTO().stream()
-                .map(rule -> StudyConverter.toRuleEntity(rule, savedStudy))
-                .toList();
+        // 모든 RuleCategory에 대해 기본 규칙 생성 (description은 null)
+        List<Rule> rules = List.of(
+                Rule.builder().study(savedStudy).ruleCategory(RuleCategory.TIME).description(null).build(),
+                Rule.builder().study(savedStudy).ruleCategory(RuleCategory.FINE).description(null).build(),
+                Rule.builder().study(savedStudy).ruleCategory(RuleCategory.DAY_OFF).description(null).build(),
+                Rule.builder().study(savedStudy).ruleCategory(RuleCategory.ATMOSPHERE).description(null).build(),
+                Rule.builder().study(savedStudy).ruleCategory(RuleCategory.ETC).description(null).build()
+        );
         // 규칙 저장
         ruleRepository.saveAll(rules);
 
@@ -177,7 +181,7 @@ public class StudyCommandServiceImpl implements StudyCommandService{
     }
 
     @Override
-    public void updateStudyRule(Long studyId, Long userId, org.growith.be.growith.domain.study.entity.enums.RuleCategory ruleCategory, StudyRequestDto.UpdateRuleContentDTO request) {
+    public void updateStudyRules(Long studyId, Long userId, StudyRequestDto.UpdateRuleContentDTO request) {
         Study study = studyRepository.findById(studyId)
                 .orElseThrow(() -> new StudyException(StudyErrorCode.STUDY_NOT_FOUND));
 
@@ -185,9 +189,12 @@ public class StudyCommandServiceImpl implements StudyCommandService{
             throw new StudyException(StudyErrorCode.STUDY_UPDATE_FORBIDDEN);
         }
 
-        Rule rule = ruleRepository.findByStudy_IdAndRuleCategory(studyId, ruleCategory)
-                .orElseThrow(() -> new StudyException(StudyErrorCode.RULE_NOT_FOUND));
-
-        rule.update(ruleCategory, request.description());
+        // 각 RuleDTO에 대해 해당 카테고리의 규칙을 찾아서 업데이트
+        for (StudyRequestDto.RuleDTO ruleDTO : request.rules()) {
+            Rule rule = ruleRepository.findByStudy_IdAndRuleCategory(studyId, ruleDTO.ruleCategory())
+                    .orElseThrow(() -> new StudyException(StudyErrorCode.RULE_NOT_FOUND));
+            
+            rule.update(ruleDTO.ruleCategory(), ruleDTO.description());
+        }
     }
 }

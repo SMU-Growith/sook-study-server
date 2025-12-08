@@ -21,8 +21,7 @@ public record StudyRequestDto() {
             @NotBlank
             StudyFormat studyFormat,
             @NotBlank
-            StudyStyleCategory studyStyleCategory,
-            List<RuleDTO> ruleDTO
+            StudyStyleCategory studyStyleCategory
     ){}
 
     public record RuleDTO(
@@ -56,7 +55,7 @@ public record StudyRequestDto() {
 
 
     public record UpdateRuleContentDTO(
-            String description
+            List<RuleDTO> rules
     ){}
 
 }

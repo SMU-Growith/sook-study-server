@@ -157,26 +157,25 @@ public class StudyController {
 
     // 규칙 수정
     @Operation(summary = "스터디 규칙 수정 API", description = "스터디 규칙을 수정하는 API, 팀장 권한을 갖는 사용자만 스터디 규칙을 수정할 수 있다")
-    @PutMapping("/{studyId}/rules/{ruleCategory}")
-    public ApiResponse<Void> updateRule(
+    @PutMapping("/{studyId}/rules")
+    public ApiResponse<Void> updateRules(
             @PathVariable Long studyId,
-            @PathVariable RuleCategory ruleCategory,
             @RequestBody StudyRequestDto.UpdateRuleContentDTO request,
             @AuthenticatedUser User user
     ) {
-        studycommandService.updateStudyRule(studyId, user.getId(), ruleCategory, request);
+        studycommandService.updateStudyRules(studyId, user.getId(), request);
         return ApiResponse.onSuccess(null);
     }
 
-    @Operation(summary = "스터디 탈퇴 API by 윶", description = "스터디를 탈퇴하는 API, 팀원만 나갈 수 있다")
-    @PutMapping("/{studyId}/rules")
-    public ApiResponse<Void> updateRule(
-            @PathVariable Long studyId,
-            @AuthenticatedUser User user
-    ) {
-        studycommandService.withdrawStudy(studyId, user.getId());
-        return  ApiResponse.onSuccess(null);
-    }
+//     @Operation(summary = "스터디 탈퇴 API by 윶", description = "스터디를 탈퇴하는 API, 팀원만 나갈 수 있다")
+//     @PutMapping("/{studyId}/rules")
+//     public ApiResponse<Void> updateRule(
+//             @PathVariable Long studyId,
+//             @AuthenticatedUser User user
+//     ) {
+//         studycommandService.withdrawStudy(studyId, user.getId());
+//         return  ApiResponse.onSuccess(null);
+//     }
     
     
 
