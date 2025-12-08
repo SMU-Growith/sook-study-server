@@ -90,9 +90,9 @@ public class StudyQueryServiceImpl implements StudyQueryService {
             Pageable pageable
     ) {
         List<StudyField> studyFields = null;
-        if (request.studyFieldIds() != null) {
-            studyFields = request.studyFieldIds().stream().map(
-                            studyFieldId -> studyFieldRepository.findById(studyFieldId)
+        if (request.studyFieldNames() != null) {
+            studyFields = request.studyFieldNames().stream().map(
+                            studyFieldName -> studyFieldRepository.findByName(studyFieldName)
                                     .orElseThrow(() ->new StudyException(StudyErrorCode.STUDY_FIELD_NOT_FOUND))
                     ).toList();
         }
