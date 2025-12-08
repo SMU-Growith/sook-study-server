@@ -145,6 +145,7 @@ public class StudyConverter {
                 .studyStatus(study.getStudyStatus())
                 .title(study.getTitle())
                 .userId(study.getUser().getId())
+                .nickname(study.getUser().getNickName())
                 .scrapCount(study.getScrapCount())
                 .isScraped(isScraped)
                 .studyFormat(study.getStudyFormat())
