@@ -9,18 +9,13 @@ import java.util.List;
 public record StudyRequestDto() {
 
     public record CreateStudyDTO(
-            @NotBlank
             String title,
             String description,
-            @NotBlank
             ContactType contactType,
-            @NotBlank
             String url,
-            @NotBlank
-            Long studyFieldId,
-            @NotBlank
+            String parentFieldName,
+            String childFieldName,
             StudyFormat studyFormat,
-            @NotBlank
             StudyStyleCategory studyStyleCategory
     ){}
 

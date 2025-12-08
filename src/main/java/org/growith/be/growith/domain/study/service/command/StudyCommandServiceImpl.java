@@ -40,8 +40,8 @@ public class StudyCommandServiceImpl implements StudyCommandService{
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserException(UserErrorCode.NOT_FOUND));
 
-        // 분야 조회
-        StudyField field = studyFieldRepository.findById(request.studyFieldId())
+        // 자식 분야 이름으로 조회 (childFieldName)
+        StudyField field = studyFieldRepository.findByName(request.childFieldName())
                 .orElseThrow(() -> new StudyException(StudyErrorCode.STUDY_NOT_FOUND));
 
         Study studyEntity = StudyConverter.toStudyEntity(request, user, field);
