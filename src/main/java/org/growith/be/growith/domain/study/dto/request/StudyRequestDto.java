@@ -17,7 +17,7 @@ public record StudyRequestDto() {
             @NotBlank
             String url,
             @NotBlank
-            Long studyFieldId,
+            String studyFieldName,
             @NotBlank
             StudyFormat studyFormat,
             @NotBlank

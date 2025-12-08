@@ -41,8 +41,8 @@ public class StudyCommandServiceImpl implements StudyCommandService{
                 .orElseThrow(() -> new UserException(UserErrorCode.NOT_FOUND));
 
         // 분야 조회
-        StudyField field = studyFieldRepository.findById(request.studyFieldId())
-                .orElseThrow(() -> new StudyException(StudyErrorCode.STUDY_NOT_FOUND));
+        StudyField field = studyFieldRepository.findByName(request.studyFieldName())
+                .orElseThrow(() -> new StudyException(StudyErrorCode.STUDY_FIELD_NOT_FOUND));
 
         Study studyEntity = StudyConverter.toStudyEntity(request, user, field);
         Study savedStudy = studyRepository.save(studyEntity);
@@ -77,7 +77,7 @@ public class StudyCommandServiceImpl implements StudyCommandService{
         }
 
         StudyField studyField = studyFieldRepository.findByName(request.studyFieldName())
-                .orElseThrow(() -> new StudyException(StudyErrorCode.STUDY_NOT_FOUND));
+                .orElseThrow(() -> new StudyException(StudyErrorCode.STUDY_FIELD_NOT_FOUND));
 
         // 스터디 정보 업데이트
         study.updateStudy(request, studyField);
