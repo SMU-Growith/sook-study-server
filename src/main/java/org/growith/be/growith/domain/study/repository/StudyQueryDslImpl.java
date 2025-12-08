@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.growith.be.growith.domain.study.dto.request.StudyRequestDto;
 import org.growith.be.growith.domain.study.entity.Study;
 import org.growith.be.growith.domain.study.entity.StudyField;
+import org.growith.be.growith.domain.study.entity.enums.StudyFieldCategory;
 import org.growith.be.growith.domain.study.entity.enums.StudyFormat;
 import org.growith.be.growith.domain.study.entity.enums.StudyStatus;
 import org.growith.be.growith.domain.study.entity.enums.StudyStyleCategory;
@@ -27,13 +28,22 @@ public class StudyQueryDslImpl implements StudyQueryDsl {
     private final JPAQueryFactory queryFactory;
 
     public List<Study> searchStudy(StudyRequestDto.SearchStudyCondition request, List<StudyField> studyFields, PageRequest pageRequest){
+        // studyFieldNames를 StudyFieldCategory enum으로 변환
+        List<StudyFieldCategory> fieldCategories = null;
+        if (request.studyFieldNames() != null && !request.studyFieldNames().isEmpty()) {
+            fieldCategories = request.studyFieldNames().stream()
+                    .map(StudyFieldCategory::from)
+                    .filter(category -> category != null)
+                    .toList();
+        }
+        
         return queryFactory.selectFrom(study)
                 .where(
                     studyStyleIn(request.studyStyleCategories()),
                     studyFormatIn(request.studyFormats()),
                     studyStatusEq(request.studyStatus()),
                     contentContains(request.searchContent()),
-                    studyFieldIn(studyFields)
+                    studyFieldCategoryIn(fieldCategories)
                 )
                 .offset(pageRequest.getOffset())
                 .limit(pageRequest.getPageSize())
@@ -80,11 +90,11 @@ public class StudyQueryDslImpl implements StudyQueryDsl {
         return study.title.containsIgnoreCase(searchContent);
     }
 
-    private BooleanExpression studyFieldIn(List<StudyField> studyFields) {
-        if (studyFields == null || studyFields.isEmpty()) {
+    private BooleanExpression studyFieldCategoryIn(List<StudyFieldCategory> fieldCategories) {
+        if (fieldCategories == null || fieldCategories.isEmpty()) {
             return null;
         }
-        return study.studyField.in(studyFields);
+        return study.studyFieldCategory.in(fieldCategories);
     }
 
     private OrderSpecifier<?> getOrderSpecifier(Sort sort) {

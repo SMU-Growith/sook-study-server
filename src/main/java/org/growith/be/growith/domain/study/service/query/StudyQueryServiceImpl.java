@@ -16,6 +16,7 @@ import org.growith.be.growith.domain.study.entity.Rule;
 import org.growith.be.growith.domain.study.entity.Study;
 import org.growith.be.growith.domain.study.entity.StudyField;
 import org.growith.be.growith.domain.study.entity.UserStudy;
+import org.growith.be.growith.domain.study.entity.enums.StudyFieldCategory;
 import org.growith.be.growith.domain.study.entity.enums.StudyStatus;
 import org.growith.be.growith.domain.study.repository.*;
 import org.growith.be.growith.domain.user.entity.User;
@@ -170,5 +171,27 @@ public class StudyQueryServiceImpl implements StudyQueryService {
                         .description(rule.getDescription())
                         .build())
                 .toList();
+    }
+
+    @Override
+    public StudyResponseDto.StudyFieldListDto getParentFields() {
+        List<String> parentFieldNames = StudyFieldCategory.getAllParents()
+                .stream()
+                .map(StudyFieldCategory.ParentCategory::getDescription)
+                .toList();
+        return StudyResponseDto.StudyFieldListDto.builder()
+                .fieldNames(parentFieldNames)
+                .build();
+    }
+
+    @Override
+    public StudyResponseDto.StudyFieldListDto getChildFields(String parentFieldName) {
+        List<String> childFieldNames = StudyFieldCategory.getChildrenByParentName(parentFieldName)
+                .stream()
+                .map(StudyFieldCategory::getDescription)
+                .toList();
+        return StudyResponseDto.StudyFieldListDto.builder()
+                .fieldNames(childFieldNames)
+                .build();
     }
 }

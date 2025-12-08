@@ -117,4 +117,10 @@ public record StudyResponseDto() {
             Boolean isScraped,
             Long scrapCount
     ){}
+    
+    // StudyField 조회용 간단한 DTO
+    @Builder
+    public record StudyFieldListDto(
+            List<String> fieldNames
+    ){}
 }

@@ -7,6 +7,7 @@ import org.growith.be.growith.domain.study.dto.request.StudyRequestDto;
 import org.growith.be.growith.domain.study.dto.response.StudyResponseDto;
 import org.growith.be.growith.domain.study.entity.*;
 import org.growith.be.growith.domain.study.entity.enums.RuleCategory;
+import org.growith.be.growith.domain.study.entity.enums.StudyFieldCategory;
 import org.growith.be.growith.domain.study.entity.enums.StudyRole;
 import org.growith.be.growith.domain.study.entity.enums.StudyStatus;
 import org.growith.be.growith.domain.study.repository.*;
@@ -40,11 +41,13 @@ public class StudyCommandServiceImpl implements StudyCommandService{
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserException(UserErrorCode.NOT_FOUND));
 
-        // 자식 분야 이름으로 조회 (childFieldName)
-        StudyField field = studyFieldRepository.findByName(request.childFieldName())
-                .orElseThrow(() -> new StudyException(StudyErrorCode.STUDY_NOT_FOUND));
+        // 자식 분야 이름으로 Enum 조회
+        StudyFieldCategory fieldCategory = StudyFieldCategory.from(request.childFieldName());
+        if (fieldCategory == null) {
+            throw new StudyException(StudyErrorCode.STUDY_FIELD_NOT_FOUND);
+        }
 
-        Study studyEntity = StudyConverter.toStudyEntity(request, user, field);
+        Study studyEntity = StudyConverter.toStudyEntity(request, user, fieldCategory);
         Study savedStudy = studyRepository.save(studyEntity);
         userStudyRepository.save(StudyConverter.toUserStudyEntity(user, savedStudy, StudyRole.LEADER));
 
@@ -76,11 +79,14 @@ public class StudyCommandServiceImpl implements StudyCommandService{
             throw new StudyException(StudyErrorCode.STUDY_UPDATE_FORBIDDEN);
         }
 
-        StudyField studyField = studyFieldRepository.findByName(request.studyFieldName())
-                .orElseThrow(() -> new StudyException(StudyErrorCode.STUDY_NOT_FOUND));
+        // 자식 분야 이름으로 Enum 조회
+        StudyFieldCategory fieldCategory = StudyFieldCategory.from(request.studyFieldName());
+        if (fieldCategory == null) {
+            throw new StudyException(StudyErrorCode.STUDY_FIELD_NOT_FOUND);
+        }
 
         // 스터디 정보 업데이트
-        study.updateStudy(request, studyField);
+        study.updateStudy(request, fieldCategory);
         Study updatedStudy = studyRepository.save(study);
 
         ruleRepository.deleteByStudy(updatedStudy);

@@ -204,4 +204,20 @@ public class StudyController {
     public ApiResponse<List<StudyResponseDto.StudyFieldDto>> getStudyFields() {
         return ApiResponse.onSuccess(studyQueryService.getStudyFields());
     }
+
+    // 부모 필드 조회 (1레벨)
+    @Operation(summary = "부모 필드 조회 API", description = "1레벨 부모 필드 목록을 조회합니다. (학업, 언어, 취업/커리어, 자기계발)")
+    @GetMapping("/fields/parents")
+    public ApiResponse<StudyResponseDto.StudyFieldListDto> getParentFields() {
+        return ApiResponse.onSuccess(studyQueryService.getParentFields());
+    }
+
+    // 자식 필드 조회 (2레벨)
+    @Operation(summary = "자식 필드 조회 API", description = "특정 부모 필드의 자식 필드 목록을 조회합니다.")
+    @GetMapping("/fields/children")
+    public ApiResponse<StudyResponseDto.StudyFieldListDto> getChildFields(
+            @RequestParam String parentFieldName
+    ) {
+        return ApiResponse.onSuccess(studyQueryService.getChildFields(parentFieldName));
+    }
 }

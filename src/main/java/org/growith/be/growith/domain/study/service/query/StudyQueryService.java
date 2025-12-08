@@ -17,4 +17,8 @@ public interface StudyQueryService {
     List<StudyResponseDto.StudyUsers> getStudyMembers(Long studyId);
     List<StudyResponseDto.StudyFieldDto> getStudyFields();
     List<StudyResponseDto.RuleDetailDTO> getStudyRules(Long studyId);
+    
+    // StudyField 계층 조회
+    StudyResponseDto.StudyFieldListDto getParentFields();
+    StudyResponseDto.StudyFieldListDto getChildFields(String parentFieldName);
 }

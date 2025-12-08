@@ -6,6 +6,7 @@ import lombok.*;
 import org.growith.be.growith.domain.journal.dto.StudySession;
 import org.growith.be.growith.domain.study.dto.request.StudyRequestDto;
 import org.growith.be.growith.domain.study.entity.enums.ContactType;
+import org.growith.be.growith.domain.study.entity.enums.StudyFieldCategory;
 import org.growith.be.growith.domain.study.entity.enums.StudyStatus;
 import org.growith.be.growith.domain.study.entity.enums.StudyStyleCategory;
 import org.growith.be.growith.global.common.BaseEntity;
@@ -42,9 +43,10 @@ public class Study extends BaseEntity {
 
     private Boolean isRecruiting;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "study_field_id")
-    private StudyField studyField;
+    // StudyField 엔티티 대신 Enum 사용
+    @Enumerated(EnumType.STRING)
+    @Column(name = "study_field_category")
+    private StudyFieldCategory studyFieldCategory;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
@@ -75,14 +77,14 @@ public class Study extends BaseEntity {
         }
     }
 
-    public void updateStudy(StudyRequestDto.UpdateStudyDTO request, StudyField studyField) {
+    public void updateStudy(StudyRequestDto.UpdateStudyDTO request, StudyFieldCategory studyFieldCategory) {
         this.title = request.title();
         this.description = request.description();
         this.contactType = request.contactType();
         this.url = request.url();
         this.studyStatus  = request.studyStatus();
         this.studyFormat = request.studyFormat();
-        this.studyField = studyField;
+        this.studyFieldCategory = studyFieldCategory;
     }
 
     public void changeStudyStatus (StudyStatus studyStatus) {

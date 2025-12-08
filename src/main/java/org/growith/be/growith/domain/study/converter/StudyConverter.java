@@ -5,6 +5,7 @@ import org.growith.be.growith.domain.journal.entity.StudyJournal;
 import org.growith.be.growith.domain.study.dto.request.StudyRequestDto;
 import org.growith.be.growith.domain.study.dto.response.StudyResponseDto;
 import org.growith.be.growith.domain.study.entity.*;
+import org.growith.be.growith.domain.study.entity.enums.StudyFieldCategory;
 import org.growith.be.growith.domain.study.entity.enums.StudyRole;
 import org.growith.be.growith.domain.study.entity.enums.StudyStatus;
 import org.growith.be.growith.domain.user.entity.User;
@@ -14,7 +15,7 @@ import java.util.List;
 public class StudyConverter {
 
     // StudyRequestDto.CreateStudyDTO -> Study
-    public static Study toStudyEntity(StudyRequestDto.CreateStudyDTO dto, User user, StudyField studyField) {
+    public static Study toStudyEntity(StudyRequestDto.CreateStudyDTO dto, User user, StudyFieldCategory studyFieldCategory) {
 
         return Study.builder()
                 .title(dto.title())
@@ -26,7 +27,7 @@ public class StudyConverter {
                 .studyFormat(dto.studyFormat())
                 .studyStyleCategory(dto.studyStyleCategory())
                 .user(user)
-                .studyField(studyField)
+                .studyFieldCategory(studyFieldCategory)
                 .build();
     }
 
@@ -40,8 +41,7 @@ public class StudyConverter {
     }
 
     public static StudyResponseDto.StudyDetail toStudyDetail(Study study, List<Rule> rules, Boolean isScraped){
-        Long studyFieldId = study.getStudyField() == null ? null : study.getStudyField().getId();
-        String studyFieldName = study.getStudyField() == null ? null : study.getStudyField().getName();
+        String studyFieldName = study.getStudyFieldCategory() == null ? null : study.getStudyFieldCategory().getDescription();
 
         List<StudyResponseDto.RuleDetailDTO> ruleList = rules.stream()
                 .map(StudyConverter::toRuleDetailDTO)
@@ -54,7 +54,7 @@ public class StudyConverter {
                 .contactType(study.getContactType())
                 .url(study.getUrl())
                 .isRecruiting(study.getIsRecruiting())
-                .studyFieldId(studyFieldId)
+                .studyFieldId(null)
                 .studyFieldName(studyFieldName)
                 .studyFormat(study.getStudyFormat())
                 .studyStyleCategory(study.getStudyStyleCategory())
@@ -138,8 +138,7 @@ public class StudyConverter {
 
     //  Study  -> StudyResponseDto.StudyPreviewDTO
     public static StudyResponseDto.StudyPreviewDTO toStudyPreviewDTO(Study study){
-        Long studyFieldId = study.getStudyField() == null ? null : study.getStudyField().getId();
-        String studyFieldName = study.getStudyField() == null ? null : study.getStudyField().getName();
+        String studyFieldName = study.getStudyFieldCategory() == null ? null : study.getStudyFieldCategory().getDescription();
 
         Boolean isScraped = study.getScrapCount() != 0;
 
@@ -151,7 +150,7 @@ public class StudyConverter {
                 .scrapCount(study.getScrapCount())
                 .isScraped(isScraped)
                 .studyFormat(study.getStudyFormat())
-                .studyFieldId(studyFieldId)
+                .studyFieldId(null)
                 .studyFieldName(studyFieldName)
                 .studyStyleCategory(study.getStudyStyleCategory())
                 .build();
@@ -173,8 +172,7 @@ public class StudyConverter {
 
     // StudyResponseDto.UserStudyPreviewDto
     public static StudyResponseDto.UserStudyPreviewDto toUserStudyPreviewDto(UserStudy dto, Long memberCount, Long studySessionCount){
-        Long studyFieldId = dto.getStudy().getStudyField() == null ? null : dto.getStudy().getStudyField().getId();
-        String studyFieldName = dto.getStudy().getStudyField() == null ? null : dto.getStudy().getStudyField().getName();
+        String studyFieldName = dto.getStudy().getStudyFieldCategory() == null ? null : dto.getStudy().getStudyFieldCategory().getDescription();
 
         return StudyResponseDto.UserStudyPreviewDto.builder()
                 .studyId(dto.getStudy().getId())
@@ -186,7 +184,7 @@ public class StudyConverter {
                 .memberCount(memberCount)
                 .studySessionCount(studySessionCount)
                 .studyFormat(dto.getStudy().getStudyFormat())
-                .studyFieldId(studyFieldId)
+                .studyFieldId(null)
                 .studyFieldName(studyFieldName)
                 .studyStyleCategory(dto.getStudy().getStudyStyleCategory())
                 .build();
