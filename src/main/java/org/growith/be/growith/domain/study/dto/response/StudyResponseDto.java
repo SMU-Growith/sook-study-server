@@ -50,6 +50,7 @@ public record StudyResponseDto() {
             String description,
             StudyStatus studyStatus,
             Long userId,
+            String nickname,
             Boolean isScraped,
             Long scrapCount,
             // 진행방식
