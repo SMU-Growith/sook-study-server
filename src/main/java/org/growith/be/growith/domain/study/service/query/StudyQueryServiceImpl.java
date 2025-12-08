@@ -151,7 +151,6 @@ public class StudyQueryServiceImpl implements StudyQueryService {
 
     private StudyResponseDto.StudyFieldDto toFieldDto(StudyField field) {
         return StudyResponseDto.StudyFieldDto.builder()
-                .id(field.getId())
                 .name(field.getName())
                 .children(field.getStudyField().stream()
                         .map(this::toFieldDto)
