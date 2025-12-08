@@ -19,11 +19,14 @@ public enum RuleCategory {
 
     @JsonCreator
     public static RuleCategory from(String value) {
+        if (value == null) return null;
         for (RuleCategory category : RuleCategory.values()) {
-            if (category.getDescription().equals(value)) {
+            // 한글 description과 영문 이름 둘 다 허용 (제약 없음)
+            if (category.name().equalsIgnoreCase(value) || category.getDescription().equals(value)) {
                 return category;
             }
         }
-        throw new IllegalArgumentException("Unknown RuleCategory: " + value);
+        // 매칭되지 않으면 null 반환 (에러 발생 안 함)
+        return null;
     }
 }
