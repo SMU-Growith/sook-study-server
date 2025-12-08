@@ -19,7 +19,6 @@ public record StudyResponseDto() {
             ContactType contactType,
             String url,
             Boolean isRecruiting,
-            Long studyFieldId,
             String studyFieldName,
             StudyFormat studyFormat,
             StudyStyleCategory studyStyleCategory,
@@ -56,7 +55,6 @@ public record StudyResponseDto() {
             // 진행방식
             StudyFormat studyFormat,
             // 스터디 분야
-            Long studyFieldId,
             String studyFieldName,
             StudyStyleCategory studyStyleCategory
     ){}
@@ -89,7 +87,6 @@ public record StudyResponseDto() {
             // 진행방식
             StudyFormat studyFormat,
             // 스터디 분야
-            Long studyFieldId,
             String studyFieldName,
             StudyStyleCategory studyStyleCategory
     ){}
@@ -107,7 +104,6 @@ public record StudyResponseDto() {
 
     @Builder
     public record StudyFieldDto(
-            Long id,
             String name,
             List<StudyFieldDto> children
     ){}
