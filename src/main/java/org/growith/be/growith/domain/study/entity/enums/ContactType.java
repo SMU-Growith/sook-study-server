@@ -17,7 +17,8 @@ public enum ContactType {
     @JsonCreator
     public static ContactType from(String value) {
         for (ContactType type : ContactType.values()) {
-            if (type.getDescription().equals(value)) {
+            // DB에 저장된 영문 이름과 API에서 사용하는 한글 description 둘 다 지원
+            if (type.name().equals(value) || type.getDescription().equals(value)) {
                 return type;
             }
         }

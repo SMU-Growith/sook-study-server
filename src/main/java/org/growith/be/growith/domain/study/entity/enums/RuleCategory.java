@@ -20,7 +20,8 @@ public enum RuleCategory {
     @JsonCreator
     public static RuleCategory from(String value) {
         for (RuleCategory category : RuleCategory.values()) {
-            if (category.getDescription().equals(value)) {
+            // DB에 저장된 영문 이름과 API에서 사용하는 한글 description 둘 다 지원
+            if (category.name().equals(value) || category.getDescription().equals(value)) {
                 return category;
             }
         }

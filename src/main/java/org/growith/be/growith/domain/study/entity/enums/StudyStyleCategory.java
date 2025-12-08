@@ -19,7 +19,8 @@ public enum StudyStyleCategory {
     @JsonCreator
     public static StudyStyleCategory from(String value) {
         for (StudyStyleCategory category : StudyStyleCategory.values()) {
-            if (category.getDescription().equals(value)) {
+            // DB에 저장된 영문 이름과 API에서 사용하는 한글 description 둘 다 지원
+            if (category.name().equals(value) || category.getDescription().equals(value)) {
                 return category;
             }
         }

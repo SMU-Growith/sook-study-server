@@ -18,7 +18,8 @@ public enum StudyFormat {
     @JsonCreator
     public static StudyFormat from(String value) {
         for (StudyFormat format : StudyFormat.values()) {
-            if (format.getDescription().equals(value)) {
+            // DB에 저장된 영문 이름과 API에서 사용하는 한글 description 둘 다 지원
+            if (format.name().equals(value) || format.getDescription().equals(value)) {
                 return format;
             }
         }
