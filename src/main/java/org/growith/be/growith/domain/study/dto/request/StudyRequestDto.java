@@ -1,6 +1,7 @@
 package org.growith.be.growith.domain.study.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import org.growith.be.growith.domain.study.entity.StudyField;
 import org.growith.be.growith.domain.study.entity.enums.*;
 
