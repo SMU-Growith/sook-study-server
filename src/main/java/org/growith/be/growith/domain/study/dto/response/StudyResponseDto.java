@@ -21,6 +21,7 @@ public record StudyResponseDto() {
             Boolean isRecruiting,
             Long studyFieldId,
             String studyFieldName,
+            String parentFieldName,  // 1레벨(부모) 필드명
             StudyFormat studyFormat,
             StudyStyleCategory studyStyleCategory,
             List<StudyResponseDto.RuleDetailDTO> ruleDTO,
@@ -58,6 +59,7 @@ public record StudyResponseDto() {
             // 스터디 분야
             Long studyFieldId,
             String studyFieldName,
+            String parentFieldName,
             StudyStyleCategory studyStyleCategory
     ){}
 
@@ -91,6 +93,7 @@ public record StudyResponseDto() {
             // 스터디 분야
             Long studyFieldId,
             String studyFieldName,
+            String parentFieldName,
             StudyStyleCategory studyStyleCategory
     ){}
 

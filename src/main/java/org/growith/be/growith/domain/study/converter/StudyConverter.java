@@ -42,6 +42,9 @@ public class StudyConverter {
     public static StudyResponseDto.StudyDetail toStudyDetail(Study study, List<Rule> rules, Boolean isScraped){
         Long studyFieldId = study.getStudyField() == null ? null : study.getStudyField().getId();
         String studyFieldName = study.getStudyField() == null ? null : study.getStudyField().getName();
+        String parentFieldName = (study.getStudyField() != null && study.getStudyField().getParent() != null) 
+                ? study.getStudyField().getParent().getName() 
+                : null;
 
         List<StudyResponseDto.RuleDetailDTO> ruleList = rules.stream()
                 .map(StudyConverter::toRuleDetailDTO)
@@ -56,6 +59,7 @@ public class StudyConverter {
                 .isRecruiting(study.getIsRecruiting())
                 .studyFieldId(studyFieldId)
                 .studyFieldName(studyFieldName)
+                .parentFieldName(parentFieldName)
                 .studyFormat(study.getStudyFormat())
                 .studyStyleCategory(study.getStudyStyleCategory())
                 .ruleDTO(ruleList)
@@ -140,6 +144,9 @@ public class StudyConverter {
     public static StudyResponseDto.StudyPreviewDTO toStudyPreviewDTO(Study study){
         Long studyFieldId = study.getStudyField() == null ? null : study.getStudyField().getId();
         String studyFieldName = study.getStudyField() == null ? null : study.getStudyField().getName();
+        String parentFieldName = (study.getStudyField() != null && study.getStudyField().getParent() != null) 
+                ? study.getStudyField().getParent().getName() 
+                : null;
 
         Boolean isScraped = study.getScrapCount() != 0;
 
@@ -153,6 +160,7 @@ public class StudyConverter {
                 .studyFormat(study.getStudyFormat())
                 .studyFieldId(studyFieldId)
                 .studyFieldName(studyFieldName)
+                .parentFieldName(parentFieldName)
                 .studyStyleCategory(study.getStudyStyleCategory())
                 .build();
     }
@@ -175,6 +183,9 @@ public class StudyConverter {
     public static StudyResponseDto.UserStudyPreviewDto toUserStudyPreviewDto(UserStudy dto, Long memberCount, Long studySessionCount){
         Long studyFieldId = dto.getStudy().getStudyField() == null ? null : dto.getStudy().getStudyField().getId();
         String studyFieldName = dto.getStudy().getStudyField() == null ? null : dto.getStudy().getStudyField().getName();
+        String parentFieldName = (dto.getStudy().getStudyField() != null && dto.getStudy().getStudyField().getParent() != null) 
+                ? dto.getStudy().getStudyField().getParent().getName() 
+                : null;
 
         return StudyResponseDto.UserStudyPreviewDto.builder()
                 .studyId(dto.getStudy().getId())
@@ -188,6 +199,7 @@ public class StudyConverter {
                 .studyFormat(dto.getStudy().getStudyFormat())
                 .studyFieldId(studyFieldId)
                 .studyFieldName(studyFieldName)
+                .parentFieldName(parentFieldName)
                 .studyStyleCategory(dto.getStudy().getStudyStyleCategory())
                 .build();
     }
