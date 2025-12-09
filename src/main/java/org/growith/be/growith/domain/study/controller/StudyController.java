@@ -48,7 +48,7 @@ public class StudyController {
     public ApiResponse<List<StudyResponseDto.UserStudyPreviewDto>> getMyStudies(
             @AuthenticatedUser User user,
             @RequestParam(defaultValue = "ACTIVE") StudyStatus studyStatus,
-            @PageableDefault(page = 0, size = 6) Pageable pageable
+            @PageableDefault(page = 0, size = 6, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
     ) {
         List<StudyResponseDto.UserStudyPreviewDto> myStudies = studyQueryService.getMyStudies(user.getId(), studyStatus, pageable);
         return ApiResponse.onSuccess(myStudies);
