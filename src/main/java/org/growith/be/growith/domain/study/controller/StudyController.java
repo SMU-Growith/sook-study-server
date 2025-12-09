@@ -47,9 +47,12 @@ public class StudyController {
     public ApiResponse<List<StudyResponseDto.UserStudyPreviewDto>> getMyStudies(
             @AuthenticatedUser User user,
             @RequestBody StudyRequestDto.MyStudiesRequest request,
-            @PageableDefault(page = 0, size = 6) Pageable pageable
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "6") int size
     ) {
         StudyStatus studyStatus = request.studyStatus() != null ? request.studyStatus() : StudyStatus.ACTIVE;
+        // sort 파라미터는 무시하고 기본 정렬(createdAt DESC) 사용
+        Pageable pageable = PageRequest.of(page, size);
         List<StudyResponseDto.UserStudyPreviewDto> myStudies = studyQueryService.getMyStudies(user.getId(), studyStatus, pageable);
         return ApiResponse.onSuccess(myStudies);
     }
