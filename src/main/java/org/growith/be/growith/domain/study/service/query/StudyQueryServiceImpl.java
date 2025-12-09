@@ -92,7 +92,7 @@ public class StudyQueryServiceImpl implements StudyQueryService {
         List<StudyField> studyFields = null;
         if (request.studyFieldNames() != null) {
             studyFields = request.studyFieldNames().stream().map(
-                            studyFieldName -> studyFieldRepository.findByName(studyFieldName)
+                            studyFieldName -> studyFieldRepository.findByName(studyFieldName.trim())
                                     .orElseThrow(() ->new StudyException(StudyErrorCode.STUDY_FIELD_NOT_FOUND))
                     ).toList();
         }

@@ -31,9 +31,9 @@ public class StudyController {
     private final StudyQueryService studyQueryService;
 
     @Operation(summary = "스터디 검색 API by 윶", description = "태그를 통해 스터디를 검색하는 API")
-    @GetMapping("/search")
+    @PostMapping("/search")
     public ApiResponse<StudyResponseDto.StudyPreviewDTOList> getStudies(
-            StudyRequestDto.SearchStudyCondition request,
+            @RequestBody StudyRequestDto.SearchStudyCondition request,
             @PageableDefault(page = 0, size = 12,
                     sort = "createdAt", direction = Sort.Direction.DESC
             ) Pageable pageable
