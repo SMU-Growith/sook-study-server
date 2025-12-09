@@ -15,6 +15,7 @@ import org.growith.be.growith.domain.study.service.query.StudyQueryService;
 import org.growith.be.growith.domain.user.entity.User;
 import org.growith.be.growith.global.annotation.AuthenticatedUser;
 import org.growith.be.growith.global.error.ApiResponse;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -44,12 +45,28 @@ public class StudyController {
     }
 
     @Operation(summary = "사용자 스터디 리스트 조회 API by 윶", description = "사용자의 참여 이력이 있는 스터디를 리스트로 조회하는 API")
-    @GetMapping("/my-studies")
+    @PostMapping("/my-studies")
     public ApiResponse<List<StudyResponseDto.UserStudyPreviewDto>> getMyStudies(
             @AuthenticatedUser User user,
-            @RequestParam(defaultValue = "ACTIVE") StudyStatus studyStatus,
-            @PageableDefault(page = 0, size = 6, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
+            @RequestBody StudyRequestDto.MyStudiesRequest request
     ) {
+        // 페이징 정보 추출 (기본값 설정)
+        int page = request.page() != null ? request.page() : 0;
+        int size = request.size() != null ? request.size() : 6;
+        StudyStatus studyStatus = request.studyStatus() != null ? request.studyStatus() : StudyStatus.ACTIVE;
+        
+        // Sort 생성 (기본값: createdAt DESC)
+        Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
+        if (request.sort() != null && !request.sort().isEmpty()) {
+            String sortField = request.sort().get(0);
+            Sort.Direction direction = request.sort().size() > 1 && 
+                    "asc".equalsIgnoreCase(request.sort().get(1)) 
+                    ? Sort.Direction.ASC 
+                    : Sort.Direction.DESC;
+            sort = Sort.by(direction, sortField);
+        }
+        
+        Pageable pageable = PageRequest.of(page, size, sort);
         List<StudyResponseDto.UserStudyPreviewDto> myStudies = studyQueryService.getMyStudies(user.getId(), studyStatus, pageable);
         return ApiResponse.onSuccess(myStudies);
     }
