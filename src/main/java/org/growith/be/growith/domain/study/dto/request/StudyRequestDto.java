@@ -45,17 +45,11 @@ public record StudyRequestDto() {
             List<StudyFormat> studyFormats,
             List<StudyStyleCategory> studyStyleCategories,
             StudyStatus studyStatus,
-            String searchContent,
-            Integer page,
-            Integer size,
-            List<String> sort
+            String searchContent
     ){}
 
     public record MyStudiesRequest(
-            StudyStatus studyStatus,
-            Integer page,
-            Integer size,
-            List<String> sort
+            StudyStatus studyStatus
     ){}
 
     public record UpdateRuleContentDTO(
