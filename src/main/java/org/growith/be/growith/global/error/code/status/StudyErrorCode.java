@@ -23,7 +23,11 @@ public enum StudyErrorCode implements BaseErrorCode {
     STUDY_STYLE_NOT_FOUND(HttpStatus.NOT_FOUND,"STUDY_STYLE_400_1", "해당 스터디 성향 스타일을 찾을 수 없습니다."),
 
     STUDY_SCRAP_NOT_FOUND(HttpStatus.NOT_FOUND,"STUDY_SCRAP_400_1", "해당 스터디 스크랩을 찾을 수 없습니다."),
-    RULE_NOT_FOUND(HttpStatus.NOT_FOUND, "RULE_400_1", "해당 스터디 규칙을 찾을 수 없습니다.")
+    RULE_NOT_FOUND(HttpStatus.NOT_FOUND, "RULE_400_1", "해당 스터디 규칙을 찾을 수 없습니다."),
+    
+    STUDY_MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "STUDY_MEMBER_400_1", "해당 스터디 멤버를 찾을 수 없습니다."),
+    STUDY_LEADER_FORBIDDEN(HttpStatus.FORBIDDEN, "STUDY_403_3", "리더 권한이 필요합니다."),
+    STUDY_LEADER_CHANGE_INVALID(HttpStatus.BAD_REQUEST, "STUDY_400_2", "새 리더는 일반 멤버여야 합니다.")
     ;
 
     private final HttpStatus httpStatus;
