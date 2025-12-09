@@ -35,38 +35,21 @@ public class StudyController {
     @PostMapping("/search")
     public ApiResponse<StudyResponseDto.StudyPreviewDTOList> getStudies(
             @RequestBody StudyRequestDto.SearchStudyCondition request,
-            @PageableDefault(page = 0, size = 12,
-                    sort = "createdAt", direction = Sort.Direction.DESC
-            ) Pageable pageable
+            @PageableDefault(page = 0, size = 9, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
     ) {
         List<Study> studies = studyQueryService.searchStudies(request, pageable);
         StudyResponseDto.StudyPreviewDTOList studyPreviewDTOList = StudyConverter.toStudyPreviewDTOList(studies);
         return ApiResponse.onSuccess(studyPreviewDTOList);
     }
 
-    @Operation(summary = "사용자 스터디 리스트 조회 API by 윶", description = "사용자의 참여 이력이 있는 스터디를 리스트로 조회하는 API")
+    @Operation(summary = "내 스터디 리스트 조회 API by 윶", description = "사용자의 참여 이력이 있는 스터디를 리스트로 조회하는 API")
     @PostMapping("/my-studies")
     public ApiResponse<List<StudyResponseDto.UserStudyPreviewDto>> getMyStudies(
             @AuthenticatedUser User user,
-            @RequestBody StudyRequestDto.MyStudiesRequest request
+            @RequestBody StudyRequestDto.MyStudiesRequest request,
+            @PageableDefault(page = 0, size = 6, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable
     ) {
-        // 페이징 정보 추출 (기본값 설정)
-        int page = request.page() != null ? request.page() : 0;
-        int size = request.size() != null ? request.size() : 6;
         StudyStatus studyStatus = request.studyStatus() != null ? request.studyStatus() : StudyStatus.ACTIVE;
-        
-        // Sort 생성 (기본값: createdAt DESC)
-        Sort sort = Sort.by(Sort.Direction.DESC, "createdAt");
-        if (request.sort() != null && !request.sort().isEmpty()) {
-            String sortField = request.sort().get(0);
-            Sort.Direction direction = request.sort().size() > 1 && 
-                    "asc".equalsIgnoreCase(request.sort().get(1)) 
-                    ? Sort.Direction.ASC 
-                    : Sort.Direction.DESC;
-            sort = Sort.by(direction, sortField);
-        }
-        
-        Pageable pageable = PageRequest.of(page, size, sort);
         List<StudyResponseDto.UserStudyPreviewDto> myStudies = studyQueryService.getMyStudies(user.getId(), studyStatus, pageable);
         return ApiResponse.onSuccess(myStudies);
     }

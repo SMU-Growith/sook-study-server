@@ -34,18 +34,18 @@ public class ScrapController {
         return ApiResponse.onSuccess(ScrapConverter.toToggleScrapResponseDto(result.study(), result.isScraped()));
     }
 
-    // 스크랩 목록 조회
-    @Operation(summary = "스터디 스크랩 조회 API by 윶", description = "사용자가 스크랩한 스터디를 조회하는 API")
-    @GetMapping("/users/scraps")
-    public ApiResponse<StudyResponseDto.StudyPreviewDTOList> getUserScraps(
-            @AuthenticatedUser User user,
-            @PageableDefault(page = 0, size = 16,
-                    sort = "createdAt", direction = Sort.Direction.DESC
+    // // 스크랩 목록 조회
+    // @Operation(summary = "스터디 스크랩 조회 API by 윶", description = "사용자가 스크랩한 스터디를 조회하는 API")
+    // @GetMapping("/users/scraps")
+    // public ApiResponse<StudyResponseDto.StudyPreviewDTOList> getUserScraps(
+    //         @AuthenticatedUser User user,
+    //         @PageableDefault(page = 0, size = 16,
+    //                 sort = "createdAt", direction = Sort.Direction.DESC
 
-            ) Pageable pageable
-    ) {
-        Page<StudyScrap> scrapPage = scrapService.getUserScraps(user, pageable);
-        return ApiResponse.onSuccess(ScrapConverter.toStudyPreviewList(scrapPage));
-    }
+    //         ) Pageable pageable
+    // ) {
+    //     Page<StudyScrap> scrapPage = scrapService.getUserScraps(user, pageable);
+    //     return ApiResponse.onSuccess(ScrapConverter.toStudyPreviewList(scrapPage));
+    // }
 
 }
