@@ -188,12 +188,13 @@ public class StudyController {
     }
 
     // 스터디 팀장 변경
+    @Operation(summary = "스터디 팀장 변경 API", description = "스터디 팀장을 변경하는 API. 현재 리더만 사용 가능하며, 선택된 멤버와 역할을 교환합니다.")
     @PatchMapping("/{studyId}/changeLeader")
     public ApiResponse<Void> changeStudyLeader(
             @PathVariable Long studyId,
             @AuthenticatedUser User user,
             @RequestParam Long newLeaderUserId) {
-//        studyCommandService.changeStudyLeader(studyId, user.getId(), newLeaderUserId);
+        studycommandService.changeStudyLeader(studyId, user.getId(), newLeaderUserId);
         return  ApiResponse.onSuccess(null);
     }
 

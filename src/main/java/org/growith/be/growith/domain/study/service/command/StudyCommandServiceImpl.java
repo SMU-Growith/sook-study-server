@@ -121,25 +121,25 @@ public class StudyCommandServiceImpl implements StudyCommandService{
         userStudyRepository.deleteByStudyIdAndUserId(studyId, userId);
     }
 
-    // 리더->팀원으로 역할 변경
+    // 스터디 팀장 변경 (현재 리더 -> 멤버, 선택된 멤버 -> 리더)
     public void changeStudyLeader(Long studyId, Long currentUserId, Long newLeaderUserId) {
         // 현재 사용자가 해당 스터디의 리더인지 확인
         UserStudy currentUserStudy = userStudyRepository.findByStudyIdAndUserId(studyId, currentUserId)
-                .orElseThrow(() -> new IllegalArgumentException("스터디 멤버가 아님"));
+                .orElseThrow(() -> new StudyException(StudyErrorCode.STUDY_MEMBER_NOT_FOUND));
 
         if (currentUserStudy.getStudyRole() != StudyRole.LEADER) {
-            throw new IllegalArgumentException("리더 권한이 없음");
+            throw new StudyException(StudyErrorCode.STUDY_LEADER_FORBIDDEN);
         }
 
         // 새 리더가 될 사용자가 해당 스터디의 멤버인지 확인
         UserStudy newLeaderStudy = userStudyRepository.findByStudyIdAndUserId(studyId, newLeaderUserId)
-                .orElseThrow(() -> new IllegalArgumentException("새 리더가 스터디 멤버가 아님"));
+                .orElseThrow(() -> new StudyException(StudyErrorCode.STUDY_MEMBER_NOT_FOUND));
 
         if (newLeaderStudy.getStudyRole() != StudyRole.MEMBER) {
-            throw new IllegalArgumentException("새 리더가 일반 멤버가 아님");
+            throw new StudyException(StudyErrorCode.STUDY_LEADER_CHANGE_INVALID);
         }
 
-        // 역할 변경
+        // 역할 변경: 현재 리더 -> 멤버, 선택된 멤버 -> 리더
         currentUserStudy.changeRole(StudyRole.MEMBER);
         newLeaderStudy.changeRole(StudyRole.LEADER);
 

@@ -12,4 +12,5 @@ public interface StudyCommandService {
     StudyStatus toggleStudyStatus(Long studyId, Long userId);
     void withdrawStudy(Long studyId, Long userId);
     void updateStudyRules(Long studyId, Long userId, StudyRequestDto.UpdateRuleContentDTO request);
+    void changeStudyLeader(Long studyId, Long currentLeaderId, Long newLeaderId);
 }
