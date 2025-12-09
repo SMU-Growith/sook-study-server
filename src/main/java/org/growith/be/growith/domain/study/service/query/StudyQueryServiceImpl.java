@@ -105,7 +105,9 @@ public class StudyQueryServiceImpl implements StudyQueryService {
         return userStudyRepository.findByStudyId(studyId).stream()
                 .map(userStudy -> {
                     StudyApplication studyApplication = studyApplicationRepository.findByStudyIdAndUserId(userStudy.getStudy().getId(), userStudy.getUser().getId());
-                    return StudyConverter.toStudyUsers(userStudy, studyApplication.getMotivation());
+                    // 팀장은 지원서가 없으므로 null 체크 필요
+                    String motivation = studyApplication != null ? studyApplication.getMotivation() : null;
+                    return StudyConverter.toStudyUsers(userStudy, motivation);
                 }).toList();
     }
 
