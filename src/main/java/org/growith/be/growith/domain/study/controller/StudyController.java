@@ -52,7 +52,7 @@ public class StudyController {
     ) {
         StudyStatus studyStatus = request.studyStatus() != null ? request.studyStatus() : StudyStatus.ACTIVE;
         // sort 파라미터는 무시하고 기본 정렬(createdAt DESC) 사용
-        Pageable pageable = PageRequest.of(page, size);
+        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "createdAt"));
         List<StudyResponseDto.UserStudyPreviewDto> myStudies = studyQueryService.getMyStudies(user.getId(), studyStatus, pageable);
         return ApiResponse.onSuccess(myStudies);
     }
