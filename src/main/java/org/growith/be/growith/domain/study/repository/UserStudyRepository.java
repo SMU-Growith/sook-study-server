@@ -22,7 +22,7 @@ public interface UserStudyRepository extends JpaRepository<UserStudy, Long> {
     Long countByStudyId(Long studyId);
 
     @Query("SELECT us FROM UserStudy us WHERE us.user.id = :userId AND us.study.studyStatus = :studyStatus ORDER BY us.createdAt DESC")
-    Page<UserStudy> findByUserIdAndStatus(Long userId, StudyStatus studyStatus, Pageable pageable);
+    List<UserStudy> findByUserIdAndStatus(Long userId, StudyStatus studyStatus, Pageable pageable);
 
     // 해당 사용자가 스터디의 팀장인지 확인
     boolean existsByStudyIdAndUserIdAndStudyRole(Long studyId, Long userId, StudyRole studyRole);

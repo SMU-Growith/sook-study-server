@@ -48,7 +48,7 @@ public class StudyQueryServiceImpl implements StudyQueryService {
 
     // 자신의 스터디 조회
     public List<StudyResponseDto.UserStudyPreviewDto> getMyStudies(Long userId, StudyStatus studyStatus, Pageable pageable) {
-        Page<UserStudy> userStudies = userStudyRepository.findByUserIdAndStatus(userId, studyStatus, pageable);
+        List<UserStudy> userStudies = userStudyRepository.findByUserIdAndStatus(userId, studyStatus, pageable);
         return userStudies.stream()
                 .map(userStudy -> {
                     Long memberCount = userStudyRepository.countByStudyId(userStudy.getStudy().getId());
