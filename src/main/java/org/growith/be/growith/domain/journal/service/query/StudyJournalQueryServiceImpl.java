@@ -117,11 +117,12 @@ public class StudyJournalQueryServiceImpl implements StudyJournalQueryService {
     }
 
     public StudySessionListDto getStudySessions(Long studyId, int page, int size) {
+        // 스터디 존재 확인
         Study study = studyRepository.findById(studyId)
                 .orElseThrow(() -> new IllegalArgumentException("studyId에 해당하는 스터디 없음"));
 
-        // 전체 세션 수 (페이징 전 전체 카운트)
-        List<StudySession> allSessions = study.getStudySessions();
+        // 데이터베이스에서 직접 세션 목록 조회 (Study 엔티티의 캐시된 컬렉션 대신)
+        List<StudySession> allSessions = studySessionRepository.findByStudyIdOrderByNumberAsc(studyId);
         Integer totalCount = allSessions.size();
 
         // 페이징 처리
