@@ -8,8 +8,14 @@ import org.growith.be.growith.domain.user.entity.enums.UserRole;
 public class AuthConverter {
 
 
-    public static AuthResponseDTO.TokenResult toTokenResult(String accessToken, String refreshToken) {
+    public static AuthResponseDTO.TokenResult toTokenResult(User user, String accessToken, String refreshToken) {
         return AuthResponseDTO.TokenResult.builder()
+                .userId(user.getId())
+                .nickName(user.getNickName())
+                .email(user.getEmail())
+                .major(user.getMajor() != null ? user.getMajor().name() : null)
+                .studentStatus(user.getStudentStatus() != null ? user.getStudentStatus().name() : null)
+                .phoneNumber(user.getPhoneNumber())
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
                 .build();

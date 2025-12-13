@@ -6,8 +6,6 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum Major {
-    COMPUTER,
-    DESIGN,
     KOREAN_LANGUAGE_AND_LITERATURE, // 한국어문학부
     HISTORY_AND_CULTURE, // 역사문화학과
     FRENCH_LANGUAGE_AND_CULTURE, // 프랑스언어·문화학과
