@@ -17,6 +17,7 @@ public enum StudyErrorCode implements BaseErrorCode {
     STUDY_APPLICATION_NOT_FOUND(HttpStatus.NOT_FOUND, "STUDY_APPLICATION_400_1", "해당 스터디 지원서를 찾을 수 없습니다."),
     STUDY_APPLICATION_FORBIDDEN(HttpStatus.FORBIDDEN, "STUDY_APPLICATION_403_1",
             "해당 스터디 지원서를 승인/거절할 권한이 없습니다."),
+    STUDY_APPLICATION_ALREADY_EXISTS(HttpStatus.CONFLICT, "STUDY_APPLICATION_409_1", "이미 해당 스터디에 지원한 내역이 있습니다."),
 
     STUDY_FIELD_NOT_FOUND(HttpStatus.NOT_FOUND,"STUDY_FIELD_400_1", "해당 스터디 필드를 찾을 수 없습니다."),
 

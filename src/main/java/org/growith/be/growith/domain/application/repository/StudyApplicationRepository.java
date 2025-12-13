@@ -11,4 +11,5 @@ public interface StudyApplicationRepository extends JpaRepository<StudyApplicati
     List<StudyApplication> findByStudyId(Long studyId);
     StudyApplication findByStudyIdAndUserId(Long studyId, Long userId);
     List<StudyApplication> findByUserIdOrderByCreatedAtDesc(Long userId);
+    boolean existsByStudyIdAndUserId(Long studyId, Long userId);
 }
