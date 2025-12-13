@@ -42,6 +42,11 @@ public class StudyApplicationCommandServiceImpl implements StudyApplicationComma
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserException(UserErrorCode.NOT_FOUND));
 
+        // 중복 지원 확인
+        if (studyApplicationRepository.existsByStudyIdAndUserId(studyId, userId)) {
+            throw new StudyException(StudyErrorCode.STUDY_APPLICATION_ALREADY_EXISTS);
+        }
+
         // 지원서 생성
         StudyApplication studyApplicationEntity = StudyApplicationConverter.toStudyApplicationEntity(request, user, study);
         // 지원서 저장
