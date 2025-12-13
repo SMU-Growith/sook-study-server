@@ -6,6 +6,12 @@ public record AuthResponseDTO() {
 
     @Builder
     public record TokenResult(
+            Long userId,
+            String nickName,
+            String email,
+            String major,
+            String studentStatus,
+            String phoneNumber,
             String accessToken,
             String refreshToken
     ){}
