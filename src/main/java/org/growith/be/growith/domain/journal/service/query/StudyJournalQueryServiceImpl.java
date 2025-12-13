@@ -78,12 +78,20 @@ public class StudyJournalQueryServiceImpl implements StudyJournalQueryService {
                 .build();
     }
 
-    public StudyJournalListResponse getStudyJournalsBySession(Long sessionId, int page, int size) {
+    public StudyJournalListResponse getStudyJournalsBySession(Long sessionId, Long userId, int page, int size) {
         StudySession session = studySessionRepository.findById(sessionId)
                 .orElseThrow(() -> new IllegalArgumentException("세션을 찾을 수 없음"));
 
         List<StudyJournal> allJournals = studyJournalRepository.findBySessionId(sessionId);
         Integer totalCount = allJournals.size();
+
+        // 내가 쓴 일지들 찾기
+        List<Long> myJournalIds = allJournals.stream()
+                .filter(journal -> journal.getUserId().equals(userId))
+                .map(StudyJournal::getId)
+                .toList();
+        
+        Boolean hasMyJournal = !myJournalIds.isEmpty();
 
         // 페이징 처리
         List<StudyJournal> journals = allJournals.stream()
@@ -112,6 +120,8 @@ public class StudyJournalQueryServiceImpl implements StudyJournalQueryService {
                 .totalCount(totalCount)
                 .sessionNumber(session.getNumber())
                 .title(session.getTitle())
+                .hasMyJournal(hasMyJournal)
+                .myJournalIds(myJournalIds)
                 .journals(journalDtos)
                 .build();
     }
