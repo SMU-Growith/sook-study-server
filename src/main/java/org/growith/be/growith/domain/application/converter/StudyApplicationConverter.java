@@ -52,4 +52,37 @@ public class StudyApplicationConverter {
                 .applicationStatus(studyApplication.getApplicationStatus())
                 .build();
     }
+
+    public static StudyApplicationResponseDTO.MyApplicationCardDTO toMyApplicationCardDTO(
+            StudyApplication application, 
+            Boolean scrapped
+    ) {
+        Study study = application.getStudy();
+        
+        return StudyApplicationResponseDTO.MyApplicationCardDTO.builder()
+                .applicationId(application.getId())
+                .studyId(study.getId())
+                .title(study.getTitle())
+                .studyStatus(study.getStudyStatus())
+                .studyFormat(study.getStudyFormat().name())
+                .studyFieldName(study.getStudyField().getName())
+                .studyStyleCategory(study.getStudyStyleCategory().name())
+                .nickname(application.getNickname())
+                .scrapCount(study.getScrapCount())
+                .isScraped(scrapped)
+                .createdAt(application.getCreatedAt())
+                .applicationStatus(application.getApplicationStatus())
+                .build();
+    }
+
+    public static List<StudyApplicationResponseDTO.MyApplicationCardDTO> toMyApplicationCardDTOList(
+            List<StudyApplication> applications,
+            List<Boolean> scrappedList
+    ) {
+        List<StudyApplicationResponseDTO.MyApplicationCardDTO> result = new java.util.ArrayList<>();
+        for (int i = 0; i < applications.size(); i++) {
+            result.add(toMyApplicationCardDTO(applications.get(i), scrappedList.get(i)));
+        }
+        return result;
+    }
 }

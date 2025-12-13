@@ -50,10 +50,34 @@ public class StudyApplicationController {
     }
 
     // 지원서 리스트 조회
-    @Operation(summary = "스터디 지원서 리스트 조회 API by 윶", description = "해당 스터디의 스터디 지원서 리스트를 조회하는 API")
+    @Operation(summary = "스터디 지원서 리스트 조회 API (팀장 권한) by 윶", description = "해당 스터디의 스터디 지원서 리스트를 조회하는 API, 팀장 권한")
     @GetMapping("/{studyId}/applications")
-    public ApiResponse<List<StudyApplicationResponseDTO.StudyApplicationDetailDTO>> getApplications(@PathVariable Long studyId) {
-        List<StudyApplication> studyApplications = studyApplicationQueryService.getStudyApplications(studyId);
+    public ApiResponse<List<StudyApplicationResponseDTO.StudyApplicationDetailDTO>> getApplications(
+            @PathVariable Long studyId,
+            @AuthenticatedUser User user
+    ) {
+        List<StudyApplication> studyApplications = studyApplicationQueryService.getStudyApplications(studyId, user);
         return ApiResponse.onSuccess(StudyApplicationConverter.toApplicationDetailDTOList(studyApplications));
+    }
+
+    // 내가 지원한 지원서 목록 조회
+    @Operation(summary = "내가 지원한 지원서 목록 조회 API by 윶", description = "사용자가 지원한 모든 지원서 목록을 최신순으로 조회하는 API")
+    @GetMapping("/my-applications")
+    public ApiResponse<List<StudyApplicationResponseDTO.MyApplicationCardDTO>> getMyApplications(
+            @AuthenticatedUser User user
+    ) {
+        List<StudyApplicationResponseDTO.MyApplicationCardDTO> myApplications = studyApplicationQueryService.getMyApplications(user);
+        return ApiResponse.onSuccess(myApplications);
+    }
+
+    // 내 지원서 취소
+    @Operation(summary = "내 지원서 취소 API by 윶", description = "사용자가 자신의 지원서를 취소(삭제)하는 API")
+    @DeleteMapping("/applications/{applicationId}")
+    public ApiResponse<Void> deleteApplication(
+            @PathVariable Long applicationId,
+            @AuthenticatedUser User user
+    ) {
+        studyApplicationCommandService.deleteApplication(applicationId, user);
+        return ApiResponse.onSuccess(null);
     }
 }
