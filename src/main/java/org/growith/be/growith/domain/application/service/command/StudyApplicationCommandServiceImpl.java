@@ -73,5 +73,20 @@ public class StudyApplicationCommandServiceImpl implements StudyApplicationComma
         return application;
     }
 
+    // 지원서 취소 (본인만 가능)
+    @Transactional
+    public void deleteApplication(Long applicationId, User user) {
+        // 지원서 확인
+        StudyApplication application = studyApplicationRepository.findById(applicationId)
+                .orElseThrow(() -> new StudyException(StudyErrorCode.STUDY_APPLICATION_NOT_FOUND));
+
+        // 본인 지원서인지 확인
+        if (!application.getUser().getId().equals(user.getId())) {
+            throw new StudyException(StudyErrorCode.STUDY_APPLICATION_FORBIDDEN);
+        }
+
+        // 지원서 삭제
+        studyApplicationRepository.delete(application);
+    }
 
 }

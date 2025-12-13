@@ -10,6 +10,7 @@ import org.growith.be.growith.global.annotation.AuthenticatedUser;
 import org.growith.be.growith.global.error.ApiResponse;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -26,9 +27,12 @@ public class StampController {
     )
     @GetMapping
     public ApiResponse<StampResponseDto.StampSummaryDto> getMyStamps(
-            @AuthenticatedUser User user
+            @AuthenticatedUser User user,
+            @RequestParam(required = false) Long userId
     ) {
-        StampResponseDto.StampSummaryDto summary = stampService.getUserStamps(user.getId());
+        // userId가 제공되면 해당 사용자의 스탬프 조회, 없으면 본인 스탬프 조회
+        Long targetUserId = (userId != null) ? userId : user.getId();
+        StampResponseDto.StampSummaryDto summary = stampService.getUserStamps(targetUserId);
         return ApiResponse.onSuccess(summary);
     }
 }

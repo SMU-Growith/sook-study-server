@@ -10,4 +10,5 @@ import java.util.List;
 public interface StudyApplicationRepository extends JpaRepository<StudyApplication, Long> {
     List<StudyApplication> findByStudyId(Long studyId);
     StudyApplication findByStudyIdAndUserId(Long studyId, Long userId);
+    List<StudyApplication> findByUserIdOrderByCreatedAtDesc(Long userId);
 }
