@@ -26,7 +26,7 @@ public class StudyApplicationController {
     private final StudyApplicationQueryService studyApplicationQueryService;
 
     // 스터디 지원서 생성
-    @Operation(summary = "스터디 지원서 생성 API by 윶", description = "해당 스터디의 스터디 지원서를 생성하는 API")
+    @Operation(summary = "스터디 지원서 생성 API", description = "해당 스터디의 스터디 지원서를 생성하는 API")
     @PostMapping("/{studyId}/application")
     public ApiResponse<StudyApplicationResponseDTO.StudyApplicationDetailDTO> createApplication(
             @PathVariable Long studyId,
@@ -38,7 +38,7 @@ public class StudyApplicationController {
     }
 
     // 지원서 승인/거절
-    @Operation(summary = "스터디 지원서 승인/거절 API (팀장 권한) by 윶", description = "해당 스터디의 스터디 지원서를 승인/거절하는 API, 팀장 권한")
+    @Operation(summary = "스터디 지원서 승인/거절 API (팀장 권한)", description = "해당 스터디의 스터디 지원서를 승인/거절하는 API, 팀장 권한")
     @PatchMapping("/{applicationId}/status")
     public ApiResponse<StudyApplicationResponseDTO.UpdateApplicationResponseDTO> updateApplicationStatus(
             @PathVariable Long applicationId,
@@ -50,7 +50,7 @@ public class StudyApplicationController {
     }
 
     // 지원서 리스트 조회
-    @Operation(summary = "스터디 지원서 리스트 조회 API (팀장 권한) by 윶", description = "해당 스터디의 스터디 지원서 리스트를 조회하는 API, 팀장 권한")
+    @Operation(summary = "스터디 지원서 리스트 조회 API (팀장 권한)", description = "해당 스터디의 스터디 지원서 리스트를 조회하는 API, 팀장 권한")
     @GetMapping("/{studyId}/applications")
     public ApiResponse<List<StudyApplicationResponseDTO.StudyApplicationDetailDTO>> getApplications(
             @PathVariable Long studyId,
@@ -61,7 +61,7 @@ public class StudyApplicationController {
     }
 
     // 내가 지원한 지원서 목록 조회
-    @Operation(summary = "내가 지원한 지원서 목록 조회 API by 윶", description = "사용자가 지원한 모든 지원서 목록을 최신순으로 조회하는 API")
+    @Operation(summary = "내가 지원한 지원서 목록 조회 API", description = "사용자가 지원한 모든 지원서 목록을 최신순으로 조회하는 API")
     @GetMapping("/my-applications")
     public ApiResponse<List<StudyApplicationResponseDTO.MyApplicationCardDTO>> getMyApplications(
             @AuthenticatedUser User user
@@ -71,7 +71,7 @@ public class StudyApplicationController {
     }
 
     // 내 지원서 취소
-    @Operation(summary = "내 지원서 취소 API by 윶", description = "사용자가 자신의 지원서를 취소(삭제)하는 API")
+    @Operation(summary = "내 지원서 취소 API", description = "사용자가 자신의 지원서를 취소(삭제)하는 API")
     @DeleteMapping("/applications/{applicationId}")
     public ApiResponse<Void> deleteApplication(
             @PathVariable Long applicationId,
