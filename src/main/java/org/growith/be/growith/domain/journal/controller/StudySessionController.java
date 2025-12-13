@@ -166,9 +166,15 @@ public class StudySessionController {
     @GetMapping("/session/{sessionId}/journals")
     public ApiResponse<StudyJournalListResponse> getStudyJournalsBySession(
             @PathVariable Long sessionId,
+            @AuthenticatedUser User user,
             @PageableDefault(page = 0, size = 10) Pageable pageable
     ) {
-        StudyJournalListResponse response = studyJournalQueryService.getStudyJournalsBySession(sessionId, pageable.getPageNumber(), pageable.getPageSize());
+        StudyJournalListResponse response = studyJournalQueryService.getStudyJournalsBySession(
+                sessionId, 
+                user.getId(), 
+                pageable.getPageNumber(), 
+                pageable.getPageSize()
+        );
         return  ApiResponse.onSuccess(response);
     }
 

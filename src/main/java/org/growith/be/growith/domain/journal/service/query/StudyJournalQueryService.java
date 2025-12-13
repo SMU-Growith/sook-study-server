@@ -11,7 +11,7 @@ import java.util.List;
 
 public interface StudyJournalQueryService {
     StudyJournalDto getStudyJournal(Long journalId, Long userId);
-    StudyJournalListResponse getStudyJournalsBySession(Long sessionId, int page, int size);
+    StudyJournalListResponse getStudyJournalsBySession(Long sessionId, Long userId, int page, int size);
     StudySessionListDto getStudySessions(Long studyId, int page, int size);
     StudySessionCardDto getStudySessionById(Long sessionId);
 
