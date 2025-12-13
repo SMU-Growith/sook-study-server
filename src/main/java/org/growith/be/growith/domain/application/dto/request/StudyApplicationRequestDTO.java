@@ -7,7 +7,6 @@ public record StudyApplicationRequestDTO() {
 
     // 지원서 생성
     public record CreateStudyApplicationDTO(
-            String nickName,
             StudentStatus studentStatus,
             String major,
             String phoneNumber,
