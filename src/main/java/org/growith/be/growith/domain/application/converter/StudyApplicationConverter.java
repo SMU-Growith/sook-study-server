@@ -13,7 +13,7 @@ public class StudyApplicationConverter {
     // StudyApplicationRequestDTO.CreateStudyApplicationDTO -> Application
     public static StudyApplication toStudyApplicationEntity(StudyApplicationRequestDTO.CreateStudyApplicationDTO dto, User user, Study study) {
         return StudyApplication.builder()
-                .nickname(dto.nickName())
+                .nickname(user.getNickName())
                 .studentStatus(dto.studentStatus())
                 .major(dto.major())
                 .phoneNumber(dto.phoneNumber())
