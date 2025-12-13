@@ -72,8 +72,21 @@ public class StudyApplicationCommandServiceImpl implements StudyApplicationComma
 
         // 만약 승인된 경우에만 UserStudy 추가
         if (request.status() == ApplicationStatus.ACCEPTED) {
-            UserStudy userStudyEntity = StudyConverter.toUserStudyEntity(application.getUser(), application.getStudy(), StudyRole.MEMBER);
-            userStudyRepository.save(userStudyEntity);
+            // 이미 user_study에 등록되어 있는지 확인
+            boolean alreadyExists = userStudyRepository.findByStudyIdAndUserId(
+                    application.getStudy().getId(), 
+                    application.getUser().getId()
+            ).isPresent();
+            
+            // 중복이 아닐 때만 추가
+            if (!alreadyExists) {
+                UserStudy userStudyEntity = StudyConverter.toUserStudyEntity(
+                        application.getUser(), 
+                        application.getStudy(), 
+                        StudyRole.MEMBER
+                );
+                userStudyRepository.save(userStudyEntity);
+            }
         }
         return application;
     }
