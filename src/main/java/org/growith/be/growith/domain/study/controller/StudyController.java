@@ -153,9 +153,13 @@ public class StudyController {
         return  ApiResponse.onSuccess(null);
     }
 
+
     // 스터디 나가기 - 팀원만 나갈 수 있다, 스터디 탈퇴
-    @Operation(summary = "스터디 탈퇴 API by 윶", description = "스터디를 탈퇴하는 API, 팀원만 나갈 수 있다")
-    @DeleteMapping("/{studyId}/withdraw")
+    @Operation(
+            summary = "스터디 탈퇴 API by 윶", 
+            description = "스터디를 탈퇴하는 API. 팀원만 탈퇴 가능하며, studyRole이 WITHDRAWN으로 변경됩니다. (Soft Delete)"
+    )
+    @PatchMapping("/{studyId}/withdraw")
     public ApiResponse<Void> withdrawStudy(
             @PathVariable Long studyId,
             @AuthenticatedUser User user
