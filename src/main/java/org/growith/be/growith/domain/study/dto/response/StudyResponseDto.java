@@ -76,6 +76,11 @@ public record StudyResponseDto() {
     ){}
 
     @Builder
+    public record ChangedIsRecruiting(
+            Boolean isRecruiting
+    ){}
+
+    @Builder
     public record UserStudyPreviewDto(
             Long studyId,
             StudyRole studyRole,

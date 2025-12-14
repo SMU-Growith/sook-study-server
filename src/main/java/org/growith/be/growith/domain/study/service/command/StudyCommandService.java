@@ -10,6 +10,7 @@ public interface StudyCommandService {
     void deleteStudy(Long studyId, Long userId);
     StudyStatus changeStudyStatus(Long studyId, StudyStatus studyStatus, Long userId);
     StudyStatus toggleStudyStatus(Long studyId, Long userId);
+    Boolean toggleIsRecruiting(Long studyId, Long userId);
     void withdrawStudy(Long studyId, Long userId);
     void updateStudyRules(Long studyId, Long userId, StudyRequestDto.UpdateRuleContentDTO request);
     void changeStudyLeader(Long studyId, Long currentLeaderId, Long newLeaderId);

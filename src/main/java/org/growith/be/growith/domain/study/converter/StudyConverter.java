@@ -134,6 +134,13 @@ public class StudyConverter {
                 .build();
     }
 
+    // ChangedIsRecruiting
+    public static StudyResponseDto.ChangedIsRecruiting toChangedIsRecruiting(Boolean isRecruiting){
+        return StudyResponseDto.ChangedIsRecruiting.builder()
+                .isRecruiting(isRecruiting)
+                .build();
+    }
+
     //  Study  -> StudyResponseDto.StudyPreviewDTO
     public static StudyResponseDto.StudyPreviewDTO toStudyPreviewDTO(Study study){
         String studyFieldName = study.getStudyField() == null ? null : study.getStudyField().getName();
