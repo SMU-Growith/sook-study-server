@@ -114,11 +114,18 @@ public class StudyCommandServiceImpl implements StudyCommandService{
     }
 
     public void withdrawStudy(Long studyId, Long userId) {
+        // MEMBER 역할인지 확인
         boolean isMember = userStudyRepository.existsByStudyIdAndUserIdAndStudyRole(studyId, userId, StudyRole.MEMBER);
         if (!isMember){
             throw new StudyException(StudyErrorCode.STUDY_WITHDRAW_FORBIDDEN);
         }
-        userStudyRepository.deleteByStudyIdAndUserId(studyId, userId);
+        
+        // UserStudy 조회 후 역할을 WITHDRAWN으로 변경
+        UserStudy userStudy = userStudyRepository.findByStudyIdAndUserId(studyId, userId)
+                .orElseThrow(() -> new StudyException(StudyErrorCode.STUDY_MEMBER_NOT_FOUND));
+        
+        userStudy.changeRole(StudyRole.WITHDRAWN);
+        userStudyRepository.save(userStudy);
     }
 
     // 스터디 팀장 변경 (현재 리더 -> 멤버, 선택된 멤버 -> 리더)
@@ -155,12 +162,31 @@ public class StudyCommandServiceImpl implements StudyCommandService{
         Study study = studyRepository.findById(studyId)
                 .orElseThrow(() -> new StudyException(StudyErrorCode.STUDY_NOT_FOUND));
 
-        // 수정 권한 확인
+        // 수정 권한 확인 (팀장만 가능)
         if (!study.getUser().getId().equals(userId)) {
             throw new StudyException(StudyErrorCode.STUDY_UPDATE_FORBIDDEN);
         }
 
+        // 스터디 상태 변경
         study.changeStudyStatus(studyStatus);
+        
+        // CLOSED로 변경하는 경우 추가 처리
+        if (studyStatus == StudyStatus.CLOSED) {
+            // 1. 모든 멤버를 WITHDRAWN으로 변경
+            List<UserStudy> allMembers = userStudyRepository.findByStudyId(studyId);
+            allMembers.forEach(userStudy -> {
+                if (userStudy.getStudyRole() != StudyRole.WITHDRAWN) {
+                    userStudy.changeRole(StudyRole.WITHDRAWN);
+                }
+            });
+            userStudyRepository.saveAll(allMembers);
+            
+            // 2. 모집 상태를 false로 변경
+            if (study.getIsRecruiting()) {
+                study.toggleIsRecruiting();
+            }
+        }
+        
         return studyStatus;
     }
 
@@ -180,6 +206,24 @@ public class StudyCommandServiceImpl implements StudyCommandService{
         StudyStatus newStatus = study.getStudyStatus().toggle();
         study.changeStudyStatus(newStatus);
         return newStatus;
+    }
+
+    @Override
+    public Boolean toggleIsRecruiting(Long studyId, Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserException(UserErrorCode.NOT_FOUND));
+
+        Study study = studyRepository.findById(studyId)
+                .orElseThrow(() -> new StudyException(StudyErrorCode.STUDY_NOT_FOUND));
+
+        // 수정 권한 확인 (팀장만 가능)
+        if (!study.getUser().getId().equals(userId)) {
+            throw new StudyException(StudyErrorCode.STUDY_UPDATE_FORBIDDEN);
+        }
+
+        // 모집 상태 토글
+        study.toggleIsRecruiting();
+        return study.getIsRecruiting();
     }
 
     @Override

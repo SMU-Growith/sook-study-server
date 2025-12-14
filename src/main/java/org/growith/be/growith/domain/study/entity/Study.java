@@ -88,4 +88,8 @@ public class Study extends BaseEntity {
     public void changeStudyStatus (StudyStatus studyStatus) {
         this.studyStatus = studyStatus;
     }
+
+    public void toggleIsRecruiting() {
+        this.isRecruiting = !this.isRecruiting;
+    }
 }

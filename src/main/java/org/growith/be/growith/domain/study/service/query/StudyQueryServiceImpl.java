@@ -16,6 +16,7 @@ import org.growith.be.growith.domain.study.entity.Rule;
 import org.growith.be.growith.domain.study.entity.Study;
 import org.growith.be.growith.domain.study.entity.StudyField;
 import org.growith.be.growith.domain.study.entity.UserStudy;
+import org.growith.be.growith.domain.study.entity.enums.StudyRole;
 import org.growith.be.growith.domain.study.entity.enums.StudyStatus;
 import org.growith.be.growith.domain.study.repository.*;
 import org.growith.be.growith.domain.user.entity.User;
@@ -103,6 +104,7 @@ public class StudyQueryServiceImpl implements StudyQueryService {
     // 스터디 멤버 조회
     public List<StudyResponseDto.StudyUsers> getStudyMembers(Long studyId) {
         return userStudyRepository.findByStudyId(studyId).stream()
+                .filter(userStudy -> userStudy.getStudyRole() != StudyRole.WITHDRAWN)  // 탈퇴한 멤버 제외
                 .map(userStudy -> {
                     StudyApplication studyApplication = studyApplicationRepository.findByStudyIdAndUserId(userStudy.getStudy().getId(), userStudy.getUser().getId());
                     // 팀장은 지원서가 없으므로 null 체크 필요

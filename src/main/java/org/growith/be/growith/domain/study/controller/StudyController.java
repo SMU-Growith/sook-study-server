@@ -103,6 +103,19 @@ public class StudyController {
     }
 
     @Operation(
+            summary = "스터디 모집 상태 토글 API"
+            , description = "스터디 모집 상태를 true(모집중) ↔ false(모집마감)로 토글. 팀장 권한을 갖는 사용자만 실행할 수 있다."
+    )
+    @PatchMapping("/{studyId}/toggle-recruitment")
+    public ApiResponse<StudyResponseDto.ChangedIsRecruiting> toggleIsRecruiting(
+            @PathVariable Long studyId,
+            @AuthenticatedUser User user
+    ) {
+        Boolean newStatus = studycommandService.toggleIsRecruiting(studyId, user.getId());
+        return ApiResponse.onSuccess(StudyConverter.toChangedIsRecruiting(newStatus));
+    }
+
+    @Operation(
             summary = "스터디 수정 API by 윶"
             , description = "스터디 수정 API,  팀장 권한을 갖는 사용자만 스터디를 수정할 수 있다"
     )
@@ -116,19 +129,19 @@ public class StudyController {
         return  ApiResponse.onSuccess(studyDetail);
     }
 
-//     @Operation(
-//             summary = "스터디 상태 수정 API"
-//             , description = "스터디 상태 수정 API,  팀장 권한을 갖는 사용자만 스터디 상태를 수정할 수 있다"
-//     )
-//     @PatchMapping("/{studyId}/change-status")
-//     public ApiResponse<StudyResponseDto.ChangedStudyStatus> closedStudy(
-//             @RequestBody StudyRequestDto.ChangeStudyStatusDTO request,
-//             @PathVariable Long studyId,
-//             @AuthenticatedUser User user
-//     ) {
-//         StudyStatus studyStatus = studycommandService.changeStudyStatus(studyId, request.studyStatus(), user.getId());
-//         return ApiResponse.onSuccess(StudyConverter.toChangedStudyStatus(studyStatus));
-//     }
+    @Operation(
+            summary = "스터디 종료 API (softDelete)"
+            , description = "스터디 상태를 ACTIVE ↔ CLOSED로 변경. CLOSED로 변경 시 모든 멤버가 WITHDRAWN 상태가 되고 모집이 마감됩니다. 팀장 권한 필요."
+    )
+    @PatchMapping("/{studyId}/status")
+    public ApiResponse<StudyResponseDto.ChangedStudyStatus> changeStudyStatus(
+            @RequestBody StudyRequestDto.ChangeStudyStatusDTO request,
+            @PathVariable Long studyId,
+            @AuthenticatedUser User user
+    ) {
+        StudyStatus studyStatus = studycommandService.changeStudyStatus(studyId, request.studyStatus(), user.getId());
+        return ApiResponse.onSuccess(StudyConverter.toChangedStudyStatus(studyStatus));
+    }
     
     @Operation(
             summary = "스터디 삭제 API by 윶"

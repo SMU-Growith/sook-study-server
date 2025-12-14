@@ -44,7 +44,7 @@ public record StudyRequestDto() {
             List<String> studyFieldNames,
             List<StudyFormat> studyFormats,
             List<StudyStyleCategory> studyStyleCategories,
-            StudyStatus studyStatus,
+            Boolean isRecruiting,
             String searchContent
     ){}
 

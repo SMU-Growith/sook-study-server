@@ -9,7 +9,6 @@ import org.growith.be.growith.domain.study.dto.request.StudyRequestDto;
 import org.growith.be.growith.domain.study.entity.Study;
 import org.growith.be.growith.domain.study.entity.StudyField;
 import org.growith.be.growith.domain.study.entity.enums.StudyFormat;
-import org.growith.be.growith.domain.study.entity.enums.StudyStatus;
 import org.growith.be.growith.domain.study.entity.enums.StudyStyleCategory;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -31,7 +30,7 @@ public class StudyQueryDslImpl implements StudyQueryDsl {
                 .where(
                     studyStyleIn(request.studyStyleCategories()),
                     studyFormatIn(request.studyFormats()),
-                    studyStatusEq(request.studyStatus()),
+                    isRecruitingEq(request.isRecruiting()),
                     contentContains(request.searchContent()),
                     studyFieldIn(studyFields)
                 )
@@ -66,11 +65,11 @@ public class StudyQueryDslImpl implements StudyQueryDsl {
         return study.studyFormat.in(studyFormats);
     }
 
-    private BooleanExpression studyStatusEq(StudyStatus status) {
-        if (status == null) {
-            return null;
+    private BooleanExpression isRecruitingEq(Boolean isRecruiting) {
+        if (isRecruiting == null) {
+            return null;  // null이면 전체 조회
         }
-        return study.studyStatus.eq(status);
+        return study.isRecruiting.eq(isRecruiting);
     }
 
     private BooleanExpression contentContains(String searchContent) {
