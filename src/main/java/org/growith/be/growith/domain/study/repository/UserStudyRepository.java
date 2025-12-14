@@ -18,12 +18,17 @@ public interface UserStudyRepository extends JpaRepository<UserStudy, Long> {
     // 스터디 id로 UserStudy 반환
     List<UserStudy> findByStudyId(Long studyId);
 
-    @Query("SELECT COUNT(us) FROM UserStudy us WHERE us.study.id = :studyId AND us.studyRole != 'WITHDRAWN'")
+    @Query("SELECT COUNT(us) FROM UserStudy us WHERE us.study.id = :studyId " +
+           "AND us.studyRole != org.growith.be.growith.domain.study.entity.enums.StudyRole.WITHDRAWN")
     Long countByStudyId(Long studyId);
 
     @Query("SELECT us FROM UserStudy us WHERE us.user.id = :userId " +
-           "AND ((:studyStatus = 'ACTIVE' AND us.study.studyStatus = 'ACTIVE' AND us.studyRole != 'WITHDRAWN') " +
-           "OR (:studyStatus = 'CLOSED' AND (us.study.studyStatus = 'CLOSED' OR us.studyRole = 'WITHDRAWN')))")
+           "AND ((:studyStatus = org.growith.be.growith.domain.study.entity.enums.StudyStatus.ACTIVE " +
+           "      AND us.study.studyStatus = org.growith.be.growith.domain.study.entity.enums.StudyStatus.ACTIVE " +
+           "      AND us.studyRole != org.growith.be.growith.domain.study.entity.enums.StudyRole.WITHDRAWN) " +
+           "OR (:studyStatus = org.growith.be.growith.domain.study.entity.enums.StudyStatus.CLOSED " +
+           "    AND (us.study.studyStatus = org.growith.be.growith.domain.study.entity.enums.StudyStatus.CLOSED " +
+           "         OR us.studyRole = org.growith.be.growith.domain.study.entity.enums.StudyRole.WITHDRAWN)))")
     Page<UserStudy> findByUserIdAndStatus(Long userId, StudyStatus studyStatus, Pageable pageable);
 
     // 해당 사용자가 스터디의 팀장인지 확인
