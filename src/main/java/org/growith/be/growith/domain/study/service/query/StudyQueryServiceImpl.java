@@ -47,9 +47,17 @@ public class StudyQueryServiceImpl implements StudyQueryService {
     private final StudyScrapRepository studyScrapRepository;
 
 
+
     // 자신의 스터디 조회
     public List<StudyResponseDto.UserStudyPreviewDto> getMyStudies(Long userId, StudyStatus studyStatus, Pageable pageable) {
-        Page<UserStudy> userStudies = userStudyRepository.findByUserIdAndStatus(userId, studyStatus, pageable);
+        // studyStatus에 따라 적절한 메서드 호출
+        Page<UserStudy> userStudies;
+        if (studyStatus == StudyStatus.ACTIVE) {
+            userStudies = userStudyRepository.findActiveStudiesByUserId(userId, pageable);
+        } else {
+            userStudies = userStudyRepository.findClosedStudiesByUserId(userId, pageable);
+        }
+        
         return userStudies.stream()
                 .map(userStudy -> {
                     Long memberCount = userStudyRepository.countByStudyId(userStudy.getStudy().getId());
