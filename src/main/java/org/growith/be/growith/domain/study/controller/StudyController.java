@@ -133,7 +133,7 @@ public class StudyController {
             summary = "스터디 종료 API (softDelete)"
             , description = "스터디 상태를 ACTIVE ↔ CLOSED로 변경. CLOSED로 변경 시 모든 멤버가 WITHDRAWN 상태가 되고 모집이 마감됩니다. 팀장 권한 필요."
     )
-    @PatchMapping("/{studyId}/status")
+    @PatchMapping("/{studyId}/close")
     public ApiResponse<StudyResponseDto.ChangedStudyStatus> changeStudyStatus(
             @RequestBody StudyRequestDto.ChangeStudyStatusDTO request,
             @PathVariable Long studyId,
