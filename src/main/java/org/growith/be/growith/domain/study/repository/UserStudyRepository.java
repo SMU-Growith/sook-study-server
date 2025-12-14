@@ -23,16 +23,17 @@ public interface UserStudyRepository extends JpaRepository<UserStudy, Long> {
            "AND us.studyRole != org.growith.be.growith.domain.study.entity.enums.StudyRole.WITHDRAWN")
     Long countByStudyId(@Param("studyId") Long studyId);
 
+    // ACTIVE 스터디 조회: 스터디가 ACTIVE이고 내가 WITHDRAWN이 아닌 경우
     @Query("SELECT us FROM UserStudy us WHERE us.user.id = :userId " +
-           "AND ((:studyStatus = org.growith.be.growith.domain.study.entity.enums.StudyStatus.ACTIVE " +
-           "      AND us.study.studyStatus = org.growith.be.growith.domain.study.entity.enums.StudyStatus.ACTIVE " +
-           "      AND us.studyRole != org.growith.be.growith.domain.study.entity.enums.StudyRole.WITHDRAWN) " +
-           "OR (:studyStatus = org.growith.be.growith.domain.study.entity.enums.StudyStatus.CLOSED " +
-           "    AND (us.study.studyStatus = org.growith.be.growith.domain.study.entity.enums.StudyStatus.CLOSED " +
-           "         OR us.studyRole = org.growith.be.growith.domain.study.entity.enums.StudyRole.WITHDRAWN)))")
-    Page<UserStudy> findByUserIdAndStatus(@Param("userId") Long userId, 
-                                           @Param("studyStatus") StudyStatus studyStatus, 
-                                           Pageable pageable);
+           "AND us.study.studyStatus = org.growith.be.growith.domain.study.entity.enums.StudyStatus.ACTIVE " +
+           "AND us.studyRole != org.growith.be.growith.domain.study.entity.enums.StudyRole.WITHDRAWN")
+    Page<UserStudy> findActiveStudiesByUserId(@Param("userId") Long userId, Pageable pageable);
+
+    // CLOSED 스터디 조회: 스터디가 CLOSED이거나 내가 WITHDRAWN인 경우
+    @Query("SELECT us FROM UserStudy us WHERE us.user.id = :userId " +
+           "AND (us.study.studyStatus = org.growith.be.growith.domain.study.entity.enums.StudyStatus.CLOSED " +
+           "     OR us.studyRole = org.growith.be.growith.domain.study.entity.enums.StudyRole.WITHDRAWN)")
+    Page<UserStudy> findClosedStudiesByUserId(@Param("userId") Long userId, Pageable pageable);
 
     // 해당 사용자가 스터디의 팀장인지 확인
     boolean existsByStudyIdAndUserIdAndStudyRole(Long studyId, Long userId, StudyRole studyRole);
