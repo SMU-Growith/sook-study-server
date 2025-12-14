@@ -55,7 +55,7 @@ public class StampConverter {
         StampLevel achievedLevel = userStamp != null ? userStamp.getAchievedLevel() : StampLevel.NONE;
         Boolean isAchieved = userStamp != null && userStamp.getIsAchieved();
 
-        // 해당 타입의 모든 레벨 정보 생성
+        // stamp 테이블에서 레벨 정보 가져오기
         List<StampResponseDto.StampDetailDto> levels = new ArrayList<>();
         StampLevel maxLevel = StampLevel.NONE;
         
@@ -63,11 +63,7 @@ public class StampConverter {
             if (stamp.getStampType() == stampType && stamp.getStampLevel() != StampLevel.NONE) {
                 boolean levelAchieved = achievedLevel.ordinal() >= stamp.getStampLevel().ordinal();
                 
-                // 스탬프 정보 가져오기
-                Map<StampLevel, StampInfo> levelInfoMap = STAMP_LEVEL_INFO.get(stampType);
-                StampInfo stampInfo = levelInfoMap != null ? levelInfoMap.get(stamp.getStampLevel()) : new StampInfo("", "");
-
-                // 최대 레벨 찾기 (기존 로직 유지)
+                // 최대 레벨 찾기
                 if (stamp.getStampLevel().ordinal() > maxLevel.ordinal()) {
                     maxLevel = stamp.getStampLevel();
                 }
@@ -75,8 +71,8 @@ public class StampConverter {
                 levels.add(StampResponseDto.StampDetailDto.builder()
                         .stampId(stamp.getId())
                         .level(stamp.getStampLevel())
-                        .levelName(stampInfo.name())
-                        .levelDescription(stampInfo.description())
+                        .levelName(stamp.getName())
+                        .levelDescription(stamp.getDescription())
                         .isAchieved(levelAchieved)
                         .build());
             }
