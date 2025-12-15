@@ -7,8 +7,12 @@ import org.growith.be.growith.domain.user.entity.enums.UserRole;
 
 public class AuthConverter {
 
-
     public static AuthResponseDTO.TokenResult toTokenResult(User user, String accessToken, String refreshToken) {
+        String personalityTypeName = null;
+        if (user.getPersonalityResultType() != null) {
+            personalityTypeName = user.getPersonalityResultType().getTypeName();
+        }
+        
         return AuthResponseDTO.TokenResult.builder()
                 .userId(user.getId())
                 .nickName(user.getNickName())
@@ -18,6 +22,7 @@ public class AuthConverter {
                 .phoneNumber(user.getPhoneNumber())
                 .accessToken(accessToken)
                 .refreshToken(refreshToken)
+                .personalityType(personalityTypeName)
                 .build();
     }
 

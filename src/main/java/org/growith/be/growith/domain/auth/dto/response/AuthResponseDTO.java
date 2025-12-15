@@ -13,7 +13,8 @@ public record AuthResponseDTO() {
             String studentStatus,
             String phoneNumber,
             String accessToken,
-            String refreshToken
+            String refreshToken,
+            String personalityType
     ){}
 
     @Builder

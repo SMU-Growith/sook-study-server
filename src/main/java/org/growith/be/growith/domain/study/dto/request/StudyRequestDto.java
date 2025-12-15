@@ -33,6 +33,7 @@ public record StudyRequestDto() {
             StudyFormat studyFormat,
             StudyStyleCategory studyStyleCategory,
             StudyStatus studyStatus,
+            Boolean isRecruiting,
             List<RuleDTO> ruleDTO
     ){}
 

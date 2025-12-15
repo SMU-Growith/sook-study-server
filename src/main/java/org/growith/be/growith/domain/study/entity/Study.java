@@ -83,6 +83,7 @@ public class Study extends BaseEntity {
         this.studyStatus  = request.studyStatus();
         this.studyFormat = request.studyFormat();
         this.studyField = studyField;
+        this.isRecruiting = request.isRecruiting();
     }
 
     public void changeStudyStatus (StudyStatus studyStatus) {
