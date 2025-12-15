@@ -40,30 +40,25 @@ public class StudyCommandServiceImpl implements StudyCommandService{
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new UserException(UserErrorCode.NOT_FOUND));
 
-        // 자식 분야 이름으로 조회 (childFieldName)
-        StudyField field = studyFieldRepository.findByName(request.childFieldName())
+        // 스터디 분야 이름으로 조회 (studyFieldName)
+        StudyField field = studyFieldRepository.findByName(request.studyFieldName())
                 .orElseThrow(() -> new StudyException(StudyErrorCode.STUDY_NOT_FOUND));
 
         Study studyEntity = StudyConverter.toStudyEntity(request, user, field);
         Study savedStudy = studyRepository.save(studyEntity);
         userStudyRepository.save(StudyConverter.toUserStudyEntity(user, savedStudy, StudyRole.LEADER));
 
-        // 모든 RuleCategory에 대해 기본 규칙 생성 (description은 null)
-        List<Rule> rules = List.of(
-                Rule.builder().study(savedStudy).ruleCategory(RuleCategory.TIME).description(null).build(),
-                Rule.builder().study(savedStudy).ruleCategory(RuleCategory.FINE).description(null).build(),
-                Rule.builder().study(savedStudy).ruleCategory(RuleCategory.DAY_OFF).description(null).build(),
-                Rule.builder().study(savedStudy).ruleCategory(RuleCategory.ATMOSPHERE).description(null).build(),
-                Rule.builder().study(savedStudy).ruleCategory(RuleCategory.ETC).description(null).build()
-        );
-        // 규칙 저장
+        // Request로 받은 규칙 저장
+        List<Rule> rules = request.rules().stream()
+                .map(rule -> StudyConverter.toRuleEntity(rule, savedStudy))
+                .toList();
         ruleRepository.saveAll(rules);
 
         // 리더숙 스탬프 업데이트
         long createdStudyCount = studyRepository.countByUserId(userId);
         stampUpdateHelper.updateLeaderStamp(userId, (int) createdStudyCount);
 
-         return StudyConverter.toStudyDetail(savedStudy, rules, false);
+         return StudyConverter.toStudyDetail(savedStudy, rules, false, true);
     }
 
     // 스터디 수정
@@ -94,7 +89,8 @@ public class StudyCommandServiceImpl implements StudyCommandService{
         User user = study.getUser(); 
         Boolean isScraped = studyScrapRepository.findByUserAndStudy(user, updatedStudy).isPresent();
 
-        return StudyConverter.toStudyDetail(updatedStudy, rules, isScraped);
+        Boolean isMyStudy = updatedStudy.getUser().getId().equals(userId);
+        return StudyConverter.toStudyDetail(updatedStudy, rules, isScraped, isMyStudy);
     }
 
     // 스터디 삭제

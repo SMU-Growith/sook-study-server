@@ -26,6 +26,11 @@ public class StudyApplicationConverter {
 
     // Application -> StudyApplicationResponseDTO.StudyApplicationDetailDTO
     public static StudyApplicationResponseDTO.StudyApplicationDetailDTO toApplicationDetailDTO(StudyApplication studyApplication){
+        String personalityTypeName = null;
+        if (studyApplication.getUser().getPersonalityResultType() != null) {
+            personalityTypeName = studyApplication.getUser().getPersonalityResultType().getTypeName();
+        }
+        
         return StudyApplicationResponseDTO.StudyApplicationDetailDTO.builder()
                 .applicationId(studyApplication.getId())
                 .studyId(studyApplication.getStudy().getId())
@@ -36,6 +41,7 @@ public class StudyApplicationConverter {
                 .phoneNumber(studyApplication.getPhoneNumber())
                 .motivation(studyApplication.getMotivation())
                 .applicationStatus(studyApplication.getApplicationStatus())
+                .personalityType(personalityTypeName)
                 .build();
     }
 
