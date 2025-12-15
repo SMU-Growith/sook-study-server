@@ -90,7 +90,10 @@ public class StudyQueryServiceImpl implements StudyQueryService {
             isScraped = studyScrapRepository.findByUserAndStudy(user, study).isPresent();
         }
 
-        return StudyConverter.toStudyDetail(study, rules, isScraped);
+        // 작성자 여부 확인
+        Boolean isMyStudy = study.getUser().getId().equals(userId);
+
+        return StudyConverter.toStudyDetail(study, rules, isScraped, isMyStudy);
     }
 
     // 스터디 검색

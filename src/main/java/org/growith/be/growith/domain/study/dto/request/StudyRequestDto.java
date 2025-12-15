@@ -13,10 +13,10 @@ public record StudyRequestDto() {
             String description,
             ContactType contactType,
             String url,
-            String parentFieldName,
-            String childFieldName,
+            String studyFieldName,
             StudyFormat studyFormat,
-            StudyStyleCategory studyStyleCategory
+            StudyStyleCategory studyStyleCategory,
+            List<RuleDTO> rules
     ){}
 
     public record RuleDTO(

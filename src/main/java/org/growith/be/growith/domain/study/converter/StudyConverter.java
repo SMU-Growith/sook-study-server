@@ -39,7 +39,7 @@ public class StudyConverter {
                 .build();
     }
 
-    public static StudyResponseDto.StudyDetail toStudyDetail(Study study, List<Rule> rules, Boolean isScraped){
+    public static StudyResponseDto.StudyDetail toStudyDetail(Study study, List<Rule> rules, Boolean isScraped, Boolean isMyStudy){
         String studyFieldName = study.getStudyField() == null ? null : study.getStudyField().getName();
 
         List<StudyResponseDto.RuleDetailDTO> ruleList = rules.stream()
@@ -60,6 +60,7 @@ public class StudyConverter {
                 .userId(study.getUser().getId())
                 .nickname(study.getUser().getNickName())
                 .isScraped(isScraped)
+                .isMyStudy(isMyStudy)
                 .createdAt(study.getCreatedAt().toLocalDate())
                 .build();
     }
@@ -197,6 +198,11 @@ public class StudyConverter {
 
     // StudyUsers
     public static StudyResponseDto.StudyUsers toStudyUsers(UserStudy userStudy, String motivation){
+        String personalityTypeName = null;
+        if (userStudy.getUser().getPersonalityResultType() != null) {
+            personalityTypeName = userStudy.getUser().getPersonalityResultType().getTypeName();
+        }
+        
         return StudyResponseDto.StudyUsers.builder()
                 .userId(userStudy.getUser().getId())
                 .studyRole(userStudy.getStudyRole())
@@ -205,6 +211,7 @@ public class StudyConverter {
                 .major(userStudy.getUser().getMajor())
                 .phoneNumber(userStudy.getUser().getPhoneNumber())
                 .motivation(motivation)
+                .personalityType(personalityTypeName)
                 .build();
     }
 }

@@ -24,6 +24,6 @@ public record UserResponseDTO() {
         String studyStyle,
         String phoneNumber,
         Boolean noticeYn,
-        org.growith.be.growith.domain.personality.dto.response.PersonalityResponseDto.UserPersonalityTypeDto personalityType
+        String personalityType
     ){}
 }

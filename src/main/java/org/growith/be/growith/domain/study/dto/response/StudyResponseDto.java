@@ -26,6 +26,7 @@ public record StudyResponseDto() {
             Long userId,
             String nickname,
             Boolean isScraped,
+            Boolean isMyStudy,
             LocalDate createdAt
     ){}
 
@@ -106,7 +107,8 @@ public record StudyResponseDto() {
              StudentStatus studentStatus,
              Major major,
              String phoneNumber,
-             String motivation
+             String motivation,
+             String personalityType
      ){}
 
     @Builder

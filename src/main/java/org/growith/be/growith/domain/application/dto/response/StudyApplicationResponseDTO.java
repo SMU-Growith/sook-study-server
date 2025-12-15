@@ -22,7 +22,8 @@ public record StudyApplicationResponseDTO() {
             String major,
             String phoneNumber,
             String motivation,
-            ApplicationStatus applicationStatus
+            ApplicationStatus applicationStatus,
+            String personalityType
     ){}
 
     @Builder
