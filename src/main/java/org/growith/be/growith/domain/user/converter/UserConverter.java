@@ -7,6 +7,11 @@ public class UserConverter {
 
     // User -> UserResponseDTO.UserProfileDTO
     public static UserResponseDTO.UserProfileDTO toUserProfileDTO(User user){
+        String personalityTypeName = null;
+        if (user.getPersonalityResultType() != null) {
+            personalityTypeName = user.getPersonalityResultType().getTypeName();
+        }
+        
         return UserResponseDTO.UserProfileDTO.builder()
                 .nickName(user.getNickName())
                 .studentStatus(user.getStudentStatus())
@@ -15,7 +20,7 @@ public class UserConverter {
                 .noticeYn(Boolean.TRUE.equals(user.getIsNotice()))
                 // TODO: studyStyle 구현 필요
                 .studyStyle("하드코딩")
-                .personalityType(org.growith.be.growith.domain.personality.converter.PersonalityConverter.toUserPersonalityTypeDto(user.getPersonalityResultType()))
+                .personalityType(personalityTypeName)
                 .build();
     }
 
