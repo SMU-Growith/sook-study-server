@@ -84,7 +84,8 @@ public class StampServiceImpl implements StampService {
         // 달성해야 할 레벨 결정
         StampLevel targetLevel = determineStampLevel(stampType, count);
         
-        if (targetLevel == StampLevel.NONE) {
+        // 웰컴숙이 아닌 경우, NONE 레벨이면 조건 미달성으로 처리
+        if (stampType != StampType.WELCOME && targetLevel == StampLevel.NONE) {
             return; // 조건 미달성
         }
 
@@ -93,8 +94,8 @@ public class StampServiceImpl implements StampService {
 
         if (existingUserStamp.isPresent()) {
             UserStamp userStamp = existingUserStamp.get();
-            // 현재 레벨보다 높은 레벨만 업데이트
-            if (targetLevel.ordinal() > userStamp.getAchievedLevel().ordinal()) {
+            // 웰컴숙이 아닌 경우에만 레벨 비교 후 업데이트
+            if (stampType != StampType.WELCOME && targetLevel.ordinal() > userStamp.getAchievedLevel().ordinal()) {
                 userStamp.updateLevel(targetLevel);
                 userStampRepository.save(userStamp);
                 log.info("Updated stamp for user {}: {} to level {}", userId, stampType, targetLevel);
@@ -116,7 +117,7 @@ public class StampServiceImpl implements StampService {
     // 카운트에 따라 달성 레벨 결정
     private StampLevel determineStampLevel(StampType stampType, int count) {
         return switch (stampType) {
-            case WELCOME -> count >= 1 ? StampLevel.LEVEL_1 : StampLevel.NONE;
+            case WELCOME -> StampLevel.NONE;  // 웰컴숙은 레벨이 없음 (회원가입 시 자동 달성)
             case LEADER -> {
                 if (count >= 3) yield StampLevel.LEVEL_2;
                 else if (count >= 1) yield StampLevel.LEVEL_1;

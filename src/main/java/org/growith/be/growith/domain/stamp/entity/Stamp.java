@@ -24,10 +24,13 @@ public class Stamp extends BaseEntity {
     private StampType stampType;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
     private StampLevel stampLevel;
 
     private String name;
 
+    @Column(name = "level_description")
+    private String levelDescription;
+
+    @Column(length = 500)
     private String description;
 }
