@@ -49,6 +49,7 @@ public record StudyResponseDto() {
             String title,
             String description,
             StudyStatus studyStatus,
+            Boolean isRecruiting,
             Long userId,
             String nickname,
             Boolean isScraped,

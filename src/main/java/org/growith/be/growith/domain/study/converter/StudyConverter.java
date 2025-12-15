@@ -150,6 +150,7 @@ public class StudyConverter {
         return StudyResponseDto.StudyPreviewDTO.builder()
                 .studyId(study.getId())
                 .studyStatus(study.getStudyStatus())
+                .isRecruiting(study.getIsRecruiting())
                 .title(study.getTitle())
                 .userId(study.getUser().getId())
                 .nickname(study.getUser().getNickName())
