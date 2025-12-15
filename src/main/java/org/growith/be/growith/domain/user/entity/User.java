@@ -47,6 +47,14 @@ public class User extends BaseEntity {
 
     private LocalDateTime isDeleted;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "personality_result_type_id")
+    private org.growith.be.growith.domain.personality.entity.PersonalityResultType personalityResultType;
+
+    public void setPersonalityResultType(org.growith.be.growith.domain.personality.entity.PersonalityResultType personalityResultType) {
+        this.personalityResultType = personalityResultType;
+    }
+
     public void changeUserProfile(UserRequestDTO.ChangeInfo request){
         this.nickName = request.nickName();
         this.major = request.major();

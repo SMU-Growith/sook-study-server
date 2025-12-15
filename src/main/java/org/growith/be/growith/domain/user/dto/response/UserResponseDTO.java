@@ -23,6 +23,7 @@ public record UserResponseDTO() {
         Major major,
         String studyStyle,
         String phoneNumber,
-        Boolean noticeYn
+        Boolean noticeYn,
+        org.growith.be.growith.domain.personality.dto.response.PersonalityResponseDto.UserPersonalityTypeDto personalityType
     ){}
 }
