@@ -13,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Slf4j
-@Component
+// @Component  // DB에 이미 데이터가 있으므로 비활성화
 @RequiredArgsConstructor
 public class StampDataInitializer implements CommandLineRunner {
 
@@ -35,27 +35,27 @@ public class StampDataInitializer implements CommandLineRunner {
                 "숙터디 회원가입을 축하해요! 숙터디에서 다양한 활동을 이용해보세요."));
 
         // 리더숙
-        stamps.add(createStamp(StampType.LEADER, StampLevel.LEVEL_1, "조교 송이", "스터디 1회 개설",
+        stamps.add(createStamp(StampType.LEADER, StampLevel.LEVEL_1, "과대송", "스터디 1회 개설",
                 "스터디 개설을 하셨네요. 스터디장은 스터디 일지를 회차별로 생성할 수 있어요."));
-        stamps.add(createStamp(StampType.LEADER, StampLevel.LEVEL_2, "교수 송이", "스터디 3회 개설",
+        stamps.add(createStamp(StampType.LEADER, StampLevel.LEVEL_2, "교수송", "스터디 3회 개설",
                 "스터디 개설을 하셨네요. 스터디장은 스터디 일지를 회차별로 생성할 수 있어요."));
 
         // 기록숙
-        stamps.add(createStamp(StampType.RECORD, StampLevel.LEVEL_1, "장학생 송이", "학습일지 3회 작성",
+        stamps.add(createStamp(StampType.RECORD, StampLevel.LEVEL_1, "장학생", "학습일지 3회 작성",
                 "학습 일지를 열심히 작성하셨군요! 스터디가 끝나도 일지는 계속 볼 수 있어요."));
-        stamps.add(createStamp(StampType.RECORD, StampLevel.LEVEL_2, "수석 송이", "학습일지 10회 작성",
+        stamps.add(createStamp(StampType.RECORD, StampLevel.LEVEL_2, "수석송", "학습일지 10회 작성",
                 "학습 일지를 열심히 작성하셨군요! 스터디가 끝나도 일지는 계속 볼 수 있어요."));
 
-        // 응원 고숙
-        stamps.add(createStamp(StampType.CHEER, StampLevel.LEVEL_1, "응원단 송이", "3명에게 응원하기",
+        // 응원고숙
+        stamps.add(createStamp(StampType.CHEER, StampLevel.LEVEL_1, "응원단송", "응원하기 3명에게 진행",
                 "송이들에게 응원하기를 하셨네요! 응원받은 송이에게 힘이 되어 줘요 :)"));
-        stamps.add(createStamp(StampType.CHEER, StampLevel.LEVEL_2, "치어리더 송이", "10명에게 응원하기",
+        stamps.add(createStamp(StampType.CHEER, StampLevel.LEVEL_2, "치어리더송", "응원하기 10명에게 진행",
                 "송이들에게 응원하기를 하셨네요! 응원받은 송이에게 힘이 되어 줘요 :)"));
 
         // 슈퍼숙타
-        stamps.add(createStamp(StampType.SUPERSTAR, StampLevel.LEVEL_1, "새내기 송이", "응원하기 누적 10개",
+        stamps.add(createStamp(StampType.SUPERSTAR, StampLevel.LEVEL_1, "라이징송", "내 스터디 일지에 10개 응원 누적",
                 "내 스터디 일지에 많은 응원을 받았어요. 어쩌면 스터디 인기쟁이는 나일지도..?"));
-        stamps.add(createStamp(StampType.SUPERSTAR, StampLevel.LEVEL_2, "인싸 송이", "응원하기 누적 20개",
+        stamps.add(createStamp(StampType.SUPERSTAR, StampLevel.LEVEL_2, "인싸송", "내 스터디 일지에 20개 응원 누적",
                 "내 스터디 일지에 많은 응원을 받았어요. 어쩌면 스터디 인기쟁이는 나일지도..?"));
 
         stampRepository.saveAll(stamps);
