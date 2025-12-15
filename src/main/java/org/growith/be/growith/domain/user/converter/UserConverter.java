@@ -15,6 +15,7 @@ public class UserConverter {
                 .noticeYn(Boolean.TRUE.equals(user.getIsNotice()))
                 // TODO: studyStyle 구현 필요
                 .studyStyle("하드코딩")
+                .personalityType(org.growith.be.growith.domain.personality.converter.PersonalityConverter.toUserPersonalityTypeDto(user.getPersonalityResultType()))
                 .build();
     }
 
