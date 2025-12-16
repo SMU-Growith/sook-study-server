@@ -17,4 +17,5 @@ public interface StudyQueryService {
     List<StudyResponseDto.StudyUsers> getStudyMembers(Long studyId);
     List<StudyResponseDto.StudyFieldDto> getStudyFields();
     List<StudyResponseDto.RuleDetailDTO> getStudyRules(Long studyId);
+    StudyResponseDto.MyStudyRoleDto getMyStudyRole(Long studyId, Long userId);
 }

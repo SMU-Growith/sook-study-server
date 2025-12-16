@@ -173,6 +173,7 @@ public class StudyQueryServiceImpl implements StudyQueryService {
                 .build();
     }
 
+
     @Override
     public List<StudyResponseDto.RuleDetailDTO> getStudyRules(Long studyId) {
         if (!studyRepository.existsById(studyId)) {
@@ -184,5 +185,19 @@ public class StudyQueryServiceImpl implements StudyQueryService {
                         .description(rule.getDescription())
                         .build())
                 .toList();
+    }
+
+    @Override
+    public StudyResponseDto.MyStudyRoleDto getMyStudyRole(Long studyId, Long userId) {
+        // 스터디 존재 확인
+        if (!studyRepository.existsById(studyId)) {
+            throw new StudyException(StudyErrorCode.STUDY_NOT_FOUND);
+        }
+
+        // 사용자의 스터디 역할 조회
+        UserStudy userStudy = userStudyRepository.findByStudyIdAndUserId(studyId, userId)
+                .orElseThrow(() -> new StudyException(StudyErrorCode.STUDY_MEMBER_NOT_FOUND));
+
+        return StudyConverter.toMyStudyRoleDto(studyId, userStudy.getStudyRole());
     }
 }
