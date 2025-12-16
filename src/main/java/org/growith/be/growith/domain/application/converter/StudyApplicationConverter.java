@@ -61,7 +61,8 @@ public class StudyApplicationConverter {
 
     public static StudyApplicationResponseDTO.MyApplicationCardDTO toMyApplicationCardDTO(
             StudyApplication application, 
-            Boolean scrapped
+            Boolean scrapped,
+            String leaderNickname
     ) {
         Study study = application.getStudy();
         
@@ -73,7 +74,7 @@ public class StudyApplicationConverter {
                 .studyFormat(study.getStudyFormat() != null ? study.getStudyFormat().name() : null)
                 .studyFieldName(study.getStudyField() != null ? study.getStudyField().getName() : null)
                 .studyStyleCategory(study.getStudyStyleCategory() != null ? study.getStudyStyleCategory().name() : null)
-                .nickname(study.getUser().getNickName())  // 스터디장의 닉네임
+                .nickname(leaderNickname)  // 스터디장의 닉네임 (user_study 테이블에서 LEADER 역할)
                 .scrapCount(study.getScrapCount())
                 .isScraped(scrapped)
                 .createdAt(application.getCreatedAt())
@@ -83,11 +84,12 @@ public class StudyApplicationConverter {
 
     public static List<StudyApplicationResponseDTO.MyApplicationCardDTO> toMyApplicationCardDTOList(
             List<StudyApplication> applications,
-            List<Boolean> scrappedList
+            List<Boolean> scrappedList,
+            List<String> leaderNicknameList
     ) {
         List<StudyApplicationResponseDTO.MyApplicationCardDTO> result = new java.util.ArrayList<>();
         for (int i = 0; i < applications.size(); i++) {
-            result.add(toMyApplicationCardDTO(applications.get(i), scrappedList.get(i)));
+            result.add(toMyApplicationCardDTO(applications.get(i), scrappedList.get(i), leaderNicknameList.get(i)));
         }
         return result;
     }

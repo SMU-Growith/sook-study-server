@@ -49,7 +49,7 @@ public class StudyApplicationQueryServiceImpl implements StudyApplicationQuerySe
         // 사용자의 모든 지원서 조회 (최신순)
         List<StudyApplication> applications = studyApplicationRepository.findByUserIdOrderByCreatedAtDesc(user.getId());
 
-        // 각 지원서의 스터디에 대한 스크랩 여부 확인
+        // 각 지원서의 스터디에 대한 스크랩 여부와 리더 닉네임 조회
         List<Boolean> scrappedList = applications.stream()
                 .map(application -> {
                     Study study = application.getStudy();
@@ -57,7 +57,19 @@ public class StudyApplicationQueryServiceImpl implements StudyApplicationQuerySe
                 })
                 .toList();
 
-        return StudyApplicationConverter.toMyApplicationCardDTOList(applications, scrappedList);
+        // 각 스터디의 리더 닉네임 조회
+        List<String> leaderNicknameList = applications.stream()
+                .map(application -> {
+                    Long studyId = application.getStudy().getId();
+                    return userStudyRepository.findByStudyIdAndStudyRole(studyId, StudyRole.LEADER)
+                            .stream()
+                            .findFirst()
+                            .map(userStudy -> userStudy.getUser().getNickName())
+                            .orElse(null);
+                })
+                .toList();
+
+        return StudyApplicationConverter.toMyApplicationCardDTOList(applications, scrappedList, leaderNicknameList);
     }
 }
 

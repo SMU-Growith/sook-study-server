@@ -214,4 +214,12 @@ public class StudyConverter {
                 .personalityType(personalityTypeName)
                 .build();
     }
+
+    // MyStudyRoleDto
+    public static StudyResponseDto.MyStudyRoleDto toMyStudyRoleDto(Long studyId, StudyRole myRole){
+        return StudyResponseDto.MyStudyRoleDto.builder()
+                .studyId(studyId)
+                .myRole(myRole)
+                .build();
+    }
 }

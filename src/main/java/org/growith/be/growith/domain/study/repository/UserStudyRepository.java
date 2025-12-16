@@ -38,6 +38,9 @@ public interface UserStudyRepository extends JpaRepository<UserStudy, Long> {
     // 해당 사용자가 스터디의 팀장인지 확인
     boolean existsByStudyIdAndUserIdAndStudyRole(Long studyId, Long userId, StudyRole studyRole);
 
+    // 스터디 ID와 역할로 UserStudy 조회
+    List<UserStudy> findByStudyIdAndStudyRole(Long studyId, StudyRole studyRole);
+
     void deleteByStudyIdAndUserId(Long studyId, Long userId);
     
     // 스터디 삭제 시 모든 user_study 삭제

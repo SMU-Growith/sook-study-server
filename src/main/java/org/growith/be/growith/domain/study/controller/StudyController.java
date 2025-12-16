@@ -225,4 +225,14 @@ public class StudyController {
     public ApiResponse<List<StudyResponseDto.StudyFieldDto>> getStudyFields() {
         return ApiResponse.onSuccess(studyQueryService.getStudyFields());
     }
+
+    // 내 스터디 상세 조회
+    @Operation(summary = "내 스터디 상세 조회 API", description = "특정 스터디에서 내 역할을 조회하는 API")
+    @GetMapping("/{studyId}/me")
+    public ApiResponse<StudyResponseDto.MyStudyRoleDto> getMyStudyRole(
+            @PathVariable Long studyId,
+            @AuthenticatedUser User user
+    ) {
+        return ApiResponse.onSuccess(studyQueryService.getMyStudyRole(studyId, user.getId()));
+    }
 }

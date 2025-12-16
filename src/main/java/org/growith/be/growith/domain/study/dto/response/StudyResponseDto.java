@@ -122,4 +122,10 @@ public record StudyResponseDto() {
             Boolean isScraped,
             Long scrapCount
     ){}
+
+    @Builder
+    public record MyStudyRoleDto(
+            Long studyId,
+            StudyRole myRole
+    ){}
 }
