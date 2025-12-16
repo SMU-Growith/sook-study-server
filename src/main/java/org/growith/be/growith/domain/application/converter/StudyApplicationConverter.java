@@ -73,7 +73,7 @@ public class StudyApplicationConverter {
                 .studyFormat(study.getStudyFormat() != null ? study.getStudyFormat().name() : null)
                 .studyFieldName(study.getStudyField() != null ? study.getStudyField().getName() : null)
                 .studyStyleCategory(study.getStudyStyleCategory() != null ? study.getStudyStyleCategory().name() : null)
-                .nickname(application.getNickname())
+                .nickname(study.getUser().getNickName())  // 스터디장의 닉네임
                 .scrapCount(study.getScrapCount())
                 .isScraped(scrapped)
                 .createdAt(application.getCreatedAt())
