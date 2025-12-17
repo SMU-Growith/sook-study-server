@@ -82,7 +82,7 @@ public class StudyJournalQueryServiceImpl implements StudyJournalQueryService {
         StudySession session = studySessionRepository.findById(sessionId)
                 .orElseThrow(() -> new IllegalArgumentException("세션을 찾을 수 없음"));
 
-        List<StudyJournal> allJournals = studyJournalRepository.findBySessionId(sessionId);
+        List<StudyJournal> allJournals = studyJournalRepository.findByStudySession(sessionId);
         Integer totalCount = allJournals.size();
 
         // 내가 쓴 일지들 찾기
