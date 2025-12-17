@@ -23,6 +23,7 @@ public class StudyJournal extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "study_journal_id")
     private Long id;
 
     private String content;

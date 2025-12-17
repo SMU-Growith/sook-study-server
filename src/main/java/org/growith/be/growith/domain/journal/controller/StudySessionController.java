@@ -1,31 +1,18 @@
 package org.growith.be.growith.domain.journal.controller;
 
+import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.growith.be.growith.domain.journal.dto.EmojiToggleRequest;
-import org.growith.be.growith.domain.journal.dto.StudyJournalDto;
-import org.growith.be.growith.domain.journal.dto.StudyJournalListDto;
+import org.growith.be.growith.domain.journal.dto.*;
 import org.growith.be.growith.domain.journal.service.JournalEmojiService;
-import org.growith.be.growith.domain.journal.dto.StudySessionCardDto;
-import org.growith.be.growith.domain.journal.dto.StudySessionListDto;
-import org.growith.be.growith.domain.journal.dto.CreateStudyJournalRequest;
-import org.growith.be.growith.domain.journal.dto.CreateStudySessionRequest;
-import org.growith.be.growith.domain.journal.dto.UpdateStudySessionRequest;
-import org.growith.be.growith.domain.journal.dto.StudyJournalListResponse;
-import org.growith.be.growith.domain.journal.dto.UpdateStudyJournalRequest;
 import org.growith.be.growith.domain.journal.service.command.StudyJournalCommandService;
 import org.growith.be.growith.domain.journal.service.query.StudyJournalQueryService;
-import org.growith.be.growith.domain.study.service.command.StudyCommandService;
-import org.growith.be.growith.domain.study.service.query.StudyQueryService;
 import org.growith.be.growith.domain.user.entity.User;
 import org.growith.be.growith.global.annotation.AuthenticatedUser;
 import org.growith.be.growith.global.error.ApiResponse;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.web.bind.annotation.*;
-import io.swagger.v3.oas.annotations.Operation;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("/api/v1/studies")
