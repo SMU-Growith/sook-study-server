@@ -28,6 +28,7 @@ cors:
     - http://localhost:5173
     - https://growith.cloud
     - https://api.growith.cloud
+    - https://sook-study-client.vercel.app/
 
   methods:
     - GET
