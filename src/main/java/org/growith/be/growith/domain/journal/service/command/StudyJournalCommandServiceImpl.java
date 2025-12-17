@@ -47,8 +47,8 @@ public class StudyJournalCommandServiceImpl implements StudyJournalCommandServic
         StudyJournal journal = StudyJournal.createJournal(
                 request.getContent(),
                 request.getUrl(),
-                sessionId,
-                userId
+                session,
+                user
         );
 
         StudyJournal savedJournal = studyJournalRepository.save(journal);
@@ -157,10 +157,10 @@ public class StudyJournalCommandServiceImpl implements StudyJournalCommandServic
                 .toList();
 
         // 사용자 및 세션 조회 (역할 확인용)
-        User user = userRepository.findById(updatedJournal.getUserId())
+        User user = userRepository.findById(updatedJournal.getUser().getId())
                 .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없음"));
 
-        StudySession session = studySessionRepository.findById(updatedJournal.getSessionId())
+        StudySession session = studySessionRepository.findById(updatedJournal.getStudySession().getId())
                 .orElseThrow(() -> new IllegalArgumentException("세션을 찾을 수 없음"));
 
         String userRoleStr = studyRepository.findUserRoleInStudy(session.getStudy().getId(), user.getId());
