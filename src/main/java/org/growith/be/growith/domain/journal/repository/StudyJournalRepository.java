@@ -10,7 +10,8 @@ import org.springframework.data.repository.query.Param;
 public interface StudyJournalRepository extends JpaRepository<StudyJournal, Long> {
     Optional<StudyJournal> findById(Long id);
 
-    List<StudyJournal> findBySessionId(Long sessionId);
+    @Query("select sj from StudyJournal sj where sj.studySession.id = :studySessionId")
+    List<StudyJournal> findByStudySession(Long studySessionId);
 
     @Query("SELECT COUNT(sj) FROM StudyJournal sj WHERE sj.id = :journalId")
     Integer countByJournalId(@Param("journalId") Long journalId);

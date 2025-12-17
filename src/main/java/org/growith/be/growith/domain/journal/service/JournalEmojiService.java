@@ -5,7 +5,14 @@ import lombok.extern.slf4j.Slf4j;
 import org.growith.be.growith.domain.journal.dto.StudyJournalDto;
 import org.growith.be.growith.domain.journal.entity.JournalEmoji;
 import org.growith.be.growith.domain.journal.entity.JournalEmoji.EmojiType;
+import org.growith.be.growith.domain.journal.entity.StudyJournal;
 import org.growith.be.growith.domain.journal.repository.JournalEmojiRepository;
+import org.growith.be.growith.domain.user.entity.User;
+import org.growith.be.growith.domain.user.repository.UserRepository;
+import org.growith.be.growith.global.error.code.status.StudyErrorCode;
+import org.growith.be.growith.global.error.code.status.UserErrorCode;
+import org.growith.be.growith.global.error.exception.handler.StudyException;
+import org.growith.be.growith.global.error.exception.handler.UserException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,6 +25,7 @@ import java.util.Optional;
 public class JournalEmojiService {
     
     private final JournalEmojiRepository journalEmojiRepository;
+    private final UserRepository userRepository;
     private final org.growith.be.growith.domain.journal.repository.StudyJournalRepository studyJournalRepository;
     private final org.growith.be.growith.domain.stamp.service.StampUpdateHelper stampUpdateHelper;
 
@@ -25,7 +33,13 @@ public class JournalEmojiService {
     public StudyJournalDto.EmojiCounts toggleEmoji(Long studyJournalId, Long userId, String emojiTypeStr) {
         // String을 EmojiType enum으로 변환
         EmojiType requestedEmojiType = EmojiType.valueOf(emojiTypeStr.toUpperCase());
-        
+
+        StudyJournal studyJournal = studyJournalRepository.findById(studyJournalId).orElseThrow(() -> new StudyException(StudyErrorCode.STUDY_NOT_FOUND));
+
+        // 사용자 확인
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new UserException(UserErrorCode.NOT_FOUND));
+
         // 사용자가 이미 해당 타입의 이모티콘을 눌렀는지 확인
         Optional<JournalEmoji> existingEmoji = journalEmojiRepository.findByStudyJournalIdAndUserIdAndEmojiType(
                 studyJournalId, userId, requestedEmojiType
@@ -39,8 +53,8 @@ public class JournalEmojiService {
         } else {
             // 누르지 않은 이모티콘이면 추가 (토글 on)
             JournalEmoji newEmoji = JournalEmoji.builder()
-                    .studyJournalId(studyJournalId)
-                    .userId(userId)
+                    .studyJournal(studyJournal)
+                    .user(user)
                     .emojiType(requestedEmojiType)
                     .build();
             

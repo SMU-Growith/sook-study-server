@@ -2,6 +2,7 @@ package org.growith.be.growith.domain.journal.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.growith.be.growith.domain.user.entity.User;
 import org.growith.be.growith.global.common.BaseEntity;
 
 @Entity
@@ -15,16 +16,20 @@ public class JournalEmoji extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "journal_emoji_id")
     private Long id;
 
-    @Column(name = "study_journal_id", nullable = false)
-    private Long studyJournalId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "study_journal_id")
+    private StudyJournal studyJournal;
 
-    @Column(name = "user_id", nullable = false)
-    private Long userId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
 
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(name = "emoji_type", nullable = false)
     private EmojiType emojiType;
 
     public enum EmojiType {
