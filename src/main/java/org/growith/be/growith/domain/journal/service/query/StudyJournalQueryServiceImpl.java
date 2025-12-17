@@ -132,7 +132,7 @@ public class StudyJournalQueryServiceImpl implements StudyJournalQueryService {
                 .orElseThrow(() -> new IllegalArgumentException("studyId에 해당하는 스터디 없음"));
 
         // 데이터베이스에서 직접 세션 목록 조회 (Study 엔티티의 캐시된 컬렉션 대신)
-        List<StudySession> allSessions = studySessionRepository.findByStudyIdOrderByNumberAsc(studyId);
+        List<StudySession> allSessions = studySessionRepository.findByStudyIdOrderByNumberAsc(study.getId());
         Integer totalCount = allSessions.size();
 
         // 페이징 처리

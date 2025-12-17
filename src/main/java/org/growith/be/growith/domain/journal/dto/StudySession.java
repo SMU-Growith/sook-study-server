@@ -5,7 +5,6 @@ import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.growith.be.growith.domain.journal.entity.StudyJournal;
 import org.growith.be.growith.domain.study.entity.Study;
 import org.growith.be.growith.global.common.BaseEntity;
 
@@ -33,9 +32,6 @@ public class StudySession extends BaseEntity {
     @JoinColumn(name = "study_id")
     private Study study;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "study_journal_id")
-    private StudyJournal studyJournal;
 
     //세션 생성
     public static StudySession createSession(int number, String title, Study study) {

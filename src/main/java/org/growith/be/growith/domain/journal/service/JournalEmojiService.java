@@ -62,7 +62,7 @@ public class JournalEmojiService {
         // 2. 슈퍼숙타 (내 일지가 받은 응원 수) -> 일지 주인의 스탬프 업데이트
         org.growith.be.growith.domain.journal.entity.StudyJournal journal = studyJournalRepository.findById(studyJournalId).orElse(null);
         if (journal != null) {
-            Long journalOwnerId = journal.getUserId();
+            Long journalOwnerId = journal.getUser().getId();
             long cheerReceivedCount = journalEmojiRepository.countReceivedCheersByUserId(journalOwnerId);
             stampUpdateHelper.updateSuperstarStamp(journalOwnerId, (int) cheerReceivedCount);
         }
