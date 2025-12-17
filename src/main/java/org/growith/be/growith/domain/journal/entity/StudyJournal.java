@@ -7,6 +7,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.growith.be.growith.domain.journal.dto.StudySession;
+import org.growith.be.growith.domain.user.entity.User;
 import org.growith.be.growith.global.common.BaseEntity;
 
 import java.util.ArrayList;
@@ -30,9 +32,13 @@ public class StudyJournal extends BaseEntity {
 
     private String url;
 
-    private Long sessionId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "study_session_id")
+    private StudySession studySession;
 
-    private Long userId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
 
     @Builder.Default
     private Long viewCount = 0L;
@@ -44,14 +50,14 @@ public class StudyJournal extends BaseEntity {
     public static StudyJournal createJournal(
             String content,
             String url,
-            Long sessionId,
-            Long userId
+            StudySession studySession,
+            User user
     ) {
         return StudyJournal.builder()
                 .content(content)
                 .url(url)
-                .sessionId(sessionId)
-                .userId(userId)
+                .studySession(studySession)
+                .user(user)
                 .viewCount(0L)
                 .attachments(new ArrayList<>())
                 .build();

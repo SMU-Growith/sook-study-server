@@ -53,11 +53,11 @@ public class StudyJournalQueryServiceImpl implements StudyJournalQueryService {
                 .toList();
 
         // 사용자 조회
-        User user = userRepository.findById(journal.getUserId())
+        User user = userRepository.findById(journal.getUser().getId())
                 .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없음"));
 
         // 세션 조회
-        StudySession session = studySessionRepository.findById(journal.getSessionId())
+        StudySession session = studySessionRepository.findById(journal.getStudySession().getId())
                 .orElseThrow(() -> new IllegalArgumentException("세션을 찾을 수 없음"));
 
         // 역할 조회
@@ -87,7 +87,7 @@ public class StudyJournalQueryServiceImpl implements StudyJournalQueryService {
 
         // 내가 쓴 일지들 찾기
         List<Long> myJournalIds = allJournals.stream()
-                .filter(journal -> journal.getUserId().equals(userId))
+                .filter(journal -> journal.getUser().getId().equals(userId))
                 .map(StudyJournal::getId)
                 .toList();
         
@@ -101,10 +101,10 @@ public class StudyJournalQueryServiceImpl implements StudyJournalQueryService {
 
         List<StudyJournalListDto> journalDtos = journals.stream().map(journal -> {
             // 사용자 정보 조회
-            User user = userRepository.findById(journal.getUserId())
+            User user = userRepository.findById(journal.getUser().getId())
                     .orElseThrow(() -> new IllegalArgumentException("사용자를 찾을 수 없음"));
 
-            String userRoleStr = studyRepository.findUserRoleInStudy(session.getStudy().getId(), journal.getUserId());
+            String userRoleStr = studyRepository.findUserRoleInStudy(session.getStudy().getId(), journal.getUser().getId());
             StudyRole studyRole = (userRoleStr != null) ? StudyRole.valueOf(userRoleStr) : StudyRole.MEMBER;
 
             return StudyJournalListDto.builder()
